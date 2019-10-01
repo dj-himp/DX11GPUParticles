@@ -1,0 +1,267 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Src">
+      <UniqueIdentifier>{9184c014-7351-4e4c-85cb-2e378f465cfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Common">
+      <UniqueIdentifier>{56d07412-5908-41a6-818c-9bc53b6f6914}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Extern">
+      <UniqueIdentifier>{ad01d2a9-6635-4450-9a90-025d9fdd5318}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Extern\imgui">
+      <UniqueIdentifier>{d0a3fd5a-ac3c-4816-a340-295c94f40c54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Gui">
+      <UniqueIdentifier>{c52f2219-335e-4fb2-ab76-f65c47be60c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Camera">
+      <UniqueIdentifier>{90056925-d6ee-4cad-8072-735c2519aab5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Content">
+      <UniqueIdentifier>{29072144-90d6-435a-9a45-5e5a6f47b690}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data">
+      <UniqueIdentifier>{835d709f-6144-4b05-a4e1-ea7e062964a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data\Models">
+      <UniqueIdentifier>{3c12d80f-3c6a-4b43-9497-c2c94e5ec27b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data\Textures">
+      <UniqueIdentifier>{ecfb4dac-c733-4f99-bb57-4278c09edc1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Model">
+      <UniqueIdentifier>{38af2adc-e7e3-4df5-912d-a825d9485760}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Data\Shaders">
+      <UniqueIdentifier>{c867f07a-20d5-4b85-9c60-93ff908a09d6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Src\App.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\DeviceResources.cpp">
+      <Filter>Src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\pch.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Game.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="Extern\imgui\imgui.cpp">
+      <Filter>Extern\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Extern\imgui\imgui_demo.cpp">
+      <Filter>Extern\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Extern\imgui\imgui_draw.cpp">
+      <Filter>Extern\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Extern\imgui\imgui_widgets.cpp">
+      <Filter>Extern\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gui\imgui_impl_dx11.cpp">
+      <Filter>Src\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Gui\imgui_impl_win32.cpp">
+      <Filter>Src\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Camera\Camera.cpp">
+      <Filter>Src\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Camera\CameraControllerFPS.cpp">
+      <Filter>Src\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\DebugUtils.cpp">
+      <Filter>Src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\InputManager.cpp">
+      <Filter>Src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Content\AxisRenderer.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Content\IRenderable.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Content\MengerRenderer.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Content\RenderFullscreenQuad.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Content\RenderModel.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Content\RenderModelTK.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Content\Sample3DSceneRenderer.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Content\SampleFpsTextRenderer.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Model\Model.cpp">
+      <Filter>Src\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Model\ModelLoader.cpp">
+      <Filter>Src\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Model\ModelMesh.cpp">
+      <Filter>Src\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Model\QuadCreator.cpp">
+      <Filter>Src\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Model\AxisCreator.cpp">
+      <Filter>Src\Model</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Src\Common\DeviceResources.h">
+      <Filter>Src\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\pch.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game.h">
+      <Filter>Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\StepTimer.h">
+      <Filter>Src\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\imgui\imconfig.h">
+      <Filter>Extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\imgui\imgui.h">
+      <Filter>Extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\imgui\imgui_internal.h">
+      <Filter>Extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\imgui\imstb_rectpack.h">
+      <Filter>Extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\imgui\imstb_textedit.h">
+      <Filter>Extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\imgui\imstb_truetype.h">
+      <Filter>Extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gui\imgui_impl_dx11.h">
+      <Filter>Src\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Gui\imgui_impl_win32.h">
+      <Filter>Src\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Camera\Camera.h">
+      <Filter>Src\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Camera\CameraControllerFPS.h">
+      <Filter>Src\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\DebugUtils.h">
+      <Filter>Src\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\InputManager.h">
+      <Filter>Src\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\AxisRenderer.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\IRenderable.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\MengerRenderer.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\RenderFullscreenQuad.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\RenderModel.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\RenderModelTK.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\Sample3DSceneRenderer.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\SampleFpsTextRenderer.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\ShaderStructures.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Model\Model.h">
+      <Filter>Src\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Model\ModelLoader.h">
+      <Filter>Src\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Model\ModelMesh.h">
+      <Filter>Src\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Model\QuadCreator.h">
+      <Filter>Src\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Model\AxisCreator.h">
+      <Filter>Src\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\DirectXHelper.h">
+      <Filter>Src\Common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Data\Textures\CatMac__C.png">
+      <Filter>Data\Textures</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Data\Shaders\RenderModel_VS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\RenderQuad_PS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\RenderQuad_VS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\SamplePixelShader.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\SampleVertexShader.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\RenderDebugColor_PS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\RenderDebugColor_VS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\RenderMenger_PS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\RenderMenger_VS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\RenderModel_PS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Data\Models\CatMac.fbx">
+      <Filter>Data\Models</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\cube.dae">
+      <Filter>Data\Models</Filter>
+    </CopyFileToFolders>
+  </ItemGroup>
+</Project>
