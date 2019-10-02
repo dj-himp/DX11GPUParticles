@@ -25,7 +25,7 @@ namespace DemoParticles
     {
         IRenderable::init();
 
-        m_world = Matrix::CreateScale(8.0f);
+        m_world = Matrix::CreateScale(1.0f);
     }
 
     void AxisRenderer::release()
@@ -78,13 +78,6 @@ namespace DemoParticles
 
     void AxisRenderer::createWindowSizeDependentResources()
     {
-        float yaw = 0.1f;
-        float pitch = 0.1f;
-        m_camera = std::make_unique<Camera>(Vector3(0.0f, 0.0f, -10.0f), yaw, pitch, 0.0f, m_deviceResources->GetOutputWidth() / m_deviceResources->GetOutputHeight(), DirectX::XM_PI / 4.0f);
-
-        //m_camera = std::make_unique<Camera>(Vector3(0.0f, 0.0f, -10.0f), Vector3(0.0f, 0.0f, 1.0f), m_deviceResources->GetOutputSize().Width / m_deviceResources->GetOutputHeight(), DirectX::XM_PI / 4.0f);
-
-        
         
     }
 

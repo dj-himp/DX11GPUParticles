@@ -86,8 +86,22 @@ namespace DemoParticles
 
     void Camera::updateView()
     {
-        m_view = Matrix::CreateFromYawPitchRoll(m_yaw, m_pitch, 0.0f);
-        m_view *= Matrix::CreateTranslation(m_position);
+        /*m_view = Matrix::CreateTranslation(m_position);
+        m_view *= Matrix::CreateFromYawPitchRoll(m_yaw, m_pitch, 0.0f);
+
+        m_forward = m_view.Forward();
+        m_right = m_view.Right();
+        m_up = m_view.Up();*/
+
+        Quaternion pitch = Quaternion::CreateFromAxisAngle(Vector3::UnitX, m_pitch);
+        Quaternion yaw = Quaternion::CreateFromAxisAngle(Vector3::UnitY, m_yaw);
+
+        Quaternion orientation = pitch * yaw;
+        orientation.Normalize();
+        Matrix rotate = Matrix::CreateFromQuaternion(orientation);
+        Matrix translate = Matrix::CreateTranslation(m_position);
+
+        m_view = translate * rotate;
 
         m_forward = m_view.Forward();
         m_right = m_view.Right();

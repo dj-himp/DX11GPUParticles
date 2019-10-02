@@ -27,7 +27,6 @@ namespace DemoParticles
 
     private:
         std::unique_ptr<Model> m_axis;
-        std::unique_ptr<Camera> m_camera;
 
         DirectX::SimpleMath::Matrix m_world;
 

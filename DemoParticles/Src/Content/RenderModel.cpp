@@ -70,10 +70,7 @@ namespace DemoParticles
 
     void RenderModel::createWindowSizeDependentResources()
     {
-        m_camera = std::make_unique<Camera>(Vector3(10.0f, 20.0f, -150.0f), Vector3(0.0f, 0.0f, 1.0f), m_deviceResources->GetOutputWidth() / m_deviceResources->GetOutputHeight(), DirectX::XM_PI / 4.0f);
-
-        Matrix worldViewProj = m_world * m_camera->getViewProjection();
-        XMStoreFloat4x4(&m_constantBufferData.worldViewProj, worldViewProj.Transpose());
+        
     }
 
     void RenderModel::releaseDeviceDependentResources()

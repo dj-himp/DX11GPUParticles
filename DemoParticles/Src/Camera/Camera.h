@@ -39,9 +39,9 @@ namespace DemoParticles
         void updateProjection();
 
         DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
-        DirectX::SimpleMath::Vector3 m_forward = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 1.0f);
-        DirectX::SimpleMath::Vector3 m_right = DirectX::SimpleMath::Vector3(0.1f, 0.0f, 0.0f);
-        DirectX::SimpleMath::Vector3 m_up = DirectX::SimpleMath::Vector3(0.1f, 0.0f, 0.0f);;
+        DirectX::SimpleMath::Vector3 m_forward = DirectX::SimpleMath::Vector3(0.0f, 0.0f, -1.0f);
+        DirectX::SimpleMath::Vector3 m_right = DirectX::SimpleMath::Vector3(1.0f, 0.0f, 0.0f);
+        DirectX::SimpleMath::Vector3 m_up = DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f);
 
         float m_yaw = 0.0f;
         float m_pitch = 0.0f;
