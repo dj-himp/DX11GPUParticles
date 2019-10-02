@@ -9,7 +9,7 @@ namespace DemoParticles
     class CameraControllerFPS
     {
     public:
-        CameraControllerFPS(const std::shared_ptr<DX::DeviceResources>& deviceResources);
+        CameraControllerFPS(const DX::DeviceResources* deviceResources);
         ~CameraControllerFPS();
 
         void update(DX::StepTimer const& timer);
@@ -17,7 +17,7 @@ namespace DemoParticles
         Camera* getCamera() { return m_camera.get();  }
 
     private:
-        std::shared_ptr<DX::DeviceResources> m_deviceResources;
+        const DX::DeviceResources* m_deviceResources;
 
         std::unique_ptr<Camera> m_camera;
 

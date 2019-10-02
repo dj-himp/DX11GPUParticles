@@ -8,7 +8,7 @@ namespace DemoParticles
     {
     public:
 
-        Model(const std::shared_ptr<DX::DeviceResources>& deviceResources);
+        Model(const DX::DeviceResources* deviceResources);
 
         DirectX::SimpleMath::Vector3 getAaBoxMin() { return m_aaBoxMin; }
         void setAaBoxMin(DirectX::SimpleMath::Vector3 aaboxMin) { m_aaBoxMin = aaboxMin; }
@@ -31,7 +31,7 @@ namespace DemoParticles
         const std::unique_ptr<ModelMesh>& getMesh(int index) { return m_meshes[index]; }
 
     private:
-        std::shared_ptr<DX::DeviceResources> m_deviceResources;
+        const const DX::DeviceResources* m_deviceResources;
 
         std::vector<std::unique_ptr<ModelMesh>> m_meshes;
         

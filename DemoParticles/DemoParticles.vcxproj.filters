@@ -99,9 +99,6 @@
     <ClCompile Include="Src\Content\RenderModelTK.cpp">
       <Filter>Src\Content</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Content\Sample3DSceneRenderer.cpp">
-      <Filter>Src\Content</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Content\SampleFpsTextRenderer.cpp">
       <Filter>Src\Content</Filter>
     </ClCompile>
@@ -119,6 +116,9 @@
     </ClCompile>
     <ClCompile Include="Src\Model\AxisCreator.cpp">
       <Filter>Src\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\Shader.cpp">
+      <Filter>Src\Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -188,9 +188,6 @@
     <ClInclude Include="Src\Content\RenderModelTK.h">
       <Filter>Src\Content</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Content\Sample3DSceneRenderer.h">
-      <Filter>Src\Content</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Content\SampleFpsTextRenderer.h">
       <Filter>Src\Content</Filter>
     </ClInclude>
@@ -213,6 +210,9 @@
       <Filter>Src\Model</Filter>
     </ClInclude>
     <ClInclude Include="Src\Common\DirectXHelper.h">
+      <Filter>Src\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\Shader.h">
       <Filter>Src\Common</Filter>
     </ClInclude>
   </ItemGroup>
@@ -263,5 +263,6 @@
     <CopyFileToFolders Include="Data\Models\cube.dae">
       <Filter>Data\Models</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="Dlls\assimp-vc140-mt.dll" />
   </ItemGroup>
 </Project>

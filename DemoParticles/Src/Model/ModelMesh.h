@@ -6,7 +6,7 @@ namespace DemoParticles
     {
     public:
 
-        ModelMesh(const std::shared_ptr<DX::DeviceResources>& deviceResources);
+        ModelMesh(const DX::DeviceResources* deviceResources);
         //~ModelMesh();
 
         void AddTextureDiffuse(const std::string& path);
@@ -28,7 +28,7 @@ namespace DemoParticles
         int getIndexCount() { return m_indexCount; }
 
     private:
-        std::shared_ptr<DX::DeviceResources> m_deviceResources;
+        const const DX::DeviceResources* m_deviceResources;
 
         std::vector<D3D11_INPUT_ELEMENT_DESC> m_inputElements;
         int m_vertexSize;

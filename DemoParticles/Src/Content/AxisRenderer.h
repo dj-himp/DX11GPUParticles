@@ -11,8 +11,8 @@ namespace DemoParticles
     class AxisRenderer : public IRenderable
     {
     public:
-        AxisRenderer(const std::shared_ptr<DX::DeviceResources>& deviceResources);
-        ~AxisRenderer();
+        AxisRenderer(const DX::DeviceResources* deviceResources);
+        //~AxisRenderer();
 
         virtual void init() override;
         virtual void release() override;

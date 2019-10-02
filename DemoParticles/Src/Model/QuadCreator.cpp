@@ -10,7 +10,7 @@ using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
 {
-    QuadCreator::QuadCreator(const std::shared_ptr<DX::DeviceResources>& deviceResources)
+    QuadCreator::QuadCreator(const DX::DeviceResources* deviceResources)
         : m_deviceResources(deviceResources)
     {
     }

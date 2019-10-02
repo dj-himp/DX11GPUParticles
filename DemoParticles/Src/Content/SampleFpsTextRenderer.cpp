@@ -7,7 +7,7 @@ using namespace DemoParticles;
 using namespace Microsoft::WRL;
 
 // Initializes D2D resources used for text rendering.
-SampleFpsTextRenderer::SampleFpsTextRenderer(const std::shared_ptr<DX::DeviceResources>& deviceResources) : 
+SampleFpsTextRenderer::SampleFpsTextRenderer(const DX::DeviceResources* deviceResources) : 
 	m_text(L""),
 	m_deviceResources(deviceResources)
 {

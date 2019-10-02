@@ -7,7 +7,7 @@ using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
 {
-    RenderModelTK::RenderModelTK(const std::shared_ptr<DX::DeviceResources>& deviceResources)
+    RenderModelTK::RenderModelTK(const DX::DeviceResources* deviceResources)
         : m_deviceResources(deviceResources)
     {
 
@@ -28,7 +28,7 @@ namespace DemoParticles
 
     void RenderModelTK::CreateWindowSizeDependentResources()
     {
-        m_proj = Matrix::CreatePerspectiveFieldOfView(DirectX::XM_PI / 4.0f, m_deviceResources->GetOutputSize().Width / m_deviceResources->GetOutputSize().Height, 0.1, 100.0f);
+        m_proj = Matrix::CreatePerspectiveFieldOfView(DirectX::XM_PI / 4.0f, m_deviceResources->GetOutputWidth() / m_deviceResources->GetOutputHeight(), 0.1, 100.0f);
     }
 
     void RenderModelTK::ReleaseDeviceDependentResources()

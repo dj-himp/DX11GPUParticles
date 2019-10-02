@@ -8,6 +8,13 @@
 #include "Common/StepTimer.h"
 
 
+namespace DemoParticles
+{
+    class IRenderable;
+    class CameraControllerFPS;
+    class InputManager;
+}
+
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
 class Game final : public DX::IDeviceNotify
@@ -15,6 +22,7 @@ class Game final : public DX::IDeviceNotify
 public:
 
     Game() noexcept(false);
+    ~Game();
 
     // Initialization and management
     void Initialize(HWND window, int width, int height);
@@ -52,4 +60,14 @@ private:
 
     // Rendering loop timer.
     DX::StepTimer                           m_timer;
+
+    std::unique_ptr<DirectX::Mouse> m_mouse;
+    std::unique_ptr<DirectX::Keyboard> m_keyboard;
+    std::unique_ptr<DemoParticles::InputManager> m_inputManager;
+
+    std::vector<std::unique_ptr<DemoParticles::IRenderable>> m_renderables;
+
+    //std::unique_ptr<SampleFpsTextRenderer> m_fpsTextRenderer;
+
+    std::unique_ptr<DemoParticles::CameraControllerFPS> m_cameraControllerFPS;
 };

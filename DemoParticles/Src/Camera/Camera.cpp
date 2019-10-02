@@ -32,10 +32,6 @@ namespace DemoParticles
         updateProjection();
     }
 
-    Camera::~Camera()
-    {
-    }
-
     void Camera::setPosition(DirectX::SimpleMath::Vector3 position)
     {
         m_position = position;

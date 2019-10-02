@@ -9,9 +9,16 @@
 #include "Gui/imgui_impl_win32.h"
 #include "Gui/imgui_impl_dx11.h"
 
+#include "Content/AxisRenderer.h"
+//#include "Content/SampleFpsTextRenderer.h"
+#include "Camera/CameraControllerFPS.h"
+#include "Common/InputManager.h"
+#include "Content/RenderModel.h"
+
 extern void ExitGame();
 
 using namespace DirectX;
+using namespace DemoParticles;
 
 using Microsoft::WRL::ComPtr;
 
@@ -19,11 +26,25 @@ Game::Game() noexcept(false)
 {
     m_deviceResources = std::make_unique<DX::DeviceResources>();
     m_deviceResources->RegisterDeviceNotify(this);
+
+    m_inputManager = std::make_unique<InputManager>();
+
+}
+
+
+//needed to use forward declaration of a unique_ptr : 
+//default destructor is inline so the unique_ptr type is incomplete in the header
+Game::~Game()
+{
+
 }
 
 // Initialize the Direct3D resources required to run.
 void Game::Initialize(HWND window, int width, int height)
 {
+    m_mouse = std::make_unique<DirectX::Mouse>();
+    m_keyboard = std::make_unique<DirectX::Keyboard>();
+
     m_deviceResources->SetWindow(window, width, height);
 
     m_deviceResources->CreateDeviceResources();
@@ -32,9 +53,19 @@ void Game::Initialize(HWND window, int width, int height)
     m_deviceResources->CreateWindowSizeDependentResources();
     CreateWindowSizeDependentResources();
 
+    //m_fpsTextRenderer = std::make_unique<SampleFpsTextRenderer>(m_deviceResources);
+
+    m_renderables.push_back(std::make_unique<AxisRenderer>(m_deviceResources.get()));
+    m_renderables.push_back(std::make_unique<RenderModel>(m_deviceResources.get()));
+    //m_renderables.push_back(std::make_unique<RenderFullscreenQuad>(m_deviceResources));
+    //m_renderables.push_back(std::make_unique<MengerRenderer>(m_deviceResources));
+
+    m_cameraControllerFPS = std::make_unique<CameraControllerFPS>(m_deviceResources.get());
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
+    //io.WantCaptureMouse = true;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -69,10 +100,22 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& timer)
 {
-    float elapsedTime = float(timer.GetElapsedSeconds());
 
-    // TODO: Add your game logic here.
-    elapsedTime;
+    //TODO don't pass timer and pass elapsed time instead
+
+    //float elapsedTime = float(timer.GetElapsedSeconds());
+
+    m_inputManager->update();
+    m_cameraControllerFPS->update(m_timer);
+
+    // TODO: Replace this with your app's content update functions.
+    for (auto& renderable : m_renderables)
+    {
+        renderable->update(m_timer, m_cameraControllerFPS->getCamera());
+    }
+    //m_fpsTextRenderer->Update(m_timer);
+
+    //elapsedTime;
 }
 #pragma endregion
 
@@ -91,8 +134,11 @@ void Game::Render()
     m_deviceResources->PIXBeginEvent(L"Render");
     auto context = m_deviceResources->GetD3DDeviceContext();
 
-    // TODO: Add your rendering code here.
-    context;
+    for (auto& renderable : m_renderables)
+    {
+        renderable->render();
+    }
+    //m_fpsTextRenderer->Render();
 
     m_deviceResources->PIXEndEvent();
 

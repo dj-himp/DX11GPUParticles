@@ -7,12 +7,12 @@ namespace DemoParticles
     class QuadCreator
     {
     public:
-        QuadCreator(const std::shared_ptr<DX::DeviceResources>& deviceResources);
+        QuadCreator(const DX::DeviceResources* deviceResources);
         ~QuadCreator();
 
         std::unique_ptr<Model> create();
 
     private:
-        std::shared_ptr<DX::DeviceResources> m_deviceResources;
+        const const DX::DeviceResources* m_deviceResources;
     };
 }

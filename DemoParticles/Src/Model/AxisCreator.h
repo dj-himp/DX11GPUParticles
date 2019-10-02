@@ -7,12 +7,12 @@ namespace DemoParticles
     class AxisCreator
     {
     public:
-        AxisCreator(const std::shared_ptr<DX::DeviceResources>& deviceResources);
+        AxisCreator(const DX::DeviceResources* deviceResources);
         ~AxisCreator();
 
         std::unique_ptr<Model> create();
 
     private:
-        std::shared_ptr<DX::DeviceResources> m_deviceResources;
+        const const DX::DeviceResources* m_deviceResources;
     };
 }

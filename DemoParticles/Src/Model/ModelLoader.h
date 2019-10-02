@@ -14,7 +14,7 @@ namespace DemoParticles
     {
     public:
 
-        ModelLoader(const std::shared_ptr<DX::DeviceResources>& deviceResources);
+        ModelLoader(const DX::DeviceResources* deviceResources);
         
         std::unique_ptr<Model> load(const std::string fileName);
 
@@ -23,12 +23,13 @@ namespace DemoParticles
         void AddVertexData(std::unique_ptr<Model>& model, const aiScene* scene, const aiNode* node, DirectX::SimpleMath::Matrix& transform);
         int GetNoofInputElements(aiMesh* mesh);
 
-        std::shared_ptr<DX::DeviceResources> m_deviceResources;
+        const const DX::DeviceResources* m_deviceResources;
 
         Assimp::Importer m_importer;
 
         DirectX::SimpleMath::Matrix FromMatrix(aiMatrix4x4 mat);
         DirectX::SimpleMath::Vector3 FromVector(aiVector3D vec);
+        DirectX::SimpleMath::Vector4 FromVectorTo4(aiVector3D vec);
         DirectX::SimpleMath::Color FromColor(aiColor4D color);
     };
 }

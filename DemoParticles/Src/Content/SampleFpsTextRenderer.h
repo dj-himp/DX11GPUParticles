@@ -6,7 +6,7 @@ namespace DemoParticles
 	class SampleFpsTextRenderer
 	{
 	public:
-		SampleFpsTextRenderer(const std::shared_ptr<DX::DeviceResources>& deviceResources);
+		SampleFpsTextRenderer(const DX::DeviceResources* deviceResources);
 		void CreateDeviceDependentResources();
 		void ReleaseDeviceDependentResources();
 		void Update(DX::StepTimer const& timer);
@@ -14,7 +14,7 @@ namespace DemoParticles
 
 	private:
 		// Cached pointer to device resources.
-		std::shared_ptr<DX::DeviceResources> m_deviceResources;
+		const const DX::DeviceResources* m_deviceResources;
 
 		// Resources related to text rendering.
 		std::wstring                                    m_text;

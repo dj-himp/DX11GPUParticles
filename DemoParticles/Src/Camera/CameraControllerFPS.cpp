@@ -2,23 +2,23 @@
 #include "CameraControllerFPS.h"
 
 #include "Camera.h"
-#include "../Common/InputManager.h"
+#include "Common/InputManager.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
 {
-    CameraControllerFPS::CameraControllerFPS(const std::shared_ptr<DX::DeviceResources>& deviceResources)
+    CameraControllerFPS::CameraControllerFPS(const DX::DeviceResources* deviceResources)
+        : m_deviceResources(deviceResources)
     {
-        m_deviceResources = deviceResources;
-
         float yaw = 0.1f;
         float pitch = 0.1f;
-        m_camera = std::make_unique<Camera>(Vector3(0.0f, 0.0f, -10.0f), yaw, pitch, 0.0f, m_deviceResources->GetOutputSize().Width / m_deviceResources->GetOutputSize().Height, DirectX::XM_PI / 4.0f);
+        m_camera = std::make_unique<Camera>(Vector3(0.0f, 0.0f, -10.0f), yaw, pitch, 0.0f, m_deviceResources->GetOutputWidth() / m_deviceResources->GetOutputHeight(), DirectX::XM_PI / 4.0f);
     }
 
-
+    //needed to use forward declaration of a unique_ptr : 
+    //default destructor is inline so the unique_ptr type is incomplete in the header
     CameraControllerFPS::~CameraControllerFPS()
     {
     }

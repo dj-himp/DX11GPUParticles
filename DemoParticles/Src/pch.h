@@ -53,6 +53,10 @@
 #include <dxgidebug.h>
 #endif
 
+#include <d2d1_3.h>
+#include <d3dcompiler.h>
+
+#include <iostream>
 #include <vector>
 #include "simpleMath.h"
 #include "Model.h"

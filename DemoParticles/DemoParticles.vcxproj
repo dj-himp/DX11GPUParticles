@@ -115,6 +115,8 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>d2d1.lib;d3d11.lib;dxgi.lib;windowscodecs.lib;dwrite.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -178,14 +180,18 @@
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <ClCompile Include="Src\Common\InputManager.cpp" />
+    <ClCompile Include="Src\Common\Shader.cpp" />
     <ClCompile Include="Src\Content\AxisRenderer.cpp" />
     <ClCompile Include="Src\Content\IRenderable.cpp" />
     <ClCompile Include="Src\Content\MengerRenderer.cpp" />
     <ClCompile Include="Src\Content\RenderFullscreenQuad.cpp" />
     <ClCompile Include="Src\Content\RenderModel.cpp" />
-    <ClCompile Include="Src\Content\RenderModelTK.cpp" />
-    <ClCompile Include="Src\Content\Sample3DSceneRenderer.cpp" />
-    <ClCompile Include="Src\Content\SampleFpsTextRenderer.cpp" />
+    <ClCompile Include="Src\Content\RenderModelTK.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Content\SampleFpsTextRenderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Src\Game.cpp" />
     <ClCompile Include="Src\Gui\imgui_impl_dx11.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -218,6 +224,7 @@
     <ClInclude Include="Src\Common\DeviceResources.h" />
     <ClInclude Include="Src\Common\DirectXHelper.h" />
     <ClInclude Include="Src\Common\InputManager.h" />
+    <ClInclude Include="Src\Common\Shader.h" />
     <ClInclude Include="Src\Common\StepTimer.h" />
     <ClInclude Include="Src\Content\AxisRenderer.h" />
     <ClInclude Include="Src\Content\IRenderable.h" />
@@ -225,7 +232,6 @@
     <ClInclude Include="Src\Content\RenderFullscreenQuad.h" />
     <ClInclude Include="Src\Content\RenderModel.h" />
     <ClInclude Include="Src\Content\RenderModelTK.h" />
-    <ClInclude Include="Src\Content\Sample3DSceneRenderer.h" />
     <ClInclude Include="Src\Content\SampleFpsTextRenderer.h" />
     <ClInclude Include="Src\Content\ShaderStructures.h" />
     <ClInclude Include="Src\Game.h" />
@@ -242,9 +248,13 @@
     <CopyFileToFolders Include="Data\Models\CatMac.fbx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
       <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
     </CopyFileToFolders>
     <CopyFileToFolders Include="Data\Models\cube.dae">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Dlls\assimp-vc140-mt.dll">
       <FileType>Document</FileType>
     </CopyFileToFolders>
     <None Include="packages.config" />

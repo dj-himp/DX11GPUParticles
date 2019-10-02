@@ -7,7 +7,7 @@ namespace DemoParticles
     class RenderModelTK
     {
     public:
-        RenderModelTK(const std::shared_ptr<DX::DeviceResources>& deviceResources);
+        RenderModelTK(const DX::DeviceResources* deviceResources);
 
         void CreateDeviceDependentResources();
         void CreateWindowSizeDependentResources();
@@ -17,7 +17,7 @@ namespace DemoParticles
         void Render();
 
     private:
-        std::shared_ptr<DX::DeviceResources> m_deviceResources;
+        const const DX::DeviceResources* m_deviceResources;
 
         std::unique_ptr<DirectX::CommonStates> m_states;
         std::unique_ptr<DirectX::IEffectFactory> m_fxFactory;

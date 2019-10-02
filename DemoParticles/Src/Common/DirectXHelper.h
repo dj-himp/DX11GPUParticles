@@ -8,11 +8,21 @@
 namespace DX
 {
 
-    inline const std::vector<byte> readBinFile(const std::wstring& filename)
+    inline const std::vector<byte> readBinFile(const std::string& filename)
     {
         std::fstream inputStream(filename, std::ios::binary);
         std::vector<byte> output(std::istreambuf_iterator<char>(inputStream), {});
         return output;
+    }
+
+    inline bool loadVertexShader(const std::wstring& filename, std::vector<D3D11_INPUT_ELEMENT_DESC>& vertexDesc, Microsoft::WRL::ComPtr<ID3D11VertexShader>& vertexShader, Microsoft::WRL::ComPtr<ID3D11InputLayout>& inputLayout)
+    {
+        
+    }
+
+    inline bool loadPixelShader(const std::wstring& filename, Microsoft::WRL::ComPtr<ID3D11PixelShader>& pixelShader)
+    {
+
     }
 
 	// Function that reads from a binary file asynchronously.

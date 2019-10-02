@@ -12,7 +12,7 @@ namespace DemoParticles
     class MengerRenderer : public IRenderable
     {
     public:
-        MengerRenderer(const std::shared_ptr<DX::DeviceResources>& deviceResources);
+        MengerRenderer(const DX::DeviceResources* deviceResources);
 
         virtual void init() override;
         virtual void release() override;

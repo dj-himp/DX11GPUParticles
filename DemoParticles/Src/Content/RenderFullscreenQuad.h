@@ -13,7 +13,7 @@ namespace DemoParticles
     class RenderFullscreenQuad : public IRenderable
     {
     public:
-        RenderFullscreenQuad(const std::shared_ptr<DX::DeviceResources>& deviceResources);
+        RenderFullscreenQuad(const DX::DeviceResources* deviceResources);
 
         void init() override;
         void release() override;

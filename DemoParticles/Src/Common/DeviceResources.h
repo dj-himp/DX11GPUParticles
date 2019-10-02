@@ -40,6 +40,8 @@ namespace DX
 
         // Device Accessors.
         RECT GetOutputSize() const { return m_outputSize; }
+        UINT GetOutputWidth() const { return std::max<UINT>(static_cast<UINT>(m_outputSize.right - m_outputSize.left), 1u); }
+        UINT GetOutputHeight() const { return std::max<UINT>(static_cast<UINT>(m_outputSize.bottom - m_outputSize.top), 1u); }
 
         // Direct3D Accessors.
         ID3D11Device1*          GetD3DDevice() const { return m_d3dDevice.Get(); }

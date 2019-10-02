@@ -13,7 +13,7 @@ namespace DemoParticles
     class RenderModel : public IRenderable
     {
     public:
-        RenderModel(const std::shared_ptr<DX::DeviceResources>& deviceResources);
+        RenderModel(const DX::DeviceResources* deviceResources);
 
         void init() override;
         void release() override;

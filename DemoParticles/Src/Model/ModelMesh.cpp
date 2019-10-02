@@ -3,7 +3,7 @@
 
 namespace DemoParticles
 {
-    ModelMesh::ModelMesh(const std::shared_ptr<DX::DeviceResources>& deviceResources)
+    ModelMesh::ModelMesh(const DX::DeviceResources* deviceResources)
         : m_deviceResources(deviceResources)
     {
 

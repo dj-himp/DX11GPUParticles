@@ -3,7 +3,7 @@
 
 namespace DemoParticles
 {
-    Model::Model(const std::shared_ptr<DX::DeviceResources>& deviceResources)
+    Model::Model(const DX::DeviceResources* deviceResources)
         : m_deviceResources(deviceResources)
     {
 

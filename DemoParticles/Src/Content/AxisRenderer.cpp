@@ -1,25 +1,25 @@
 #include "pch.h"
 #include "AxisRenderer.h"
 
-#include "../Model/AxisCreator.h"
-#include "../Common/DirectXHelper.h"
-#include "../Model/Model.h"
-#include "../Camera/Camera.h"
+#include "Model/AxisCreator.h"
+#include "Model/Model.h"
+#include "Camera/Camera.h"
+#include "Common/Shader.h"
 
 using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
 {
-    AxisRenderer::AxisRenderer(const std::shared_ptr<DX::DeviceResources>& deviceResources)
+    AxisRenderer::AxisRenderer(const DX::DeviceResources* deviceResources)
         : IRenderable(deviceResources)
     {
         init();
     }
 
 
-    AxisRenderer::~AxisRenderer()
+    /*AxisRenderer::~AxisRenderer()
     {
-    }
+    }*/
 
     void AxisRenderer::init()
     {
@@ -35,42 +35,14 @@ namespace DemoParticles
 
     void AxisRenderer::createDeviceDependentResources()
     {
-        const std::vector<byte> vertexShaderData = DX::readBinFile(L"RenderDebugColor_VS.cso");
-
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateVertexShader(
-                &vertexShaderData[0],
-                vertexShaderData.size(),
-                nullptr,
-                &m_vertexShader
-            )
-        );
+        
         AxisCreator axisCreator(m_deviceResources);
         m_axis = axisCreator.create();
 
-        std::vector<D3D11_INPUT_ELEMENT_DESC> vertexDesc = m_axis->getInputElements();
+        m_shader = std::make_unique<Shader>(m_deviceResources);
+        m_shader->load(L"RenderDebugColor_VS.cso", L"RenderDebugColor_PS.cso", m_axis->getInputElements());
 
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateInputLayout(
-                vertexDesc.data(),
-                vertexDesc.size(),
-                &vertexShaderData[0],
-                vertexShaderData.size(),
-                &m_inputLayout
-            )
-        );
-
-
-        const std::vector<byte> pixelShaderData = DX::readBinFile(L"RenderDebugColor_PS.cso");
-
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreatePixelShader(
-                &pixelShaderData[0],
-                pixelShaderData.size(),
-                nullptr,
-                &m_pixelShader
-            )
-        );
+        
 
         CD3D11_BUFFER_DESC constantBufferDesc(sizeof(ModelConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
@@ -108,9 +80,9 @@ namespace DemoParticles
     {
         float yaw = 0.1f;
         float pitch = 0.1f;
-        m_camera = std::make_unique<Camera>(Vector3(0.0f, 0.0f, -10.0f), yaw, pitch, 0.0f, m_deviceResources->GetOutputSize().Width / m_deviceResources->GetOutputSize().Height, DirectX::XM_PI / 4.0f);
+        m_camera = std::make_unique<Camera>(Vector3(0.0f, 0.0f, -10.0f), yaw, pitch, 0.0f, m_deviceResources->GetOutputWidth() / m_deviceResources->GetOutputHeight(), DirectX::XM_PI / 4.0f);
 
-        //m_camera = std::make_unique<Camera>(Vector3(0.0f, 0.0f, -10.0f), Vector3(0.0f, 0.0f, 1.0f), m_deviceResources->GetOutputSize().Width / m_deviceResources->GetOutputSize().Height, DirectX::XM_PI / 4.0f);
+        //m_camera = std::make_unique<Camera>(Vector3(0.0f, 0.0f, -10.0f), Vector3(0.0f, 0.0f, 1.0f), m_deviceResources->GetOutputSize().Width / m_deviceResources->GetOutputHeight(), DirectX::XM_PI / 4.0f);
 
         
         
@@ -131,11 +103,6 @@ namespace DemoParticles
 
     void AxisRenderer::render()
     {
-        if (!m_loadingComplete)
-        {
-            return;
-        }
-
         auto context = m_deviceResources->GetD3DDeviceContext();
 
         context->UpdateSubresource1(m_constantBuffer.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
@@ -148,14 +115,14 @@ namespace DemoParticles
             context->IASetIndexBuffer(m_axis->getMesh(i)->getIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);
 
             context->IASetPrimitiveTopology(m_axis->getMesh(i)->getPrimitiveTopology());
-            context->IASetInputLayout(m_inputLayout.Get());
+            context->IASetInputLayout(m_shader->getInputLayout());
 
-            context->VSSetShader(m_vertexShader.Get(), nullptr, 0);
+            context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
             context->VSSetConstantBuffers1(0, 1, m_constantBuffer.GetAddressOf(), nullptr, nullptr);
 
             context->RSSetState(m_rasterizerState.Get());
 
-            context->PSSetShader(m_pixelShader.Get(), nullptr, 0);
+            context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);
 
             context->DrawIndexed(m_axis->getMesh(i)->getIndexCount(), 0, 0);
         }

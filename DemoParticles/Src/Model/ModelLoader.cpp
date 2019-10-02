@@ -13,7 +13,7 @@ using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
 {
-    ModelLoader::ModelLoader(const std::shared_ptr<DX::DeviceResources>& deviceResources)
+    ModelLoader::ModelLoader(const DX::DeviceResources* deviceResources)
         : m_deviceResources(deviceResources)
     {
 
@@ -29,6 +29,7 @@ namespace DemoParticles
 
         if(!scene)
         {
+            std::string error = m_importer.GetErrorString();
             std::cerr << "[ModelLoader] Failed to load " << fileName << " with error : " << m_importer.GetErrorString() << "\n";
             assert(0);
         }
@@ -152,8 +153,7 @@ namespace DemoParticles
                 //add position, after transforming it with accumulated node transform
                 {
                     Vector3 pos = FromVector(positions[i]);
-                    Vector4 result = Vector3::Transform(pos, transform);
-                    vertices[i].position = Vector3(result.x, result.y, result.z);
+                    vertices[i].position = Vector3::Transform(pos, transform);
                     //vertices[i].position = pos;
                 }
 
@@ -164,21 +164,17 @@ namespace DemoParticles
                 if (hasNormals)
                 {
                     Vector3 normal = FromVector(normals[i]);
-                    
-                    Vector4 result = Vector3::Transform(normal, invTranspose);
-                    vertices[i].normal = Vector3(result.x, result.y, result.z);
+                    vertices[i].normal = Vector3::Transform(normal, invTranspose);
                 }
                 if (hasTangents)
                 {
                     Vector3 tangent = FromVector(tangents[i]);
-                    Vector4 result = Vector3::Transform(tangent, invTranspose);
-                    vertices[i].tangent = Vector3(result.x, result.y, result.z);
+                    vertices[i].tangent = Vector3::Transform(tangent, invTranspose);
                 }
                 if (hasBitangents)
                 {
                     Vector3 biTangent = FromVector(biTangents[i]);
-                    Vector4 result = Vector3::Transform(biTangent, invTranspose);
-                    vertices[i].bitangent = Vector3(result.x, result.y, result.z);
+                    vertices[i].bitangent = Vector3::Transform(biTangent, invTranspose);
                 }
                 if (hasTexCoords)
                 {

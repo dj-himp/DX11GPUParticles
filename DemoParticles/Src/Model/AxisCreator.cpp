@@ -10,7 +10,7 @@ using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
 {
-    AxisCreator::AxisCreator(const std::shared_ptr<DX::DeviceResources>& deviceResources)
+    AxisCreator::AxisCreator(const DX::DeviceResources* deviceResources)
         : m_deviceResources(deviceResources)
     {
     }
