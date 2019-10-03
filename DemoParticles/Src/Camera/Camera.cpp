@@ -79,20 +79,15 @@ namespace DemoParticles
 
     void Camera::rotate(float yaw, float pitch)
     {
-        m_yaw += yaw;
-        m_pitch += pitch;
+        //put '-' because in right handed POSITIVE rotation are COUNTERCLOCKWISE
+        //so it feal more natural to me
+        m_yaw -= yaw;
+        m_pitch -= pitch;
         updateView();
     }
 
     void Camera::updateView()
     {
-        /*m_view = Matrix::CreateTranslation(m_position);
-        m_view *= Matrix::CreateFromYawPitchRoll(m_yaw, m_pitch, 0.0f);
-
-        m_forward = m_view.Forward();
-        m_right = m_view.Right();
-        m_up = m_view.Up();*/
-
         Quaternion pitch = Quaternion::CreateFromAxisAngle(Vector3::UnitX, m_pitch);
         Quaternion yaw = Quaternion::CreateFromAxisAngle(Vector3::UnitY, m_yaw);
 
@@ -101,11 +96,13 @@ namespace DemoParticles
         Matrix rotate = Matrix::CreateFromQuaternion(orientation);
         Matrix translate = Matrix::CreateTranslation(m_position);
 
-        m_view = translate * rotate;
+        m_world = rotate * translate;
 
-        m_forward = m_view.Forward();
-        m_right = m_view.Right();
-        m_up = m_view.Up();
+        m_forward = m_world.Forward();
+        m_right = m_world.Right();
+        m_up = m_world.Up();
+
+        m_world.Invert(m_view);
     }
 
     void Camera::updateProjection()

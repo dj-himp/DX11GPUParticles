@@ -52,7 +52,8 @@ namespace DemoParticles
         float m_nearPlane = 0.1f;
         float m_farPlane = 1000.0f;
 
-        DirectX::SimpleMath::Matrix m_view;
+        DirectX::SimpleMath::Matrix m_world; //camera world
+        DirectX::SimpleMath::Matrix m_view; //inverse of camera world
         DirectX::SimpleMath::Matrix m_projection;
     };
 }

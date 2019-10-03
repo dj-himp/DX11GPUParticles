@@ -31,12 +31,12 @@ namespace DemoParticles
         bool hasMoved = false;
         if (InputManager::isKeyDown(Keyboard::Z))
         {
-            movement.z -= m_movementSpeed * timer.GetElapsedSeconds();
+            movement.z += m_movementSpeed * timer.GetElapsedSeconds();
             hasMoved = true;
         }
         if (InputManager::isKeyDown(Keyboard::S))
         {
-            movement.z += m_movementSpeed * timer.GetElapsedSeconds();
+            movement.z -= m_movementSpeed * timer.GetElapsedSeconds();
             hasMoved = true;
         }
         if (InputManager::isKeyDown(Keyboard::D))
@@ -75,7 +75,7 @@ namespace DemoParticles
             }
             else
             {
-                float m_mouseSensibility = 0.001f;
+                float m_mouseSensibility = 0.005f;
                 Vector2 delta = (mousePosition - m_previousMousePos) * m_mouseSensibility;
                 m_camera->rotate(delta.x, delta.y);
                 
