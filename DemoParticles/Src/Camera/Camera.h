@@ -33,6 +33,8 @@ namespace DemoParticles
         DirectX::SimpleMath::Matrix getProjection() { return m_projection; }
         DirectX::SimpleMath::Matrix getViewProjection() { return m_view * m_projection; }
 
+        std::vector<DirectX::SimpleMath::Vector3> getFrustrumCorners();
+
     private:
 
         void updateView();

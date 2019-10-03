@@ -28,8 +28,10 @@ namespace DemoParticles
     void DemoParticles::MengerRenderer::createDeviceDependentResources()
     {
         
-        m_quadCreator = std::make_unique<QuadCreator>(m_deviceResources);
-        m_quad = m_quadCreator->create();
+        //m_meshFactory = std::make_unique<MeshFactory>(m_deviceResources);
+        //m_quad = m_meshFactory->createQuad();
+
+        m_quad = MeshFactory::getInstance().createQuad();
 
         m_shader = std::make_unique<Shader>(m_deviceResources);
         m_shader->load(L"RenderQuad_VS.cso", L"RenderQuad_PS.cso", m_quad->getInputElements());
@@ -69,7 +71,7 @@ namespace DemoParticles
         context->UpdateSubresource1(m_constantBuffer.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
 
         // Each vertex is one instance of the VertexPositionUV struct.
-        UINT stride = sizeof(VertexPositionUV);
+        UINT stride = m_quad->getVertexStride(); //sizeof(VertexColorUV);
         UINT offset = 0;
         context->IASetVertexBuffers(0, 1, m_quad->getMesh(0)->getVertexBuffer().GetAddressOf(), &stride, &offset);
 

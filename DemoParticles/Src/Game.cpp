@@ -14,6 +14,12 @@
 #include "Camera/CameraControllerFPS.h"
 #include "Common/InputManager.h"
 #include "Content/RenderModel.h"
+#include "Content/MengerRenderer.h"
+#include "Content/RenderFullscreenQuad.h"
+#include "Model/MeshFactory.h"
+#include "Content/DebugRenderer.h"
+#include "Model/Model.h"
+#include "Camera/Camera.h"
 
 extern void ExitGame();
 
@@ -55,10 +61,24 @@ void Game::Initialize(HWND window, int width, int height)
 
     //m_fpsTextRenderer = std::make_unique<SampleFpsTextRenderer>(m_deviceResources);
 
+    //init MeshFactory
+    MeshFactory::getInstance().setDeviceResources(m_deviceResources.get());
+
+    Camera camera(DirectX::SimpleMath::Vector3(4.0f, 0.0f, 0.0f), XM_PI / 4.0f, 0.0f, 0.0f, width/height, 60.0f, 0.1f, 100.0f);
+    std::vector< DirectX::SimpleMath::Vector3> corners = camera.getFrustrumCorners();
+
+
+    std::unique_ptr<DebugRenderer> debugRenderer = std::make_unique<DebugRenderer>(m_deviceResources.get());
+    debugRenderer->pushBackModel(MeshFactory::getInstance().createAxis());
+    debugRenderer->pushBackModel(MeshFactory::getInstance().createFrustum(corners));
+
+    m_renderables.push_back(std::move(debugRenderer));
     m_renderables.push_back(std::make_unique<AxisRenderer>(m_deviceResources.get()));
-    m_renderables.push_back(std::make_unique<RenderModel>(m_deviceResources.get()));
-    //m_renderables.push_back(std::make_unique<RenderFullscreenQuad>(m_deviceResources));
-    //m_renderables.push_back(std::make_unique<MengerRenderer>(m_deviceResources));
+    //m_renderables.push_back(std::make_unique<RenderModel>(m_deviceResources.get()));
+    //m_renderables.push_back(std::make_unique<RenderFullscreenQuad>(m_deviceResources.get()));
+    //m_renderables.push_back(std::make_unique<MengerRenderer>(m_deviceResources.get()));
+
+
 
     m_cameraControllerFPS = std::make_unique<CameraControllerFPS>(m_deviceResources.get());
 

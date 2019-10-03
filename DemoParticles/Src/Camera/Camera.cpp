@@ -86,6 +86,50 @@ namespace DemoParticles
         updateView();
     }
 
+    std::vector<Vector3> Camera::getFrustrumCorners()
+    {
+        //half height of viewport at near plane
+        float hhNear = tanf(m_fov / 2.0f) * m_nearPlane;
+        //half width of viewport at near plane
+        float hwNear = hhNear * m_aspectRatio;
+
+        //half height of viewport at near plane
+        float hhFar = tanf(m_fov / 2.0f) * m_farPlane;
+        //half width of viewport at near plane
+        float hwFar = hhFar * m_aspectRatio;
+
+        Vector3 centerNear = m_position + m_forward * m_nearPlane;
+        Vector3 centerFar = m_position + m_forward * m_farPlane;
+
+        
+        std::vector<Vector3> corners;
+
+        Vector3 nearTopLeft     = centerNear + (m_up * hhNear) - (m_right * hwNear);
+        corners.push_back(nearTopLeft);
+        Vector3 nearTopRight    = centerNear + (m_up * hhNear) + (m_right * hwNear);
+        corners.push_back(nearTopRight);
+        Vector3 nearBottomLeft  = centerNear - (m_up * hhNear) - (m_right * hwNear);
+        corners.push_back(nearBottomLeft);
+        Vector3 nearBottomRight = centerNear + (m_up * hhNear) + (m_right * hwNear);
+        corners.push_back(nearBottomRight);
+
+        Vector3 farTopLeft      = centerFar + (m_up * hhFar) - (m_right * hwFar);
+        corners.push_back(farTopLeft);
+        Vector3 farTopRight     = centerFar + (m_up * hhFar) + (m_right * hwFar);
+        corners.push_back(farTopRight);
+        Vector3 farBottomLeft   = centerFar - (m_up * hhFar) - (m_right * hwFar);
+        corners.push_back(farBottomLeft);
+        Vector3 farBottomRight  = centerFar + (m_up * hhFar) + (m_right * hwFar);
+        corners.push_back(farBottomRight);
+
+        for (int i = 0; i < corners.size(); ++i)
+        {
+            corners[i] = Vector3::Transform(corners[i], m_view);
+        }
+        
+        return corners;
+    }
+
     void Camera::updateView()
     {
         Quaternion pitch = Quaternion::CreateFromAxisAngle(Vector3::UnitX, m_pitch);

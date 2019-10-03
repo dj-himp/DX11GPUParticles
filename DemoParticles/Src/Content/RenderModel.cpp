@@ -94,7 +94,7 @@ namespace DemoParticles
         
         for (int i = 0; i < m_model->getMeshCount(); ++i)
         {
-            UINT stride = sizeof(VertexObject);
+            UINT stride = m_model->getVertexStride();//sizeof(VertexObject);
             UINT offset = 0;
             context->IASetVertexBuffers(0, 1, m_model->getMesh(i)->getVertexBuffer().GetAddressOf(), &stride, &offset);
             context->IASetIndexBuffer(m_model->getMesh(i)->getIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);

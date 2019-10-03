@@ -15,14 +15,9 @@ namespace DX
         return output;
     }
 
-    inline bool loadVertexShader(const std::wstring& filename, std::vector<D3D11_INPUT_ELEMENT_DESC>& vertexDesc, Microsoft::WRL::ComPtr<ID3D11VertexShader>& vertexShader, Microsoft::WRL::ComPtr<ID3D11InputLayout>& inputLayout)
+    inline DirectX::SimpleMath::Vector4 toVector4(DirectX::SimpleMath::Vector3 vec3, float w = 1.0f)
     {
-        
-    }
-
-    inline bool loadPixelShader(const std::wstring& filename, Microsoft::WRL::ComPtr<ID3D11PixelShader>& pixelShader)
-    {
-
+        return DirectX::SimpleMath::Vector4(vec3.x, vec3.y, vec3.z, w);
     }
 
 	// Function that reads from a binary file asynchronously.

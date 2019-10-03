@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "AxisRenderer.h"
+#include "DebugRenderer.h"
 
 #include "Model/MeshFactory.h"
 #include "Model/Model.h"
@@ -10,41 +10,26 @@ using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
 {
-    AxisRenderer::AxisRenderer(const DX::DeviceResources* deviceResources)
+    DebugRenderer::DebugRenderer(const DX::DeviceResources* deviceResources)
         : IRenderable(deviceResources)
     {
         init();
     }
 
-
-    /*AxisRenderer::~AxisRenderer()
-    {
-    }*/
-
-    void AxisRenderer::init()
+    void DebugRenderer::init()
     {
         IRenderable::init();
-
-        m_world = Matrix::CreateScale(1.0f);
     }
 
-    void AxisRenderer::release()
+    void DebugRenderer::release()
     {
         throw std::logic_error("The method or operation is not implemented.");
     }
 
-    void AxisRenderer::createDeviceDependentResources()
+    void DebugRenderer::createDeviceDependentResources()
     {
-        
-        //MeshFactory meshCreator(m_deviceResources);
-        //m_axis = meshCreator.createAxis();
-
-        m_axis = MeshFactory::getInstance().createAxis();
-
         m_shader = std::make_unique<Shader>(m_deviceResources);
-        m_shader->load(L"RenderDebugColor_VS.cso", L"RenderDebugColor_PS.cso", m_axis->getInputElements());
-
-        
+        m_shader->load(L"RenderDebugColor_VS.cso", L"RenderDebugColor_PS.cso", MeshFactory::getInstance().getVertexElements());
 
         CD3D11_BUFFER_DESC constantBufferDesc(sizeof(ModelConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
@@ -78,38 +63,46 @@ namespace DemoParticles
         //blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
     }
 
-    void AxisRenderer::createWindowSizeDependentResources()
+    void DebugRenderer::createWindowSizeDependentResources()
     {
         
     }
 
-    void AxisRenderer::releaseDeviceDependentResources()
+    void DebugRenderer::releaseDeviceDependentResources()
     {
         
     }
 
-    void AxisRenderer::update(DX::StepTimer const& timer, Camera* camera /*= nullptr*/)
+    void DebugRenderer::update(DX::StepTimer const& timer, Camera* camera /*= nullptr*/)
     {
         assert(camera);
         
-        Matrix worldViewProj = m_world * camera->getViewProjection();
+        Matrix worldViewProj = /*m_world*/Matrix::Identity * camera->getViewProjection();
         XMStoreFloat4x4(&m_constantBufferData.worldViewProj, worldViewProj.Transpose());
     }
 
-    void AxisRenderer::render()
+    void DebugRenderer::render()
+    {
+        for (auto& debugModel : m_models)
+        {
+            renderDebugModel(debugModel);
+        }
+    }
+
+    void DebugRenderer::renderDebugModel(DebugModel& debugModel)
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
         context->UpdateSubresource1(m_constantBuffer.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
 
-        for (int i = 0; i < m_axis->getMeshCount(); ++i)
+        for (int i = 0; i < debugModel.m_model->getMeshCount(); ++i)
         {
-            UINT stride = m_axis->getVertexStride(); //sizeof(VertexColorUV);
+            UINT stride = debugModel.m_model->getVertexStride(); //sizeof(VertexColorUV);
             UINT offset = 0;
-            context->IASetVertexBuffers(0, 1, m_axis->getMesh(i)->getVertexBuffer().GetAddressOf(), &stride, &offset);
-            context->IASetIndexBuffer(m_axis->getMesh(i)->getIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);
+            context->IASetVertexBuffers(0, 1, debugModel.m_model->getMesh(i)->getVertexBuffer().GetAddressOf(), &stride, &offset);
+            context->IASetIndexBuffer(debugModel.m_model->getMesh(i)->getIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);
 
-            context->IASetPrimitiveTopology(m_axis->getMesh(i)->getPrimitiveTopology());
+            context->IASetPrimitiveTopology(debugModel.m_model->getMesh(i)->getPrimitiveTopology());
             context->IASetInputLayout(m_shader->getInputLayout());
 
             context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
@@ -119,7 +112,18 @@ namespace DemoParticles
 
             context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);
 
-            context->DrawIndexed(m_axis->getMesh(i)->getIndexCount(), 0, 0);
+            context->DrawIndexed(debugModel.m_model->getMesh(i)->getIndexCount(), 0, 0);
         }
     }
+
+    void DebugRenderer::pushBackModel(std::unique_ptr<Model> model, DirectX::SimpleMath::Matrix world /*= DirectX::SimpleMath::Matrix::Identity*/)
+    {
+        /*DebugModel debugModel;
+        debugModel.m_model = std::move(model);
+        debugModel.m_world = world;*/
+
+        //m_models.push_back(debugModel);
+        m_models.emplace_back(std::move(model), world );
+    }
+
 }

@@ -27,6 +27,9 @@ namespace DemoParticles
         void setInputElements(std::vector<D3D11_INPUT_ELEMENT_DESC> inputElements) { m_inputElements = inputElements; }
         const std::vector<D3D11_INPUT_ELEMENT_DESC> getInputElements() { return m_inputElements; }
 
+        void setVertexStride(size_t stride) { m_vertexStride = stride; }
+        size_t getVertexStride() { return m_vertexStride; }
+
         const int getMeshCount() { return m_meshes.size(); }
         const std::unique_ptr<ModelMesh>& getMesh(int index) { return m_meshes[index]; }
 
@@ -36,6 +39,7 @@ namespace DemoParticles
         std::vector<std::unique_ptr<ModelMesh>> m_meshes;
         
         std::vector<D3D11_INPUT_ELEMENT_DESC> m_inputElements;
+        size_t m_vertexStride;
 
         DirectX::SimpleMath::Vector3 m_aaBoxMin;
         DirectX::SimpleMath::Vector3 m_aaBoxMax;

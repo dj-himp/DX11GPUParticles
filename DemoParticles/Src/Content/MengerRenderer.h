@@ -2,7 +2,7 @@
 
 #include "IRenderable.h"
 
-#include "../Model/QuadCreator.h"
+#include "../Model/MeshFactory.h"
 #include "ShaderStructures.h"
 
 namespace DemoParticles
@@ -26,7 +26,7 @@ namespace DemoParticles
 
     private:
 
-        std::unique_ptr<QuadCreator> m_quadCreator; //TODO probably make it as a singleton
+        std::unique_ptr<MeshFactory> m_meshFactory; //TODO probably make it as a singleton
         std::unique_ptr<Model> m_quad;
 
         QuadConstantBuffer   m_constantBufferData;

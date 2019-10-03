@@ -111,14 +111,14 @@
     <ClCompile Include="Src\Model\ModelMesh.cpp">
       <Filter>Src\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Model\QuadCreator.cpp">
-      <Filter>Src\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Model\AxisCreator.cpp">
-      <Filter>Src\Model</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Common\Shader.cpp">
       <Filter>Src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Content\DebugRenderer.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Model\MeshFactory.cpp">
+      <Filter>Src\Model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -203,17 +203,17 @@
     <ClInclude Include="Src\Model\ModelMesh.h">
       <Filter>Src\Model</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Model\QuadCreator.h">
-      <Filter>Src\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Model\AxisCreator.h">
-      <Filter>Src\Model</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Common\DirectXHelper.h">
       <Filter>Src\Common</Filter>
     </ClInclude>
     <ClInclude Include="Src\Common\Shader.h">
       <Filter>Src\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\DebugRenderer.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Model\MeshFactory.h">
+      <Filter>Src\Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

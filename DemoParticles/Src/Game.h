@@ -66,7 +66,7 @@ private:
     std::unique_ptr<DemoParticles::InputManager> m_inputManager;
 
     std::vector<std::unique_ptr<DemoParticles::IRenderable>> m_renderables;
-
+   
     //std::unique_ptr<SampleFpsTextRenderer> m_fpsTextRenderer;
 
     std::unique_ptr<DemoParticles::CameraControllerFPS> m_cameraControllerFPS;

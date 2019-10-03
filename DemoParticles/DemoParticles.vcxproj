@@ -181,7 +181,10 @@
     </ClCompile>
     <ClCompile Include="Src\Common\InputManager.cpp" />
     <ClCompile Include="Src\Common\Shader.cpp" />
-    <ClCompile Include="Src\Content\AxisRenderer.cpp" />
+    <ClCompile Include="Src\Content\AxisRenderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="Src\Content\DebugRenderer.cpp" />
     <ClCompile Include="Src\Content\IRenderable.cpp" />
     <ClCompile Include="Src\Content\MengerRenderer.cpp" />
     <ClCompile Include="Src\Content\RenderFullscreenQuad.cpp" />
@@ -201,11 +204,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Src\Model\AxisCreator.cpp" />
+    <ClCompile Include="Src\Model\MeshFactory.cpp" />
     <ClCompile Include="Src\Model\Model.cpp" />
     <ClCompile Include="Src\Model\ModelLoader.cpp" />
     <ClCompile Include="Src\Model\ModelMesh.cpp" />
-    <ClCompile Include="Src\Model\QuadCreator.cpp" />
     <ClCompile Include="Src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -227,6 +229,7 @@
     <ClInclude Include="Src\Common\Shader.h" />
     <ClInclude Include="Src\Common\StepTimer.h" />
     <ClInclude Include="Src\Content\AxisRenderer.h" />
+    <ClInclude Include="Src\Content\DebugRenderer.h" />
     <ClInclude Include="Src\Content\IRenderable.h" />
     <ClInclude Include="Src\Content\MengerRenderer.h" />
     <ClInclude Include="Src\Content\RenderFullscreenQuad.h" />
@@ -237,11 +240,10 @@
     <ClInclude Include="Src\Game.h" />
     <ClInclude Include="Src\Gui\imgui_impl_dx11.h" />
     <ClInclude Include="Src\Gui\imgui_impl_win32.h" />
-    <ClInclude Include="Src\Model\AxisCreator.h" />
+    <ClInclude Include="Src\Model\MeshFactory.h" />
     <ClInclude Include="Src\Model\Model.h" />
     <ClInclude Include="Src\Model\ModelLoader.h" />
     <ClInclude Include="Src\Model\ModelMesh.h" />
-    <ClInclude Include="Src\Model\QuadCreator.h" />
     <ClInclude Include="Src\pch.h" />
   </ItemGroup>
   <ItemGroup>

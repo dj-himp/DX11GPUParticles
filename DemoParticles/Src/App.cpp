@@ -262,6 +262,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             s_fullscreen = !s_fullscreen;
         }
+        /*if (wParam == VK_ESCAPE)
+        {
+            ExitGame();
+        }*/
         break;
 
     case WM_KEYDOWN:

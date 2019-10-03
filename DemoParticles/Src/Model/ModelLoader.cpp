@@ -116,6 +116,7 @@ namespace DemoParticles
             vertexSize += sizeof(Vector2);
 
             model->setInputElements(vertexElements);
+            model->setVertexStride(sizeof(VertexObject));
 
             //set the vertex elements and size
             modelMesh->setInputElements(vertexElements);

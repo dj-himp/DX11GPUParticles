@@ -6,7 +6,7 @@ cbuffer FrustrumCornersConstantBuffer : register(b0)
 
 struct VertexShaderInput
 {
-    float3 Position : POSITION;
+    float4 Position : POSITION;
     float2 uv : TEXCOORD0;
 };
 

@@ -38,10 +38,11 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector2 UV;
     };
 
-    struct VertexColor
+    struct VertexColorUV
     {
-        DirectX::SimpleMath::Vector3 position;
+        DirectX::SimpleMath::Vector4 position;
         DirectX::SimpleMath::Color   color;
+        DirectX::SimpleMath::Vector2 UV;
     };
 
     struct VertexObject
