@@ -5,7 +5,6 @@ namespace DemoParticles
     class Camera
     {
     public:
-        Camera(DirectX::SimpleMath::Vector3 position, DirectX::SimpleMath::Vector3 forward, float aspectRatio, float fov = 60.0f, float nearPlane = 0.1f, float farPlane = 1000.0f);
         Camera(DirectX::SimpleMath::Vector3 position, float yaw, float pitch, float roll, float aspectRatio, float fov = 60.0f, float nearPlane = 0.1f, float farPlane = 1000.0f);
 
         void setPosition(DirectX::SimpleMath::Vector3 position);
@@ -49,7 +48,8 @@ namespace DemoParticles
         float m_pitch = 0.0f;
         float m_roll = 0.0f;
 
-        float m_fov = 60.0f;
+        //in Radian
+        float m_fov = DirectX::XM_PI / 4.0f;
         float m_aspectRatio = 16.0f/9.0f;
         float m_nearPlane = 0.1f;
         float m_farPlane = 1000.0f;

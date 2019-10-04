@@ -1,4 +1,3 @@
-
 cbuffer FrustrumCornersConstantBuffer : register(b0)
 {
     float4 FrustumCorners[4];
@@ -13,7 +12,7 @@ struct VertexShaderInput
 struct PixelShaderInput
 {
     float4 Position : SV_POSITION;
-    float4 RayDir : TEXCOORD0;
+    float4 rayDir : TEXCOORD0;
     float2 uv : TEXCOORD1;
 };
 
@@ -29,16 +28,7 @@ PixelShaderInput main(VertexShaderInput input)
 
     output.Position = float4(input.Position.xyz, 1.0);
 
-    /*float2 q = input.uv;
-    float2 p = -1.0 + 2.0 * q;
-    p *= resolution.x/resolution.y;
-
-    float3 ww = normalize(cam_dir);
-    float3 uu = normalize(cross( float3(0.0,-1.0,0.0), ww ));
-    float3 vv = normalize(cross(ww,uu));
-    output.uv = float4(normalize( p.x*uu + p.y*vv + 1.5*ww ), 1.0);
-    */
-    output.RayDir = FSQ_GetFrustumRay(input.uv);
+    output.rayDir = FSQ_GetFrustumRay(input.uv);
     output.uv = input.uv;
 
 

@@ -29,7 +29,8 @@ namespace DemoParticles
         std::unique_ptr<MeshFactory> m_meshFactory; //TODO probably make it as a singleton
         std::unique_ptr<Model> m_quad;
 
-        QuadConstantBuffer   m_constantBufferData;
+        FrustrumCornersConstantBuffer   m_constantBufferDataVS;
+        MengerPSConstantBuffer          m_constantBufferDataPS;
 
         DirectX::SimpleMath::Matrix m_posScale;
     };

@@ -1,14 +1,14 @@
 cbuffer MengerPSConstantBuffer : register(b0)
 {    
-    float3 cam_pos;
-    float3 cam_dir;
+    float4 cam_pos;
+    float4 cam_dir;
     float time;
 };
 
 
 struct PixelShaderInput
 {
-    float4 Position : POSITION;
+    float4 Position : SV_POSITION;
     float4 RayDir : TEXCOORD0;
     float2 uv : TEXCOORD1;
 };
@@ -462,18 +462,19 @@ float3 ColorMaterial3(float3 pos, float3 normal, float iteration, float3 eyeDir)
 
 struct PixelShaderOutput
 {
-    float4 position : SV_TARGET0;
+    /*float4 position : SV_TARGET0;
     float4 normal : SV_TARGET1;
-    float4 color : SV_TARGET2;
+    float4 color : SV_TARGET2;*/
+    float4 color : SV_TARGET;
 };
 
 PixelShaderOutput main(PixelShaderInput input)
 {
 
     PixelShaderOutput output;
-    output.position = float4(-1.0, -1.0, -1.0, -1.0);
-    output.normal = float4(-1.0, -1.0, -1.0, -1.0);
-    output.color = float4(0.0, 0.0, 0.0, -1.0);
+    //output.position = float4(-1.0, -1.0, -1.0, -1.0);
+    //output.normal = float4(-1.0, -1.0, -1.0, -1.0);
+    //output.color = float4(0.0, 0.0, 0.0, -1.0);
 
     Ray r = generateRay(input);
 
@@ -495,8 +496,8 @@ PixelShaderOutput main(PixelShaderInput input)
         pos = r.origin + obj.y * r.direction;
         normal = calcNormal(pos);
 
-        output.position = float4(pos, 1.0);
-        output.normal = float4(normal, obj.w);
+        //output.position = float4(pos, 1.0);
+        //output.normal = float4(normal, obj.w);
 
 
         if (obj.w == 1.0)

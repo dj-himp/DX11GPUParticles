@@ -25,6 +25,14 @@ namespace DemoParticles
         DirectX::XMFLOAT4 frustumCorner[4];
     };
 
+    __declspec(align(16))
+    struct MengerPSConstantBuffer
+    {
+        DirectX::XMFLOAT4 camPosition;
+        DirectX::XMFLOAT4 camDirection;
+        float             time;
+    };
+
     // Used to send per-vertex data to the vertex shader.
     struct VertexPositionColor
     {

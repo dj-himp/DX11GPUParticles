@@ -36,7 +36,7 @@ namespace DemoParticles
             m_deviceResources->GetD3DDevice()->CreateBuffer(
                 &constantBufferDesc,
                 nullptr,
-                &m_constantBuffer
+                &m_constantBufferVS
             )
         );
 
@@ -93,7 +93,7 @@ namespace DemoParticles
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
-        context->UpdateSubresource1(m_constantBuffer.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
+        context->UpdateSubresource(m_constantBufferVS.Get(), 0, NULL, &m_constantBufferData, 0, 0);
 
         for (int i = 0; i < debugModel.m_model->getMeshCount(); ++i)
         {
@@ -106,7 +106,7 @@ namespace DemoParticles
             context->IASetInputLayout(m_shader->getInputLayout());
 
             context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
-            context->VSSetConstantBuffers1(0, 1, m_constantBuffer.GetAddressOf(), nullptr, nullptr);
+            context->VSSetConstantBuffers(0, 1, m_constantBufferVS.GetAddressOf());
 
             context->RSSetState(m_rasterizerState.Get());
 

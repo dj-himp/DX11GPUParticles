@@ -75,7 +75,7 @@ namespace DemoParticles
             }
             else
             {
-                float m_mouseSensibility = 0.005f;
+                float m_mouseSensibility = 0.001f;
                 Vector2 delta = (mousePosition - m_previousMousePos) * m_mouseSensibility;
                 m_camera->rotate(delta.x, delta.y);
                 

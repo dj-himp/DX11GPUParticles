@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Camera.h"
 
+using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
@@ -11,18 +12,6 @@ namespace DemoParticles
         , m_yaw(yaw)
         , m_pitch(pitch)
         , m_roll(roll)
-        , m_aspectRatio(aspectRatio)
-        , m_fov(fov)
-        , m_nearPlane(nearPlane)
-        , m_farPlane(farPlane)
-    {
-        updateView();
-        updateProjection();
-    }
-
-    Camera::Camera(DirectX::SimpleMath::Vector3 position, DirectX::SimpleMath::Vector3 forward, float aspectRatio, float fov /*= 60.0f*/, float nearPlane /*= 0.1f*/, float farPlane /*= 1000.0f*/)
-        : m_position(position)
-        , m_forward(forward)
         , m_aspectRatio(aspectRatio)
         , m_fov(fov)
         , m_nearPlane(nearPlane)
@@ -88,6 +77,7 @@ namespace DemoParticles
 
     std::vector<Vector3> Camera::getFrustrumCorners()
     {
+
         //half height of viewport at near plane
         float hhNear = tanf(m_fov / 2.0f) * m_nearPlane;
         //half width of viewport at near plane
@@ -110,7 +100,7 @@ namespace DemoParticles
         corners.push_back(nearTopRight);
         Vector3 nearBottomLeft  = centerNear - (m_up * hhNear) - (m_right * hwNear);
         corners.push_back(nearBottomLeft);
-        Vector3 nearBottomRight = centerNear + (m_up * hhNear) + (m_right * hwNear);
+        Vector3 nearBottomRight = centerNear - (m_up * hhNear) + (m_right * hwNear);
         corners.push_back(nearBottomRight);
 
         Vector3 farTopLeft      = centerFar + (m_up * hhFar) - (m_right * hwFar);
@@ -119,13 +109,25 @@ namespace DemoParticles
         corners.push_back(farTopRight);
         Vector3 farBottomLeft   = centerFar - (m_up * hhFar) - (m_right * hwFar);
         corners.push_back(farBottomLeft);
-        Vector3 farBottomRight  = centerFar + (m_up * hhFar) + (m_right * hwFar);
+        Vector3 farBottomRight  = centerFar - (m_up * hhFar) + (m_right * hwFar);
         corners.push_back(farBottomRight);
-
-        for (int i = 0; i < corners.size(); ++i)
+        
+        for (auto& corner : corners)
         {
-            corners[i] = Vector3::Transform(corners[i], m_view);
+            corner.Normalize();
         }
+
+        /*BoundingFrustum frustum;
+        BoundingFrustum::CreateFromMatrix(frustum, m_projection);
+
+        std::vector<Vector3> corners;
+        Vector3 cornersTab[8];
+        frustum.GetCorners(cornersTab);
+        for (int i = 0; i < 8; ++i)
+        {
+            corners.push_back(cornersTab[i]);
+        }*/
+
         
         return corners;
     }

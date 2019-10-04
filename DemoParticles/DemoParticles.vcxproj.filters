@@ -255,6 +255,12 @@
     <FxCompile Include="Data\Shaders\RenderModel_PS.hlsl">
       <Filter>Data\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Data\Shaders\RenderDebugRM_PS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\RenderDebugRM_VS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Data\Models\CatMac.fbx">

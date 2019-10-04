@@ -64,20 +64,18 @@ void Game::Initialize(HWND window, int width, int height)
     //init MeshFactory
     MeshFactory::getInstance().setDeviceResources(m_deviceResources.get());
 
-    Camera camera(DirectX::SimpleMath::Vector3(4.0f, 0.0f, 0.0f), XM_PI / 4.0f, 0.0f, 0.0f, width/height, 60.0f, 0.1f, 100.0f);
-    std::vector< DirectX::SimpleMath::Vector3> corners = camera.getFrustrumCorners();
+    //Camera camera(DirectX::SimpleMath::Vector3(5.0f, 0.0f, 0.0f), XM_PI / 2.0f, 0.0f, 0.0f, width/height, XM_PI / 4.0f, 0.1f, 10.0f);
+    //std::vector< DirectX::SimpleMath::Vector3> corners = camera.getFrustrumCorners();
 
 
     std::unique_ptr<DebugRenderer> debugRenderer = std::make_unique<DebugRenderer>(m_deviceResources.get());
     debugRenderer->pushBackModel(MeshFactory::getInstance().createAxis());
-    debugRenderer->pushBackModel(MeshFactory::getInstance().createFrustum(corners));
+    //debugRenderer->pushBackModel(MeshFactory::getInstance().createFrustum(corners));
 
-    m_renderables.push_back(std::move(debugRenderer));
-    m_renderables.push_back(std::make_unique<AxisRenderer>(m_deviceResources.get()));
     //m_renderables.push_back(std::make_unique<RenderModel>(m_deviceResources.get()));
     //m_renderables.push_back(std::make_unique<RenderFullscreenQuad>(m_deviceResources.get()));
-    //m_renderables.push_back(std::make_unique<MengerRenderer>(m_deviceResources.get()));
-
+    m_renderables.push_back(std::make_unique<MengerRenderer>(m_deviceResources.get()));
+    m_renderables.push_back(std::move(debugRenderer));
 
 
     m_cameraControllerFPS = std::make_unique<CameraControllerFPS>(m_deviceResources.get());
@@ -249,7 +247,7 @@ void Game::GetDefaultSize(int& width, int& height) const
 {
     // TODO: Change to desired default window size (note minimum size is 320x200).
     width = 1024;
-    height = 920;
+    height = 720;
 }
 #pragma endregion
 
