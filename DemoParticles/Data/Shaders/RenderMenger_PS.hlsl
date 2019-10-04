@@ -474,7 +474,7 @@ PixelShaderOutput main(PixelShaderInput input)
     PixelShaderOutput output;
     //output.position = float4(-1.0, -1.0, -1.0, -1.0);
     //output.normal = float4(-1.0, -1.0, -1.0, -1.0);
-    //output.color = float4(0.0, 0.0, 0.0, -1.0);
+    output.color = float4(0.0, 0.0, 0.0, -1.0);
 
     Ray r = generateRay(input);
 
@@ -529,10 +529,6 @@ PixelShaderOutput main(PixelShaderInput input)
             applyScattering(color, obj.y);
 
             color = lerp(color, glowColor, obj.x * glowCoeff);
-
-            //TEST TRANITION
-            //color = float4(1,1,1,1);
-            //output.position = float4(-1,-1,-1,-1);
         }
         if (obj.w == 3.0)
         {
@@ -560,11 +556,6 @@ PixelShaderOutput main(PixelShaderInput input)
                 applyScattering(color, refObj.y);
                 color = lerp(color, glowColor, refObj.x * glowCoeff);
             }
-
-            //TEST TRANITION
-            //color = float4(1,1,1,1);
-            //output.position = float4(-1,-1,-1,-1);
-
         }
 
         output.color = float4(color, 1.0);
@@ -574,15 +565,6 @@ PixelShaderOutput main(PixelShaderInput input)
     color = lerp(color, glowColor, obj.x);
 
     output.color.xyz = color;
-    //output.color.xyz = float4(input.uv, 0, 1);
-    //output.color.xyz = float4(input.RayDir.xy, 0,1);//input.RayDir.xyz;
-
-
-    //output.position = float4(/*r.direction.xyz*/input.RayDir.xyz, 1.0);
-    //output.position = float4(input.uv.xy, 0.0, 1.0);
-    //output.normal = float4(input.uv.xy, 0.0, 1.0);
-    //output.color = float4(pos.xyz, 1.0);
-    //return output;
 
     return output;
 }

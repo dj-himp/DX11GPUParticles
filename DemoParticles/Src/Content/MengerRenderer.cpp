@@ -90,7 +90,7 @@ namespace DemoParticles
         context->UpdateSubresource1(m_constantBufferPS.Get(), 0, NULL, &m_constantBufferDataPS, 0, 0, 0);
 
         // Each vertex is one instance of the VertexPositionUV struct.
-        UINT stride = m_quad->getVertexStride(); //sizeof(VertexColorUV);
+        UINT stride = m_quad->getVertexStride();
         UINT offset = 0;
         context->IASetVertexBuffers(0, 1, m_quad->getMesh(0)->getVertexBuffer().GetAddressOf(), &stride, &offset);
 
