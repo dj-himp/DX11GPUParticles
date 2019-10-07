@@ -16,6 +16,8 @@
 #include "Content/RenderModel.h"
 #include "Content/MengerRenderer.h"
 #include "Content/RenderFullscreenQuad.h"
+#include "Content/BakeModelParticles.h"
+
 #include "Model/MeshFactory.h"
 #include "Content/DebugRenderer.h"
 #include "Model/Model.h"
@@ -74,7 +76,8 @@ void Game::Initialize(HWND window, int width, int height)
 
     //m_renderables.push_back(std::make_unique<RenderModel>(m_deviceResources.get()));
     //m_renderables.push_back(std::make_unique<RenderFullscreenQuad>(m_deviceResources.get()));
-    m_renderables.push_back(std::make_unique<MengerRenderer>(m_deviceResources.get()));
+    //m_renderables.push_back(std::make_unique<MengerRenderer>(m_deviceResources.get()));
+    m_renderables.push_back(std::make_unique<BakeModelParticles>(m_deviceResources.get()));
     m_renderables.push_back(std::move(debugRenderer));
 
 

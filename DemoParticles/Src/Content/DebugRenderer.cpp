@@ -112,6 +112,9 @@ namespace DemoParticles
 
             context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);
 
+            ID3D11RenderTargetView* renderTargets[1] = { m_deviceResources->GetRenderTargetView() };
+            context->OMSetRenderTargets(1, renderTargets, m_deviceResources->GetDepthStencilView());
+
             context->DrawIndexed(debugModel.m_model->getMesh(i)->getIndexCount(), 0, 0);
         }
     }

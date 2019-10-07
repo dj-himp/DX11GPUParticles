@@ -37,6 +37,9 @@
     <Filter Include="Data\Shaders">
       <UniqueIdentifier>{c867f07a-20d5-4b85-9c60-93ff908a09d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Scene">
+      <UniqueIdentifier>{c8409ffa-0c95-4454-889c-de24d307e148}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\App.cpp">
@@ -119,6 +122,15 @@
     </ClCompile>
     <ClCompile Include="Src\Model\MeshFactory.cpp">
       <Filter>Src\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\RenderTarget.cpp">
+      <Filter>Src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Content\BakeModelParticles.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scene\IScene.cpp">
+      <Filter>Src\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -215,6 +227,15 @@
     <ClInclude Include="Src\Model\MeshFactory.h">
       <Filter>Src\Model</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Common\RenderTarget.h">
+      <Filter>Src\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\BakeModelParticles.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scene\IScene.h">
+      <Filter>Src\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -259,6 +280,12 @@
       <Filter>Data\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Data\Shaders\RenderDebugRM_VS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\BakeObjectParticles_PS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\BakeObjectParticles_VS.hlsl">
       <Filter>Data\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
