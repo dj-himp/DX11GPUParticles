@@ -170,6 +170,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Src\Common\ComputeShader.cpp" />
     <ClCompile Include="Src\Scene\SceneMenger.cpp" />
     <ClCompile Include="Src\App.cpp" />
     <ClCompile Include="Src\Camera\Camera.cpp" />
@@ -224,6 +225,7 @@
     <ClInclude Include="Extern\imgui\imstb_rectpack.h" />
     <ClInclude Include="Extern\imgui\imstb_textedit.h" />
     <ClInclude Include="Extern\imgui\imstb_truetype.h" />
+    <ClInclude Include="Src\Common\ComputeShader.h" />
     <ClInclude Include="Src\Scene\SceneMenger.h" />
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\Camera\CameraControllerFPS.h" />

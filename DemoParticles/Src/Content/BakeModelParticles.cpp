@@ -103,7 +103,7 @@ namespace DemoParticles
             context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
             context->VSSetConstantBuffers(0, 1, m_constantBufferVS.GetAddressOf());
 
-            //context->RSSetState(m_rasterizerState.Get());
+            context->RSSetState(m_rasterizerState.Get());
 
             context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);
 
