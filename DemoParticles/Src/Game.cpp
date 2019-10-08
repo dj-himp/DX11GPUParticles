@@ -22,6 +22,7 @@
 #include "Content/DebugRenderer.h"
 #include "Model/Model.h"
 #include "Camera/Camera.h"
+#include "Scene/SceneMenger.h"
 
 extern void ExitGame();
 
@@ -77,11 +78,12 @@ void Game::Initialize(HWND window, int width, int height)
     //m_renderables.push_back(std::make_unique<RenderModel>(m_deviceResources.get()));
     //m_renderables.push_back(std::make_unique<RenderFullscreenQuad>(m_deviceResources.get()));
     //m_renderables.push_back(std::make_unique<MengerRenderer>(m_deviceResources.get()));
-    m_renderables.push_back(std::make_unique<BakeModelParticles>(m_deviceResources.get()));
+    //m_renderables.push_back(std::make_unique<BakeModelParticles>(m_deviceResources.get()));
     m_renderables.push_back(std::move(debugRenderer));
 
-
     m_cameraControllerFPS = std::make_unique<CameraControllerFPS>(m_deviceResources.get());
+
+    m_sceneMenger = std::make_unique<DemoParticles::SceneMenger>(m_deviceResources.get());
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -134,6 +136,9 @@ void Game::Update(DX::StepTimer const& timer)
     {
         renderable->update(m_timer, m_cameraControllerFPS->getCamera());
     }
+
+    m_sceneMenger->update(timer, m_cameraControllerFPS->getCamera());
+
     //m_fpsTextRenderer->Update(m_timer);
 
     //elapsedTime;
@@ -159,10 +164,14 @@ void Game::Render()
     {
         renderable->render();
     }
+
+    m_sceneMenger->render();
+
     //m_fpsTextRenderer->Render();
 
     m_deviceResources->PIXEndEvent();
 
+    m_deviceResources->PIXBeginEvent(L"ImGui");
     // Start the Dear ImGui frame
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
@@ -178,6 +187,8 @@ void Game::Render()
     //g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, NULL);
     //g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, (float*)&clear_color);
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+    m_deviceResources->PIXEndEvent();
 
     // Show the new frame.
     m_deviceResources->Present();

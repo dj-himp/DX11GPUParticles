@@ -37,5 +37,8 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_constantBufferVS;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_constantBufferPS;
         Microsoft::WRL::ComPtr<ID3D11RasterizerState>       m_rasterizerState;
+        Microsoft::WRL::ComPtr<ID3D11DepthStencilState>     m_depthStencilState;
+        Microsoft::WRL::ComPtr<ID3D11BlendState>            m_blendState;
+        
     };
 }

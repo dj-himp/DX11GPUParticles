@@ -34,15 +34,11 @@ namespace DemoParticles
         std::unique_ptr<Model> m_model;
         std::unique_ptr<Camera> m_camera;
 
-        std::shared_ptr<RenderTarget> m_rtPositions;
-        std::shared_ptr<RenderTarget> m_rtNormals;
-
-
         DirectX::SimpleMath::Matrix m_world;
 
         DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3(0.0f);
 
-        ModelConstantBuffer m_constantBufferData;
+        WorldConstantBuffer m_constantBufferData;
         
     };
 }

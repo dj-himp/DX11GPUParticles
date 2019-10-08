@@ -132,6 +132,9 @@
     <ClCompile Include="Src\Scene\IScene.cpp">
       <Filter>Src\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Scene\SceneMenger.cpp">
+      <Filter>Src\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\DeviceResources.h">
@@ -234,6 +237,9 @@
       <Filter>Src\Content</Filter>
     </ClInclude>
     <ClInclude Include="Src\Scene\IScene.h">
+      <Filter>Src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scene\SceneMenger.h">
       <Filter>Src\Scene</Filter>
     </ClInclude>
   </ItemGroup>

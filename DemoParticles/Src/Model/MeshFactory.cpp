@@ -150,10 +150,10 @@ namespace DemoParticles
 
         static const VertexColorUV vertices[] =
         {
-           { Vector4(-1.0f, +1.0f, 0.0f, 1.0f), dummyColor, Vector2(0.0f, 0.0f) },
-           { Vector4(+1.0f, +1.0f, 0.0f, 1.0f), dummyColor, Vector2(1.0f, 0.0f) },
-           { Vector4(-1.0f, -1.0f, 0.0f, 1.0f), dummyColor, Vector2(0.0f, 1.0f) },
-           { Vector4(+1.0f, -1.0f, 0.0f, 1.0f), dummyColor, Vector2(1.0f, 1.0f) },
+           { Vector4(-1.0f, +1.0f, 0.0f, 1.0f), Color(1,0,0), Vector2(0.0f, 0.0f) },
+           { Vector4(+1.0f, +1.0f, 0.0f, 1.0f), Color(0,1,0), Vector2(1.0f, 0.0f) },
+           { Vector4(-1.0f, -1.0f, 0.0f, 1.0f), Color(0,0,1), Vector2(0.0f, 1.0f) },
+           { Vector4(+1.0f, -1.0f, 0.0f, 1.0f), Color(1,0,1), Vector2(1.0f, 1.0f) },
         };
 
         int vertexCount = ARRAYSIZE(vertices);
@@ -194,10 +194,10 @@ namespace DemoParticles
 
         static const unsigned int indices[] =
         {
-            //0,2,3,
-            //3,1,0,
-            0,1,3,
-            3,2,0,
+            //0,1,3,
+            //3,2,0,
+            1,0,2,
+            2,3,1,
         };
 
         int indexCount = ARRAYSIZE(indices);

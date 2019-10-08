@@ -15,6 +15,11 @@ namespace DemoParticles
         DirectX::XMFLOAT4X4 posScale;
     };
 
+    struct WorldConstantBuffer
+    {
+        DirectX::XMFLOAT4X4 world;
+    };
+
     struct ModelConstantBuffer
     {
         DirectX::XMFLOAT4X4 worldViewProj;

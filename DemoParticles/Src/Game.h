@@ -13,6 +13,7 @@ namespace DemoParticles
     class IRenderable;
     class CameraControllerFPS;
     class InputManager;
+    class SceneMenger;
 }
 
 // A basic game implementation that creates a D3D11 device and
@@ -66,7 +67,9 @@ private:
     std::unique_ptr<DemoParticles::InputManager> m_inputManager;
 
     std::vector<std::unique_ptr<DemoParticles::IRenderable>> m_renderables;
-   
+    
+    std::unique_ptr<DemoParticles::SceneMenger> m_sceneMenger;
+
     //std::unique_ptr<SampleFpsTextRenderer> m_fpsTextRenderer;
 
     std::unique_ptr<DemoParticles::CameraControllerFPS> m_cameraControllerFPS;

@@ -15,7 +15,7 @@ struct PixelShaderInput
     float4 Position : SV_POSITION;
     float4 pos : TEXCOORD0;
     float4 normal : TEXCOORD1;
-    float2 UVs : TEXCOORD2;
+    float2 uv : TEXCOORD2;
 };
 
 PixelShaderInput main(VertexShaderInput input)
@@ -25,9 +25,8 @@ PixelShaderInput main(VertexShaderInput input)
     //output.Position = float4(2.0 * input.texCoord.x - 1.0, 1.0 - 2.0*input.texCoord.y, 0.0, 1.0);
     output.Position = float4(2.0 * input.texCoord.x - 1.0, 2.0 * input.texCoord.y - 1.0, 0.0, 1.0);
     output.pos = mul(float4(input.Position.xyz, 1.0), world);
-    //output.pos = input.Position;
     output.normal = input.normal;
-    output.UVs = input.texCoord;
+    output.uv = input.texCoord;
 
     return output;
 }

@@ -1,0 +1,87 @@
+#include "pch.h"
+#include "SceneMenger.h"
+
+#include "Camera/CameraControllerFPS.h"
+#include "Content/MengerRenderer.h"
+#include "Common/RenderTarget.h"
+#include "Content/BakeModelParticles.h"
+#include "Content/RenderFullscreenQuad.h"
+
+using namespace DirectX;
+using namespace DirectX::SimpleMath;
+
+namespace DemoParticles
+{
+    SceneMenger::SceneMenger(const DX::DeviceResources* deviceResources)
+        : IScene(deviceResources)
+    {
+        m_mengerRenderer = std::make_unique<MengerRenderer>(deviceResources);
+        m_bakeModelParticles = std::make_unique<BakeModelParticles>(deviceResources);
+        m_fullScreenQuad = std::make_unique<RenderFullscreenQuad>(deviceResources);
+
+        createDeviceDependentResources();
+        createWindowSizeDependentResources();
+    }
+
+    SceneMenger::~SceneMenger()
+    {
+    }
+
+    void SceneMenger::createDeviceDependentResources()
+    {
+        m_mengerRenderer->createDeviceDependentResources();
+
+        m_rtBakePositions = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, m_deviceResources->GetOutputWidth(), m_deviceResources->GetOutputHeight());
+        m_rtBakeNormals = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, m_deviceResources->GetOutputWidth(), m_deviceResources->GetOutputHeight());
+    }
+
+    void SceneMenger::createWindowSizeDependentResources()
+    {
+        Matrix posScale = Matrix::CreateTranslation(0.0f, 0.0f, 0.0f) * Matrix::CreateScale(0.5f, 0.5f, 1.0f);
+        m_fullScreenQuad->setPosScale(posScale);
+
+        m_mengerRenderer->createWindowSizeDependentResources();
+    }
+
+    void SceneMenger::releaseDeviceDependentResources()
+    {
+        m_mengerRenderer->releaseDeviceDependentResources();
+    }
+
+    void SceneMenger::update(DX::StepTimer const& timer, Camera* camera /*= nullptr*/)
+    {
+        m_mengerRenderer->update(timer, camera);
+        m_bakeModelParticles->update(timer);
+        m_fullScreenQuad->update(timer);
+    }
+
+    void SceneMenger::render()
+    {
+        auto context = m_deviceResources->GetD3DDeviceContext();
+
+        //save previously bound renderTargets
+        const int nbRT = 2;
+        ID3D11RenderTargetView* previousRenderTargets[nbRT];
+        ID3D11DepthStencilView* previousDepthStencil;
+        context->OMGetRenderTargets(nbRT, previousRenderTargets, &previousDepthStencil);
+
+        
+        m_mengerRenderer->render();
+
+
+        ID3D11RenderTargetView* renderTargets[2] = { m_rtBakePositions->getRenderTargetView().Get(), m_rtBakeNormals->getRenderTargetView().Get() };
+        context->OMSetRenderTargets(2, renderTargets, nullptr);
+
+        context->ClearRenderTargetView(renderTargets[0], Colors::Transparent);
+        context->ClearRenderTargetView(renderTargets[1], Colors::Transparent);
+
+        m_bakeModelParticles->render();
+
+        context->OMSetRenderTargets(nbRT, previousRenderTargets, previousDepthStencil);
+
+        m_fullScreenQuad->setTexture(m_rtBakePositions->getShaderResourceView().Get());
+        m_fullScreenQuad->render();
+
+
+    }
+}
