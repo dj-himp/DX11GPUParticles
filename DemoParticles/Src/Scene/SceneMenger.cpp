@@ -6,6 +6,7 @@
 #include "Common/RenderTarget.h"
 #include "Content/BakeModelParticles.h"
 #include "Content/RenderFullscreenQuad.h"
+#include "Common/ComputeShader.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -33,6 +34,9 @@ namespace DemoParticles
 
         m_rtBakePositions = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, m_deviceResources->GetOutputWidth(), m_deviceResources->GetOutputHeight());
         m_rtBakeNormals = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, m_deviceResources->GetOutputWidth(), m_deviceResources->GetOutputHeight());
+
+        m_computePackParticle = std::make_unique<ComputeShader>(m_deviceResources, 2, true);
+        m_computePackParticle->load(L"PackParticles_CS.cso");
     }
 
     void SceneMenger::createWindowSizeDependentResources()
@@ -41,6 +45,7 @@ namespace DemoParticles
         m_fullScreenQuad->setPosScale(posScale);
 
         m_mengerRenderer->createWindowSizeDependentResources();
+
     }
 
     void SceneMenger::releaseDeviceDependentResources()
@@ -59,27 +64,39 @@ namespace DemoParticles
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
-        //save previously bound renderTargets
-        const int nbRT = 2;
-        ID3D11RenderTargetView* previousRenderTargets[nbRT];
-        ID3D11DepthStencilView* previousDepthStencil;
-        context->OMGetRenderTargets(nbRT, previousRenderTargets, &previousDepthStencil);
+        if (!m_bakingDone)
+        {
+            //save previously bound renderTargets
+            const int nbRT = 2;
+            ID3D11RenderTargetView* previousRenderTargets[nbRT];
+            ID3D11DepthStencilView* previousDepthStencil;
+            context->OMGetRenderTargets(nbRT, previousRenderTargets, &previousDepthStencil);
 
-        
+            ID3D11RenderTargetView* renderTargets[2] = { m_rtBakePositions->getRenderTargetView().Get(), m_rtBakeNormals->getRenderTargetView().Get() };
+            context->OMSetRenderTargets(2, renderTargets, nullptr);
+
+            context->ClearRenderTargetView(renderTargets[0], Colors::Transparent);
+            context->ClearRenderTargetView(renderTargets[1], Colors::Transparent);
+
+            m_bakeModelParticles->render();
+
+            context->OMSetRenderTargets(nbRT, previousRenderTargets, previousDepthStencil);
+
+            m_computePackParticle->begin();
+            m_computePackParticle->setShaderResource(0, m_rtBakePositions->getShaderResourceView());
+            m_computePackParticle->setShaderResource(1, m_rtBakeNormals->getShaderResourceView());
+            m_computePackParticle->start(32, 32, 1);
+            m_computePackParticle->end();
+            m_computePackParticle->setShaderResource(0, nullptr);
+            m_computePackParticle->setShaderResource(1, nullptr);
+
+            m_bakingDone = true;
+        }
+
         m_mengerRenderer->render();
 
-
-        ID3D11RenderTargetView* renderTargets[2] = { m_rtBakePositions->getRenderTargetView().Get(), m_rtBakeNormals->getRenderTargetView().Get() };
-        context->OMSetRenderTargets(2, renderTargets, nullptr);
-
-        context->ClearRenderTargetView(renderTargets[0], Colors::Transparent);
-        context->ClearRenderTargetView(renderTargets[1], Colors::Transparent);
-
-        m_bakeModelParticles->render();
-
-        context->OMSetRenderTargets(nbRT, previousRenderTargets, previousDepthStencil);
-
-        m_fullScreenQuad->setTexture(m_rtBakePositions->getShaderResourceView().Get());
+        m_fullScreenQuad->setTexture(m_computePackParticle->getRenderTarget(0)->getShaderResourceView());
+        //m_fullScreenQuad->setTexture(m_rtBakePositions->getShaderResourceView().Get());
         m_fullScreenQuad->render();
 
 

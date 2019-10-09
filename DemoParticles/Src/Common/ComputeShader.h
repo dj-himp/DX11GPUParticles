@@ -17,8 +17,13 @@ namespace DemoParticles
         void load(const std::wstring& computeFilename);
         void begin();
         void end();
+        void start(int threadGroupX, int threadGroupY, int threadGroupZ);
+
+        void setShaderResource(int slot, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView);
 
         ID3D11ComputeShader* getVertexShader() { return m_computeShader.Get(); }
+
+        RenderTarget* getRenderTarget(int slot);
 
     private:
         const const DX::DeviceResources* m_deviceResources;
@@ -27,6 +32,10 @@ namespace DemoParticles
         int m_nbUAVs;
         std::vector<Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>>  m_UAVs;
         std::vector<std::unique_ptr<RenderTarget>>                      m_renderTargets;
+        
+        Microsoft::WRL::ComPtr<ID3D11Buffer>                            m_counterBuffer;
+        int                                                             m_counterValue = 0;
+        Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>               m_counterUAV;
 
         Microsoft::WRL::ComPtr<ID3D11ComputeShader>          m_computeShader;
     };

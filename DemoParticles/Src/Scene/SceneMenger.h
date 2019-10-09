@@ -7,6 +7,7 @@ namespace DemoParticles
     class BakeModelParticles;
     class RenderTarget;
     class RenderFullscreenQuad;
+    class ComputeShader;
 
     class SceneMenger : public IScene
     {
@@ -29,6 +30,10 @@ namespace DemoParticles
 
         std::unique_ptr<RenderTarget> m_rtBakePositions;
         std::unique_ptr<RenderTarget> m_rtBakeNormals;
+
+        std::unique_ptr<ComputeShader> m_computePackParticle;
+
+        bool                            m_bakingDone = false;
 
     };
 }

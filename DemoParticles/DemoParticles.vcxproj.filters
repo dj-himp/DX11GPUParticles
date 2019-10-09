@@ -300,6 +300,9 @@
     <FxCompile Include="Data\Shaders\BakeObjectParticles_VS.hlsl">
       <Filter>Data\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Data\Shaders\PackParticles_CS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Data\Models\CatMac.fbx">
