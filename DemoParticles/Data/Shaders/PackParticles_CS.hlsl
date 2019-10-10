@@ -20,9 +20,8 @@ void main(uint3 id : SV_DispatchThreadID)
     float4 srcPixel2 = srcTexture2[id.xy].rgba;
     if (srcPixel.a > 0.0)
     {
-        uint oldValue;
-        InterlockedAdd(counterBuffer[0], 1, oldValue);
-        
+        uint oldValue = counterBuffer.IncrementCounter();
+
         uint y = oldValue / 1024;
         uint x = oldValue % 1024;
         uint2 idx = uint2(x, y);

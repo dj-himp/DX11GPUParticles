@@ -36,6 +36,7 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11Buffer>                            m_counterBuffer;
         int                                                             m_counterValue = 0;
         Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>               m_counterUAV;
+        Microsoft::WRL::ComPtr<ID3D11Buffer>                            m_counterStagingBuffer;
 
         Microsoft::WRL::ComPtr<ID3D11ComputeShader>          m_computeShader;
     };

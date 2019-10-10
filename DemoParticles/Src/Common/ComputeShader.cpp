@@ -102,6 +102,17 @@ namespace DemoParticles
                 m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_counterBuffer.Get(), &counterUavDesc, &m_counterUAV)
             );
 
+            D3D11_BUFFER_DESC stagingDesc;
+            ZeroMemory(&stagingDesc, sizeof(stagingDesc));
+            stagingDesc.Usage = D3D11_USAGE_STAGING;
+            stagingDesc.ByteWidth = sizeof(UINT);
+            stagingDesc.BindFlags = 0;
+            stagingDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+
+            DX::ThrowIfFailed(
+                m_deviceResources->GetD3DDevice()->CreateBuffer(&stagingDesc, nullptr, &m_counterStagingBuffer)
+            );
+
         }
     }
 
@@ -128,6 +139,14 @@ namespace DemoParticles
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
+        //TODO first copy to a constant buffer to reuse in a shader and copy to cpu only on debug
+
+        context->CopyStructureCount(m_counterStagingBuffer.Get(), 0, m_counterUAV.Get());
+        D3D11_MAPPED_SUBRESOURCE mappedSubresource;
+        context->Map(m_counterStagingBuffer.Get(), 0, D3D11_MAP_READ, 0, &mappedSubresource);
+        m_counterValue = *(int*)mappedSubresource.pData;
+        context->Unmap(m_counterStagingBuffer.Get(), 0);
+
         ID3D11UnorderedAccessView* nullUav[1] = { nullptr };
         for (int i = 0; i < m_nbUAVs + (int)m_needCounterBuffer; ++i)
         {
@@ -136,9 +155,6 @@ namespace DemoParticles
         }
 
         context->CSSetShader(nullptr, nullptr, 0);
-
-        //TODO get back the value of the counter
-        //CopyStructureCount(m_)
     }
 
     void ComputeShader::start(int threadGroupX, int threadGroupY, int threadGroupZ)

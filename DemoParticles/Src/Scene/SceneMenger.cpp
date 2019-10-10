@@ -85,7 +85,7 @@ namespace DemoParticles
             m_computePackParticle->begin();
             m_computePackParticle->setShaderResource(0, m_rtBakePositions->getShaderResourceView());
             m_computePackParticle->setShaderResource(1, m_rtBakeNormals->getShaderResourceView());
-            m_computePackParticle->start(32, 32, 1);
+            m_computePackParticle->start(32, 22, 1);
             m_computePackParticle->end();
             m_computePackParticle->setShaderResource(0, nullptr);
             m_computePackParticle->setShaderResource(1, nullptr);

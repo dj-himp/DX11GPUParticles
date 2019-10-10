@@ -1,5 +1,5 @@
-// A constant buffer that stores the three basic column-major matrices for composing geometry.
-cbuffer ModelViewProjectionConstantBuffer : register(b0)
+
+cbuffer ModelConstantBuffer : register(b0)
 {
     float4x4 worldViewProj;
 };

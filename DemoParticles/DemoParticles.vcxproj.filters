@@ -138,6 +138,9 @@
     <ClCompile Include="Src\Common\ComputeShader.cpp">
       <Filter>Src\Common</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Content\RenderParticles.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\DeviceResources.h">
@@ -248,6 +251,9 @@
     <ClInclude Include="Src\Common\ComputeShader.h">
       <Filter>Src\Common</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Content\RenderParticles.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -303,6 +309,9 @@
     <FxCompile Include="Data\Shaders\PackParticles_CS.hlsl">
       <Filter>Data\Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Data\Shaders\RenderParticles_PS.hlsl" />
+    <FxCompile Include="Data\Shaders\RenderParticles_VS.hlsl" />
+    <FxCompile Include="Data\Shaders\RenderParticles_GS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Data\Models\CatMac.fbx">
