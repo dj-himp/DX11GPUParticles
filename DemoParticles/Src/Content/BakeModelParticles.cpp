@@ -49,22 +49,6 @@ namespace DemoParticles
             )
         );
 
-        /*D3D11_RASTERIZER_DESC rasterizerDesc;
-        rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-        rasterizerDesc.CullMode = D3D11_CULL_BACK;
-        rasterizerDesc.FrontCounterClockwise = TRUE; //TRUE because my engine is code with right handed coordinates
-        rasterizerDesc.DepthBias = D3D11_DEFAULT_DEPTH_BIAS;
-        rasterizerDesc.DepthBiasClamp = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
-        rasterizerDesc.SlopeScaledDepthBias = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
-        rasterizerDesc.DepthClipEnable = TRUE;
-        rasterizerDesc.ScissorEnable = FALSE;
-        rasterizerDesc.MultisampleEnable = FALSE;
-        rasterizerDesc.AntialiasedLineEnable = FALSE;
-
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState)
-        );*/
-
         //Z rotation is temporary as I need to know why the model is upside down
         m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(0.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
     }
@@ -81,14 +65,14 @@ namespace DemoParticles
 
     void BakeModelParticles::update(DX::StepTimer const& timer, Camera* camera /*= nullptr*/)
     {
-        XMStoreFloat4x4(&m_constantBufferData.world, m_world.Transpose());
+        m_constantBufferData.world = m_world.Transpose();
     }
 
     void BakeModelParticles::render()
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
         
-        context->UpdateSubresource1(m_constantBufferVS.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
+        context->UpdateSubresource(m_constantBufferVS.Get(), 0, NULL, &m_constantBufferData, 0, 0);
         
         for (int i = 0; i < m_model->getMeshCount(); ++i)
         {

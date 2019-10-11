@@ -6,6 +6,8 @@
 #include "Common/RenderTarget.h"
 #include "Content/BakeModelParticles.h"
 #include "Content/RenderFullscreenQuad.h"
+#include "Content/RenderParticles.h"
+
 #include "Common/ComputeShader.h"
 
 using namespace DirectX;
@@ -19,6 +21,7 @@ namespace DemoParticles
         m_mengerRenderer = std::make_unique<MengerRenderer>(deviceResources);
         m_bakeModelParticles = std::make_unique<BakeModelParticles>(deviceResources);
         m_fullScreenQuad = std::make_unique<RenderFullscreenQuad>(deviceResources);
+        m_renderParticles = std::make_unique<RenderParticles>(deviceResources);
 
         createDeviceDependentResources();
         createWindowSizeDependentResources();
@@ -31,12 +34,16 @@ namespace DemoParticles
     void SceneMenger::createDeviceDependentResources()
     {
         m_mengerRenderer->createDeviceDependentResources();
+        m_renderParticles->createDeviceDependentResources();
 
         m_rtBakePositions = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, m_deviceResources->GetOutputWidth(), m_deviceResources->GetOutputHeight());
         m_rtBakeNormals = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, m_deviceResources->GetOutputWidth(), m_deviceResources->GetOutputHeight());
 
         m_computePackParticle = std::make_unique<ComputeShader>(m_deviceResources, 2, true);
         m_computePackParticle->load(L"PackParticles_CS.cso");
+
+        //m_renderParticles->setShaderResourceViews(m_rtBakePositions->getShaderResourceView(), m_rtBakeNormals->getShaderResourceView());
+        m_renderParticles->setShaderResourceViews(m_computePackParticle->getRenderTarget(0)->getShaderResourceView(), m_computePackParticle->getRenderTarget(1)->getShaderResourceView());
     }
 
     void SceneMenger::createWindowSizeDependentResources()
@@ -58,6 +65,7 @@ namespace DemoParticles
         m_mengerRenderer->update(timer, camera);
         m_bakeModelParticles->update(timer);
         m_fullScreenQuad->update(timer);
+        m_renderParticles->update(timer, camera);
     }
 
     void SceneMenger::render()
@@ -93,10 +101,12 @@ namespace DemoParticles
             m_bakingDone = true;
         }
 
-        m_mengerRenderer->render();
+        //m_mengerRenderer->render();
 
-        m_fullScreenQuad->setTexture(m_computePackParticle->getRenderTarget(0)->getShaderResourceView());
-        //m_fullScreenQuad->setTexture(m_rtBakePositions->getShaderResourceView().Get());
+        m_renderParticles->render();
+
+        //m_fullScreenQuad->setTexture(m_computePackParticle->getRenderTarget(0)->getShaderResourceView());
+        m_fullScreenQuad->setTexture(m_rtBakePositions->getShaderResourceView().Get());
         m_fullScreenQuad->render();
 
 

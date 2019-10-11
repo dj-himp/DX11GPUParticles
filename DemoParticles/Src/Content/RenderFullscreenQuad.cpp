@@ -41,61 +41,6 @@ namespace DemoParticles
                 &m_constantBufferVS
             )
         );
-
-        CD3D11_SAMPLER_DESC samplerDesc;
-        samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-        samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-        samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-        samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-        samplerDesc.MipLODBias = 0.0f;
-        samplerDesc.MaxAnisotropy = 1;
-        samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-        samplerDesc.MinLOD = -FLT_MAX;
-        samplerDesc.MaxLOD = FLT_MAX;
-
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateSamplerState(&samplerDesc, &m_pointSamplerState)
-        );
-
-        D3D11_RASTERIZER_DESC rasterizerDesc;
-        ZeroMemory(&rasterizerDesc, sizeof(rasterizerDesc));
-        rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-        rasterizerDesc.CullMode = D3D11_CULL_BACK;
-        rasterizerDesc.FrontCounterClockwise = TRUE; //TRUE because my engine is code with right handed coordinates
-        rasterizerDesc.DepthBias = D3D11_DEFAULT_DEPTH_BIAS;
-        rasterizerDesc.DepthBiasClamp = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
-        rasterizerDesc.SlopeScaledDepthBias = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
-        rasterizerDesc.DepthClipEnable = FALSE;
-        rasterizerDesc.ScissorEnable = FALSE;
-        rasterizerDesc.MultisampleEnable = FALSE;
-        rasterizerDesc.AntialiasedLineEnable = FALSE;
-
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState)
-        );
-
-        D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
-        ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
-        depthStencilDesc.DepthEnable = false;
-        depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-        //depthStencilDesc.DepthFunc = D3D11_COMPARISON_NEVER;
-        depthStencilDesc.StencilEnable = false;
-        //depthStencilDesc.FrontFace.StencilFailOp = depthStencilDesc.FrontFace.StencilDepthFailOp = depthStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-        //depthStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-        //depthStencilDesc.BackFace = depthStencilDesc.FrontFace;
-        
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateDepthStencilState(&depthStencilDesc, &m_depthStencilState)
-        );
-
-        D3D11_BLEND_DESC blendDesc;
-        ZeroMemory(&blendDesc, sizeof(blendDesc));
-        blendDesc.RenderTarget[0].BlendEnable = FALSE;
-        blendDesc.RenderTarget[1].BlendEnable = FALSE;
-
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateBlendState(&blendDesc, &m_blendState)
-        );
     }
 
     void RenderFullscreenQuad::createWindowSizeDependentResources()
@@ -132,16 +77,16 @@ namespace DemoParticles
         context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
         context->VSSetConstantBuffers1(0, 1, m_constantBufferVS.GetAddressOf(), nullptr, nullptr);
 
-        context->RSSetState(m_rasterizerState.Get());
+        context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
         
-        context->PSSetSamplers(0, 1, m_pointSamplerState.GetAddressOf());
+        context->PSSetSamplers(0, 1, RenderStatesHelper::PointClamp().GetAddressOf());
         context->PSSetShaderResources(0, 1, m_texture.GetAddressOf());
         context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);
 
-        context->OMSetDepthStencilState(m_depthStencilState.Get() , 0);
+        context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get() , 0);
         
-        //const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
-        //context->OMSetBlendState(m_blendState.Get(), blendFactor, 0xffffffff);
+        const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
+        context->OMSetBlendState(RenderStatesHelper::Opaque().Get(), blendFactor, 0xffffffff);
 
         context->DrawIndexed(m_quad->getMesh(0)->getIndexCount(), 0, 0);
 

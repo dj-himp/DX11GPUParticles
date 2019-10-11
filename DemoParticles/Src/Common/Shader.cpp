@@ -11,7 +11,7 @@ namespace DemoParticles
 
     }
 
-    void Shader::load(const std::wstring& vertexFilename, const std::wstring& pixelFilename, const std::vector<D3D11_INPUT_ELEMENT_DESC>& vertexDesc)
+    void Shader::load(const std::wstring& vertexFilename, const std::wstring& pixelFilename, const std::vector<D3D11_INPUT_ELEMENT_DESC>& vertexDesc, const std::wstring& geometryShader /*= L""*/)
     {
         //const std::vector<byte> vertexShaderData = DX::readBinFile(vertexFilename);
 
@@ -58,17 +58,19 @@ namespace DemoParticles
             )
         );
 
-        /*const std::vector<byte> pixelShaderData = DX::readBinFile(pixelFilename);
+        if (geometryShader.empty() == false)
+        {
+            ID3DBlob* gs_blob;
+            D3DReadFileToBlob(geometryShader.c_str(), &gs_blob);
 
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreatePixelShader(
-                &pixelShaderData[0],
-                pixelShaderData.size(),
-                nullptr,
-                &m_pixelShader
-            )
-        );
-        */
+            DX::ThrowIfFailed(
+                m_deviceResources->GetD3DDevice()->CreateGeometryShader(
+                    gs_blob->GetBufferPointer(),
+                    gs_blob->GetBufferSize(),
+                    nullptr,
+                    &m_geometryShader)
+            );
+        }
     }
 
 }

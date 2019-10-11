@@ -154,6 +154,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Common\RenderStatesHelper.cpp" />
     <ClCompile Include="Extern\imgui\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -220,6 +221,7 @@
     <ClCompile Include="Src\Scene\IScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Common\RenderStatesHelper.h" />
     <ClInclude Include="Extern\imgui\imconfig.h" />
     <ClInclude Include="Extern\imgui\imgui.h" />
     <ClInclude Include="Extern\imgui\imgui_internal.h" />

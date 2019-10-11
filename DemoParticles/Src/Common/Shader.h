@@ -12,11 +12,12 @@ namespace DemoParticles
     public:
         Shader(const DX::DeviceResources* deviceResources);
 
-        void load(const std::wstring& vertexFilename, const std::wstring& pixelFilename, const std::vector<D3D11_INPUT_ELEMENT_DESC>& vertexDesc);
+        void load(const std::wstring& vertexFilename, const std::wstring& pixelFilename, const std::vector<D3D11_INPUT_ELEMENT_DESC>& vertexDesc, const std::wstring& geometryShader = L"");
 
         ID3D11InputLayout* getInputLayout() { return m_inputLayout.Get(); }
         ID3D11VertexShader* getVertexShader() { return m_vertexShader.Get(); }
         ID3D11PixelShader* getPixelShader() { return m_pixelShader.Get(); }
+        ID3D11GeometryShader* getGeometryShader() { return m_geometryShader.Get(); }
 
     private:
         const const DX::DeviceResources* m_deviceResources;
@@ -24,5 +25,6 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11InputLayout>           m_inputLayout;
         Microsoft::WRL::ComPtr<ID3D11VertexShader>          m_vertexShader;
         Microsoft::WRL::ComPtr<ID3D11PixelShader>           m_pixelShader;
+        Microsoft::WRL::ComPtr<ID3D11GeometryShader>        m_geometryShader;
     };
 }

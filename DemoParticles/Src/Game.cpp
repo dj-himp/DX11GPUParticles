@@ -23,6 +23,7 @@
 #include "Model/Model.h"
 #include "Camera/Camera.h"
 #include "Scene/SceneMenger.h"
+#include "Common/RenderStatesHelper.h"
 
 extern void ExitGame();
 
@@ -271,8 +272,7 @@ void Game::CreateDeviceDependentResources()
 {
     auto device = m_deviceResources->GetD3DDevice();
 
-    // TODO: Initialize device dependent objects here (independent of window size).
-    device;
+    RenderStatesHelper::instance().init(m_deviceResources.get());
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.

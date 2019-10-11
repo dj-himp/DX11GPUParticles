@@ -29,13 +29,11 @@ namespace DemoParticles
 
         const DX::DeviceResources* m_deviceResources;
 
-        //Microsoft::WRL::ComPtr<ID3D11InputLayout>           m_inputLayout;
-        //Microsoft::WRL::ComPtr<ID3D11VertexShader>          m_vertexShader;
-        //Microsoft::WRL::ComPtr<ID3D11PixelShader>           m_pixelShader;
         std::unique_ptr<Shader>     m_shader;
 
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_constantBufferVS;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_constantBufferPS;
+        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_constantBufferGS;
         Microsoft::WRL::ComPtr<ID3D11RasterizerState>       m_rasterizerState;
         Microsoft::WRL::ComPtr<ID3D11DepthStencilState>     m_depthStencilState;
         Microsoft::WRL::ComPtr<ID3D11BlendState>            m_blendState;

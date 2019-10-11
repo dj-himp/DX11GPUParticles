@@ -4,24 +4,24 @@ namespace DemoParticles
 {
     struct ModelViewProjectionConstantBuffer
     {
-        DirectX::XMFLOAT4X4 model;
-        DirectX::XMFLOAT4X4 view;
-        DirectX::XMFLOAT4X4 projection;
+        DirectX::SimpleMath::Matrix world;
+        DirectX::SimpleMath::Matrix view;
+        DirectX::SimpleMath::Matrix projection;
     };
 
     struct QuadConstantBuffer
     {
-        DirectX::XMFLOAT4X4 posScale;
+        DirectX::SimpleMath::Matrix posScale;
     };
 
     struct WorldConstantBuffer
     {
-        DirectX::XMFLOAT4X4 world;
+        DirectX::SimpleMath::Matrix world;
     };
 
     struct ModelConstantBuffer
     {
-        DirectX::XMFLOAT4X4 worldViewProj;
+        DirectX::SimpleMath::Matrix worldViewProj;
     };
 
     struct FrustrumCornersConstantBuffer

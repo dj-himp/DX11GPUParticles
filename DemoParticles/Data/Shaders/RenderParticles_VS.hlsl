@@ -7,7 +7,7 @@ SamplerState pointSampler : register(s0);
 
 Texture2D texPositions : register(t0);
 Texture2D texNormals : register(t1);
-Texture2D texColors : register(t2);
+//Texture2D texColors : register(t2);
 
 struct VertexShaderInput
 {
@@ -28,7 +28,7 @@ PixelShaderInput main(VertexShaderInput input)
     
     float4 pos = texPositions.SampleLevel(pointSampler, input.uv, 0);
     float4 normal = texNormals.SampleLevel(pointSampler, input.uv, 0);
-    float4 color = texColors.SampleLevel(pointSampler, input.uv, 0);
+    float4 color = float4(1.0, 0.0, 0.0, 1.0); //texColors.SampleLevel(pointSampler, input.uv, 0);
     
     output.Position = mul(float4(pos.xyz, 1.0), world);
     //output.Position = float4(pos.xy,1.0, 1.0);
