@@ -40,23 +40,6 @@ namespace DemoParticles
             )
         );
 
-        D3D11_RASTERIZER_DESC rasterizerDesc;
-        ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
-        rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-        rasterizerDesc.CullMode = D3D11_CULL_NONE;
-        rasterizerDesc.FrontCounterClockwise = TRUE; //TRUE because my engine is code with right handed coordinates
-        rasterizerDesc.DepthBias = D3D11_DEFAULT_DEPTH_BIAS;
-        rasterizerDesc.DepthBiasClamp = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
-        rasterizerDesc.SlopeScaledDepthBias = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
-        rasterizerDesc.DepthClipEnable = FALSE;
-        rasterizerDesc.ScissorEnable = FALSE;
-        rasterizerDesc.MultisampleEnable = FALSE;
-        rasterizerDesc.AntialiasedLineEnable = FALSE;
-
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState)
-        );
-
         D3D11_BLEND_DESC blendDesc;
         ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
         blendDesc.RenderTarget[0].BlendEnable = FALSE;
@@ -108,7 +91,7 @@ namespace DemoParticles
             context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
             context->VSSetConstantBuffers(0, 1, m_constantBufferVS.GetAddressOf());
 
-            context->RSSetState(m_rasterizerState.Get());
+            context->RSSetState(RenderStatesHelper::CullNone().Get());
 
             context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);
 

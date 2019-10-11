@@ -48,22 +48,6 @@ namespace DemoParticles
             )
         );
 
-        D3D11_RASTERIZER_DESC rasterizerDesc;
-        rasterizerDesc.FillMode = D3D11_FILL_SOLID;
-        rasterizerDesc.CullMode = D3D11_CULL_BACK;
-        rasterizerDesc.FrontCounterClockwise = TRUE; //TRUE because my engine is code with right handed coordinates
-        rasterizerDesc.DepthBias = D3D11_DEFAULT_DEPTH_BIAS;
-        rasterizerDesc.DepthBiasClamp = D3D11_DEFAULT_DEPTH_BIAS_CLAMP;
-        rasterizerDesc.SlopeScaledDepthBias = D3D11_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
-        rasterizerDesc.DepthClipEnable = TRUE;
-        rasterizerDesc.ScissorEnable = FALSE;
-        rasterizerDesc.MultisampleEnable = FALSE;
-        rasterizerDesc.AntialiasedLineEnable = FALSE;
-
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateRasterizerState(&rasterizerDesc, &m_rasterizerState)
-        );
-        
         //Z rotation is temporary as I need to know why the model is upside down
         m_world = Matrix::CreateScale(1.0f) * Matrix::CreateRotationX(0.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
     }
@@ -105,7 +89,7 @@ namespace DemoParticles
             context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
             context->VSSetConstantBuffers1(0, 1, m_constantBufferVS.GetAddressOf(), nullptr, nullptr);
 
-            context->RSSetState(m_rasterizerState.Get());
+            context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
 
             context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);
 

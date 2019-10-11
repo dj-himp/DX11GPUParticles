@@ -106,8 +106,8 @@ namespace DemoParticles
         m_renderParticles->render();
 
         //m_fullScreenQuad->setTexture(m_computePackParticle->getRenderTarget(0)->getShaderResourceView());
-        m_fullScreenQuad->setTexture(m_rtBakePositions->getShaderResourceView().Get());
-        m_fullScreenQuad->render();
+        //m_fullScreenQuad->setTexture(m_rtBakePositions->getShaderResourceView().Get());
+        //m_fullScreenQuad->render();
 
 
     }
