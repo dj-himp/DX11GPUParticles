@@ -6,24 +6,19 @@
 
 namespace DemoParticles
 {
-    ComputeShader::ComputeShader(const DX::DeviceResources* deviceResources, const int nbUAVs /* = 1*/, const bool needCounterBuffer /*= false*/)
+    ComputeShader::ComputeShader(const DX::DeviceResources* deviceResources)//, const int nbUAVs /* = 1*/, const bool needCounterBuffer /*= false*/)
         : m_deviceResources(deviceResources)
-        , m_nbUAVs(nbUAVs)
-        , m_needCounterBuffer(needCounterBuffer)
+        //, m_nbUAVs(nbUAVs)
+        //, m_needCounterBuffer(needCounterBuffer)
     {
-        m_UAVs.resize(m_nbUAVs);
-        m_renderTargets.resize(m_nbUAVs);
+        //m_UAVs.resize(m_nbUAVs);
+        //m_renderTargets.resize(m_nbUAVs);
     }
 
     void ComputeShader::load(const std::wstring& computeFilename)
     {
-        //const std::vector<byte> vertexShaderData = DX::readBinFile(vertexFilename);
-
         ID3DBlob* cs_blob;
         D3DReadFileToBlob(computeFilename.c_str(), &cs_blob);
-
-        //ID3DBlob* rootSignature;
-        //D3DGetBlobPart(cs_blob, sizeof(cs_blob), D3D_BLOB_ROOT_SIGNATURE, 0, &rootSignature);
         
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateComputeShader(
@@ -34,26 +29,9 @@ namespace DemoParticles
             )
         );
 
-        /*ID3D11ShaderReflection* shaderReflector = nullptr;
-        D3DReflect(cs_blob->GetBufferPointer(), cs_blob->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&shaderReflector);
-        
-        D3D11_SHADER_DESC desc;
-        shaderReflector->GetDesc(&desc);
-
-        for (int i = 0; i < desc.BoundResources; ++i)
+        /*for (int i = 0; i < m_nbUAVs; ++i)
         {
-            //D3D11_SIGNATURE_PARAMETER_DESC paramDesc;
-            //shaderReflector->GetInputParameterDesc(i, &paramDesc);
-
-            D3D11_SHADER_INPUT_BIND_DESC paramDesc;
-            shaderReflector->GetResourceBindingDesc(i, &paramDesc);
-            D3D_SHADER_INPUT_TYPE type = paramDesc.Type;
-            D3D_RESOURCE_RETURN_TYPE returnType = paramDesc.ReturnType;
-        }*/
-
-        for (int i = 0; i < m_nbUAVs; ++i)
-        {
-            /*std::unique_ptr<RenderTarget> renderTarget*/m_renderTargets[i] = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, m_deviceResources->GetOutputWidth(), m_deviceResources->GetOutputHeight(), 1, true);
+            m_renderTargets[i] = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, m_deviceResources->GetOutputWidth(), m_deviceResources->GetOutputHeight(), 1, true);
 
             D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
             uavDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
@@ -61,10 +39,8 @@ namespace DemoParticles
             uavDesc.Texture2D.MipSlice = 0;
 
             DX::ThrowIfFailed(
-                m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(/*renderTarget*/m_renderTargets[i]->getTexture().Get(), &uavDesc, &m_UAVs[i])
+                m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_renderTargets[i]->getTexture().Get(), &uavDesc, &m_UAVs[i])
             );
-
-            //m_renderTargets.push_back(std::move(renderTarget));
         }
       
         if (m_needCounterBuffer)
@@ -77,15 +53,9 @@ namespace DemoParticles
             bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
             bufferDesc.StructureByteStride = 4;
             bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
-            
-            /*D3D11_SUBRESOURCE_DATA subresourceData;
-            subresourceData.pSysMem = &m_counterValue;
-            subresourceData.SysMemPitch = 0;
-            subresourceData.SysMemSlicePitch = 0;
-            */
 
             DX::ThrowIfFailed(
-                m_deviceResources->GetD3DDevice()->CreateBuffer(&bufferDesc, nullptr/*&subresourceData*/, &m_counterBuffer)
+                m_deviceResources->GetD3DDevice()->CreateBuffer(&bufferDesc, nullptr, &m_counterBuffer)
             );
 
             //TODO MAYBE : use Append instead of counter to append at the end of buffer
@@ -113,14 +83,14 @@ namespace DemoParticles
                 m_deviceResources->GetD3DDevice()->CreateBuffer(&stagingDesc, nullptr, &m_counterStagingBuffer)
             );
 
-        }
+        }*/
     }
 
     void ComputeShader::begin()
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
-        for (int i = 0; i < m_nbUAVs; ++i)
+        /*for (int i = 0; i < m_nbUAVs; ++i)
         {
             context->CSSetUnorderedAccessViews(i, 1, m_UAVs[i].GetAddressOf(), nullptr);
         }
@@ -130,7 +100,7 @@ namespace DemoParticles
             const UINT initialCounts[] = { 0 }; //only use for internal atomic counter
             context->CSSetUnorderedAccessViews(m_nbUAVs, 1, m_counterUAV.GetAddressOf(), initialCounts);
             //context->OMSetRenderTargetsAndUnorderedAccessViews(D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL, nullptr, nullptr, m_nbUAVs, 1, m_counterUAV.GetAddressOf(), initialCounts);
-        }
+        }*/
 
         context->CSSetShader(m_computeShader.Get(), nullptr, 0);
     }
@@ -141,7 +111,7 @@ namespace DemoParticles
 
         //TODO first copy to a constant buffer to reuse in a shader and copy to cpu only on debug
 
-        context->CopyStructureCount(m_counterStagingBuffer.Get(), 0, m_counterUAV.Get());
+        /*context->CopyStructureCount(m_counterStagingBuffer.Get(), 0, m_counterUAV.Get());
         D3D11_MAPPED_SUBRESOURCE mappedSubresource;
         context->Map(m_counterStagingBuffer.Get(), 0, D3D11_MAP_READ, 0, &mappedSubresource);
         m_counterValue = *(int*)mappedSubresource.pData;
@@ -153,7 +123,7 @@ namespace DemoParticles
             
             context->CSSetUnorderedAccessViews(i, 1, nullUav, nullptr);
         }
-
+        */
         context->CSSetShader(nullptr, nullptr, 0);
     }
 
@@ -164,15 +134,30 @@ namespace DemoParticles
         context->Dispatch(threadGroupX, threadGroupY, threadGroupZ);
     }
 
-    void ComputeShader::setShaderResource(int slot, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView)
+    void ComputeShader::setSRV(int slot, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView)
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
         context->CSSetShaderResources(slot, 1, shaderResourceView.GetAddressOf());
     }
 
+    void ComputeShader::setUAV(int slot, Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> uav)
+    {
+        auto context = m_deviceResources->GetD3DDeviceContext();
+
+        UINT initialCount[] = { 0 };
+        context->CSSetUnorderedAccessViews(slot, 1, uav.GetAddressOf(), initialCount);
+    }
+
+    void ComputeShader::setConstantBuffer(int slot, Microsoft::WRL::ComPtr<ID3D11Buffer> buffer)
+    {
+        auto context = m_deviceResources->GetD3DDeviceContext();
+
+        context->CSSetConstantBuffers(slot, 1, buffer.GetAddressOf());
+    }
+
     //TODO maybe do it differently (not returning raw pointer)
-    RenderTarget* ComputeShader::getRenderTarget(int slot)
+    /*RenderTarget* ComputeShader::getRenderTarget(int slot)
     {
         if (slot >= m_nbUAVs)
         {
@@ -180,6 +165,6 @@ namespace DemoParticles
         }
 
         return m_renderTargets[slot].get();
-    }
+    }*/
 
 }

@@ -83,7 +83,7 @@ namespace DemoParticles
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
-        context->UpdateSubresource1(m_constantBufferVS.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
+        context->UpdateSubresource(m_constantBufferVS.Get(), 0, NULL, &m_constantBufferData, 0, 0);
 
         for (int i = 0; i < m_axis->getMeshCount(); ++i)
         {
@@ -98,6 +98,9 @@ namespace DemoParticles
             context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
             context->VSSetConstantBuffers1(0, 1, m_constantBufferVS.GetAddressOf(), nullptr, nullptr);
 
+            const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
+            context->OMSetBlendState(RenderStatesHelper::Opaque().Get(), blendFactor, 0xffffffff);
+            context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
             context->RSSetState(RenderStatesHelper::CullNone().Get());
 
             context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);

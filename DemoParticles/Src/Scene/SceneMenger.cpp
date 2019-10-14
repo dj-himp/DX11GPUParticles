@@ -39,11 +39,11 @@ namespace DemoParticles
         m_rtBakePositions = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, m_deviceResources->GetOutputWidth(), m_deviceResources->GetOutputHeight());
         m_rtBakeNormals = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, m_deviceResources->GetOutputWidth(), m_deviceResources->GetOutputHeight());
 
-        m_computePackParticle = std::make_unique<ComputeShader>(m_deviceResources, 2, true);
+        m_computePackParticle = std::make_unique<ComputeShader>(m_deviceResources);// , 2, true);
         m_computePackParticle->load(L"PackParticles_CS.cso");
 
         //m_renderParticles->setShaderResourceViews(m_rtBakePositions->getShaderResourceView(), m_rtBakeNormals->getShaderResourceView());
-        m_renderParticles->setShaderResourceViews(m_computePackParticle->getRenderTarget(0)->getShaderResourceView(), m_computePackParticle->getRenderTarget(1)->getShaderResourceView());
+        //m_renderParticles->setShaderResourceViews(m_computePackParticle->getRenderTarget(0)->getShaderResourceView(), m_computePackParticle->getRenderTarget(1)->getShaderResourceView());
     }
 
     void SceneMenger::createWindowSizeDependentResources()
@@ -91,12 +91,12 @@ namespace DemoParticles
             context->OMSetRenderTargets(nbRT, previousRenderTargets, previousDepthStencil);
 
             m_computePackParticle->begin();
-            m_computePackParticle->setShaderResource(0, m_rtBakePositions->getShaderResourceView());
-            m_computePackParticle->setShaderResource(1, m_rtBakeNormals->getShaderResourceView());
+            m_computePackParticle->setSRV(0, m_rtBakePositions->getShaderResourceView());
+            m_computePackParticle->setSRV(1, m_rtBakeNormals->getShaderResourceView());
             m_computePackParticle->start(32, 22, 1);
             m_computePackParticle->end();
-            m_computePackParticle->setShaderResource(0, nullptr);
-            m_computePackParticle->setShaderResource(1, nullptr);
+            m_computePackParticle->setSRV(0, nullptr);
+            m_computePackParticle->setSRV(1, nullptr);
 
             m_bakingDone = true;
         }

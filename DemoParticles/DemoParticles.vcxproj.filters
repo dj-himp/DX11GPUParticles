@@ -40,6 +40,9 @@
     <Filter Include="Src\Scene">
       <UniqueIdentifier>{c8409ffa-0c95-4454-889c-de24d307e148}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Data\Shaders\Particles">
+      <UniqueIdentifier>{96db913d-5517-4f22-a59c-abc079c77513}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\App.cpp">
@@ -260,6 +263,9 @@
     <ClInclude Include="Src\Common\RenderStatesHelper.h">
       <Filter>Src\Common</Filter>
     </ClInclude>
+    <ClInclude Include="Data\Shaders\Particles\ParticlesGlobals.h">
+      <Filter>Data\Shaders\Particles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -315,14 +321,23 @@
     <FxCompile Include="Data\Shaders\PackParticles_CS.hlsl">
       <Filter>Data\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Data\Shaders\RenderParticles_GS.hlsl">
-      <Filter>Data\Shaders</Filter>
+    <FxCompile Include="Data\Shaders\Particles\ResetParticles_CS.hlsl">
+      <Filter>Data\Shaders\Particles</Filter>
     </FxCompile>
-    <FxCompile Include="Data\Shaders\RenderParticles_PS.hlsl">
-      <Filter>Data\Shaders</Filter>
+    <FxCompile Include="Data\Shaders\Particles\EmitParticles_CS.hlsl">
+      <Filter>Data\Shaders\Particles</Filter>
     </FxCompile>
-    <FxCompile Include="Data\Shaders\RenderParticles_VS.hlsl">
-      <Filter>Data\Shaders</Filter>
+    <FxCompile Include="Data\Shaders\Particles\RenderParticles_GS.hlsl">
+      <Filter>Data\Shaders\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\RenderParticles_PS.hlsl">
+      <Filter>Data\Shaders\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\RenderParticles_VS.hlsl">
+      <Filter>Data\Shaders\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\SimulateParticles_CS.hlsl">
+      <Filter>Data\Shaders\Particles</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

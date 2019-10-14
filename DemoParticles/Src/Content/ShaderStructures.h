@@ -37,6 +37,24 @@ namespace DemoParticles
         float             time;
     };
 
+    struct EmitterConstantBuffer
+    {
+        DirectX::SimpleMath::Vector4 position;
+        DirectX::SimpleMath::Vector4 direction;
+        UINT maxSpawn;
+
+        UINT padding[3];
+
+    };
+
+    struct DeadListCountConstantBuffer
+    {
+        UINT nbDeadParticles;
+
+        UINT padding[3];
+    };
+
+
     // Used to send per-vertex data to the vertex shader.
     struct VertexPositionColor
     {

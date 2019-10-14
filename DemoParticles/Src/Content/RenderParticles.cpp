@@ -2,8 +2,7 @@
 #include "RenderParticles.h"
 
 #include "Common/Shader.h"
-#include "Model/Model.h"
-#include "Model/MeshFactory.h"
+#include "Common/ComputeShader.h"
 #include "Camera/Camera.h"
 
 using namespace DirectX::SimpleMath;
@@ -80,7 +79,144 @@ namespace DemoParticles
         );
 
         
+        //MAIN PARTICLE POOL
 
+        D3D11_BUFFER_DESC particleBufferDesc;
+        particleBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+        particleBufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+        particleBufferDesc.CPUAccessFlags = 0;
+        particleBufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+        particleBufferDesc.ByteWidth = sizeof(Particle) * m_maxParticles;
+        particleBufferDesc.StructureByteStride = sizeof(Particle);
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&particleBufferDesc, nullptr, &m_particleBuffer)
+        );
+
+        D3D11_UNORDERED_ACCESS_VIEW_DESC particleUAVDesc;
+        particleUAVDesc.Format = DXGI_FORMAT_UNKNOWN;
+        particleUAVDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+        particleUAVDesc.Buffer.FirstElement = 0;
+        particleUAVDesc.Buffer.NumElements = m_maxParticles;
+        particleUAVDesc.Buffer.Flags = 0;
+        
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_particleBuffer.Get(), &particleUAVDesc, &m_particleUAV)
+        );
+
+        D3D11_SHADER_RESOURCE_VIEW_DESC particleSRVDesc;
+        particleSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
+        particleSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+        particleSRVDesc.Buffer.FirstElement = 0;
+        particleSRVDesc.Buffer.NumElements = m_maxParticles;
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateShaderResourceView(m_particleBuffer.Get(), &particleSRVDesc, &m_particleSRV)
+        );
+
+        //DEAD LIST
+        D3D11_BUFFER_DESC deadListBufferDesc;
+        deadListBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+        deadListBufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+        deadListBufferDesc.CPUAccessFlags = 0;
+        deadListBufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+        deadListBufferDesc.ByteWidth = sizeof(UINT) * m_maxParticles;
+        deadListBufferDesc.StructureByteStride = sizeof(UINT);
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&deadListBufferDesc, nullptr, &m_deadListBuffer)
+        );
+
+        D3D11_UNORDERED_ACCESS_VIEW_DESC deadListUAVDesc;
+        deadListUAVDesc.Format = DXGI_FORMAT_UNKNOWN;
+        deadListUAVDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+        deadListUAVDesc.Buffer.FirstElement = 0;
+        deadListUAVDesc.Buffer.NumElements = m_maxParticles;
+        deadListUAVDesc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_APPEND;
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_deadListBuffer.Get(), &deadListUAVDesc, &m_deadListUAV)
+        );
+
+
+        //ALIVE PARTICLE LIST
+        D3D11_BUFFER_DESC aliveIndexBufferDesc;
+        aliveIndexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+        aliveIndexBufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+        aliveIndexBufferDesc.CPUAccessFlags = 0;
+        aliveIndexBufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+        aliveIndexBufferDesc.ByteWidth = sizeof(ParticleIndexElement) * m_maxParticles;
+        aliveIndexBufferDesc.StructureByteStride = sizeof(ParticleIndexElement);
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&aliveIndexBufferDesc, nullptr, &m_aliveIndexBuffer)
+        );
+
+        D3D11_UNORDERED_ACCESS_VIEW_DESC aliveIndexUAVDesc;
+        aliveIndexUAVDesc.Format = DXGI_FORMAT_UNKNOWN;
+        aliveIndexUAVDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+        aliveIndexUAVDesc.Buffer.FirstElement = 0;
+        aliveIndexUAVDesc.Buffer.NumElements = m_maxParticles;
+        aliveIndexUAVDesc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_COUNTER;
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_aliveIndexBuffer.Get(), &aliveIndexUAVDesc, &m_aliveIndexUAV)
+        );
+
+        D3D11_SHADER_RESOURCE_VIEW_DESC aliveIndexSRVDesc;
+        aliveIndexSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
+        aliveIndexSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+        aliveIndexSRVDesc.Buffer.FirstElement = 0;
+        aliveIndexSRVDesc.Buffer.NumElements = m_maxParticles;
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateShaderResourceView(m_aliveIndexBuffer.Get(), &aliveIndexSRVDesc, &m_aliveIndexSRV)
+        );
+
+        m_initDeadListShader = std::make_unique<ComputeShader>(m_deviceResources);
+        m_initDeadListShader->load(L"InitDeadList_CS.cso");
+
+        m_emitParticles = std::make_unique<ComputeShader>(m_deviceResources);
+        m_emitParticles->load(L"EmitParticles_CS.cso");
+
+
+        //EMITTER CONSTANT BUFFER
+        CD3D11_BUFFER_DESC emitterConstantBufferDesc(sizeof(EmitterConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&emitterConstantBufferDesc, nullptr, &m_emitterConstantBuffer)
+        );
+
+        //DeadList CONSTANT BUFFER
+        CD3D11_BUFFER_DESC deadListCountConstantBufferDesc(sizeof(DeadListCountConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&deadListCountConstantBufferDesc, nullptr, &m_deadListCountConstantBuffer)
+        );
+
+        //Indirect Draw Args Buffer
+        D3D11_BUFFER_DESC indirectDrawArgsBuffer;
+        ZeroMemory(&indirectDrawArgsBuffer, sizeof(indirectDrawArgsBuffer));
+        indirectDrawArgsBuffer.Usage = D3D11_USAGE_DEFAULT;
+        indirectDrawArgsBuffer.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
+        indirectDrawArgsBuffer.ByteWidth = 5 * sizeof(UINT);
+        indirectDrawArgsBuffer.MiscFlags = D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS;
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&indirectDrawArgsBuffer, nullptr, &m_indirectDrawArgsBuffer)
+        );
+
+        D3D11_UNORDERED_ACCESS_VIEW_DESC indirectDrawArgsUAVDesc;
+        indirectDrawArgsUAVDesc.Format = DXGI_FORMAT_R32_UINT;
+        indirectDrawArgsUAVDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+        indirectDrawArgsUAVDesc.Buffer.FirstElement = 0;
+        indirectDrawArgsUAVDesc.Buffer.NumElements = 5;
+        indirectDrawArgsUAVDesc.Buffer.Flags = 0;
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_indirectDrawArgsBuffer.Get(), &indirectDrawArgsUAVDesc, &m_indirectDrawArgsUAV)
+        );
+
+        m_simulateShader = std::make_unique<ComputeShader>(m_deviceResources);
+        m_simulateShader->load(L"SimulateParticles_CS.cso");
     }
 
     void RenderParticles::createWindowSizeDependentResources()
@@ -103,43 +239,45 @@ namespace DemoParticles
         m_constantBufferDataGS.world = m_world.Transpose();
         m_constantBufferDataGS.view = camera->getView().Transpose();
         m_constantBufferDataGS.projection = camera->getProjection().Transpose();
+
+        m_emitterConstantBufferData.position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+        m_emitterConstantBufferData.direction = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+        m_emitterConstantBufferData.maxSpawn = 1024;
+
     }
 
     void RenderParticles::render()
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
-        context->UpdateSubresource(m_constantBufferVS.Get(), 0, nullptr, &m_constantBufferDataVS, 0, 0);
-        context->UpdateSubresource(m_constantBufferGS.Get(), 0, nullptr, &m_constantBufferDataGS, 0, 0);
+        if (m_resetParticles)
+        {
+            resetParticles();
+            
+            m_resetParticles = false;
+        }
 
-        UINT offset = 0;
-        context->IASetVertexBuffers(0, 1, m_vertexBuffer.GetAddressOf(), &m_vertexStride, &offset);
-        context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
-        context->IASetInputLayout(m_shader->getInputLayout());
+        emitParticles();
+        simulateParticles();
 
         context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
-        context->VSSetConstantBuffers(0, 1, m_constantBufferVS.GetAddressOf());
-        context->VSSetSamplers(0, 1, RenderStatesHelper::PointClamp().GetAddressOf());
-        context->VSSetShaderResources(0, 1, m_positionView.GetAddressOf());
-        context->VSSetShaderResources(1, 1, m_normalView.GetAddressOf());
-
-        context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
-
         context->GSSetShader(m_shader->getGeometryShader(), nullptr, 0);
-        context->GSSetConstantBuffers(0, 1, m_constantBufferGS.GetAddressOf());
-
         context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);
 
-        const float blend_factor[4] = { 0.f, 0.f, 0.f, 0.f };
-        context->OMSetBlendState(RenderStatesHelper::Additive().Get(), blend_factor, 0xffffffff);
-        context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
-        //context->OMSetDepthStencilState(RenderStatesHelper::DepthDefault().Get(), 0);
+        ID3D11Buffer* nullVertexBuffer = nullptr;
+        UINT stride = 0;
+        UINT offset = 0;
+        context->IASetVertexBuffers(0, 1, &nullVertexBuffer, &stride, &offset);
+        context->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
+        context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 
-        context->Draw(m_nbParticles, 0);
+        ID3D11ShaderResourceView* vertexShaderSRVs[] = { m_particleSRV.Get(), m_aliveIndexSRV.Get() };
+        context->VSSetShaderResources(0, ARRAYSIZE(vertexShaderSRVs), vertexShaderSRVs);
 
-        ID3D11ShaderResourceView* shaderResource[] = { nullptr, nullptr };
-        context->VSSetShaderResources(0, 2, shaderResource);
-        context->GSSetShaderResources(0, 2, shaderResource);
+        context->DrawInstancedIndirect(m_indirectDrawArgsBuffer.Get(), 0);
+
+        ZeroMemory(vertexShaderSRVs, sizeof(vertexShaderSRVs));
+        context->VSSetShaderResources(0, ARRAYSIZE(vertexShaderSRVs), vertexShaderSRVs);
 
         context->GSSetShader(nullptr, nullptr, 0);
     }
@@ -149,5 +287,52 @@ namespace DemoParticles
         m_positionView = positionView;
         m_normalView = normalView;
     }
+
+    // Helper function to align values
+    int align(int value, int alignment) { return (value + (alignment - 1)) & ~(alignment - 1); }
+
+    void RenderParticles::resetParticles()
+    {
+        auto context = m_deviceResources->GetD3DDeviceContext();
+
+        m_initDeadListShader->setUAV(0, m_deadListUAV);
+        m_initDeadListShader->setUAV(1, m_particleUAV);
+        m_initDeadListShader->begin();
+        m_initDeadListShader->start(align(m_maxParticles, 256) / 256, 1, 1);
+        m_initDeadListShader->end();
+        m_initDeadListShader->setUAV(0, nullptr);
+        m_initDeadListShader->setUAV(1, nullptr);
+
+        m_deadListCountConstantBufferData.nbDeadParticles = m_maxParticles;
+    }
+
+    void RenderParticles::emitParticles()
+    {
+        auto context = m_deviceResources->GetD3DDeviceContext();
+
+        context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
+        context->UpdateSubresource(m_deadListCountConstantBuffer.Get(), 0, nullptr, &m_deadListCountConstantBufferData, 0, 0);
+
+        m_emitParticles->setConstantBuffer(0, m_emitterConstantBuffer);
+        m_emitParticles->setConstantBuffer(1, m_deadListCountConstantBuffer);
+        m_emitParticles->setUAV(0, m_deadListUAV);
+        m_emitParticles->setUAV(1, m_particleUAV);
+        m_emitParticles->begin();
+        m_emitParticles->start(align(m_maxParticles, 256) / 256, 1, 1);
+        m_emitParticles->end();
+        m_emitParticles->setUAV(0, nullptr);
+        m_emitParticles->setUAV(1, nullptr);
+    }
+
+    void RenderParticles::simulateParticles()
+    {
+        auto context = m_deviceResources->GetD3DDeviceContext();
+
+        m_simulateShader->setUAV(0, m_indirectDrawArgsUAV);
+        m_simulateShader->begin();
+        m_simulateShader->start(align(m_maxParticles, 256) / 256, 1, 1);
+        m_simulateShader->end();
+        m_simulateShader->setUAV(0, nullptr);
+   }
 
 }
