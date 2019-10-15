@@ -174,7 +174,7 @@ namespace DemoParticles
         );
 
         m_initDeadListShader = std::make_unique<ComputeShader>(m_deviceResources);
-        m_initDeadListShader->load(L"InitDeadList_CS.cso");
+        m_initDeadListShader->load(L"ResetParticles_CS.cso");
 
         m_emitParticles = std::make_unique<ComputeShader>(m_deviceResources);
         m_emitParticles->load(L"EmitParticles_CS.cso");
@@ -190,6 +190,9 @@ namespace DemoParticles
         CD3D11_BUFFER_DESC deadListCountConstantBufferDesc(sizeof(DeadListCountConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateBuffer(&deadListCountConstantBufferDesc, nullptr, &m_deadListCountConstantBuffer)
+        );
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&deadListCountConstantBufferDesc, nullptr, &m_aliveListCountConstantBuffer)
         );
 
         //Indirect Draw Args Buffer
@@ -240,7 +243,7 @@ namespace DemoParticles
         m_constantBufferDataGS.view = camera->getView().Transpose();
         m_constantBufferDataGS.projection = camera->getProjection().Transpose();
 
-        m_emitterConstantBufferData.position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+        m_emitterConstantBufferData.position = Vector4(-1.0f, 0.0f, 0.0f, 1.0f);
         m_emitterConstantBufferData.direction = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
         m_emitterConstantBufferData.maxSpawn = 1024;
 
@@ -254,7 +257,7 @@ namespace DemoParticles
         {
             resetParticles();
             
-            m_resetParticles = false;
+            //m_resetParticles = false;
         }
 
         emitParticles();
@@ -273,6 +276,15 @@ namespace DemoParticles
 
         ID3D11ShaderResourceView* vertexShaderSRVs[] = { m_particleSRV.Get(), m_aliveIndexSRV.Get() };
         context->VSSetShaderResources(0, ARRAYSIZE(vertexShaderSRVs), vertexShaderSRVs);
+        context->VSSetConstantBuffers(3, 1, m_aliveListCountConstantBuffer.GetAddressOf());
+
+        context->UpdateSubresource(m_constantBufferGS.Get(), 0, nullptr, &m_constantBufferDataGS, 0, 0);
+        context->GSSetConstantBuffers(0, 1, m_constantBufferGS.GetAddressOf());
+
+        const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
+        //context->OMSetBlendState(RenderStatesHelper::Additive().Get(), blendFactor, 0xffffffff);
+        //context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
+        //context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
 
         context->DrawInstancedIndirect(m_indirectDrawArgsBuffer.Get(), 0);
 
@@ -295,28 +307,36 @@ namespace DemoParticles
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
-        m_initDeadListShader->setUAV(0, m_deadListUAV);
-        m_initDeadListShader->setUAV(1, m_particleUAV);
+        UINT initialCount[] = { 0 };
+        m_initDeadListShader->setUAV(0, m_deadListUAV, initialCount);
+        initialCount[0] = -1;
+        m_initDeadListShader->setUAV(1, m_particleUAV, initialCount);
         m_initDeadListShader->begin();
         m_initDeadListShader->start(align(m_maxParticles, 256) / 256, 1, 1);
         m_initDeadListShader->end();
         m_initDeadListShader->setUAV(0, nullptr);
         m_initDeadListShader->setUAV(1, nullptr);
 
-        m_deadListCountConstantBufferData.nbDeadParticles = m_maxParticles;
+        //int i = m_initDeadListShader->readCounter(m_deadListUAV);
     }
 
     void RenderParticles::emitParticles()
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
-        context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
-        context->UpdateSubresource(m_deadListCountConstantBuffer.Get(), 0, nullptr, &m_deadListCountConstantBufferData, 0, 0);
+        //copy the deadList counter to a constantBuffer
+        context->CopyStructureCount(m_deadListCountConstantBuffer.Get(), 0, m_deadListUAV.Get());
 
+        context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
+        //context->UpdateSubresource(m_deadListCountConstantBuffer.Get(), 0, nullptr, &m_deadListCountConstantBufferData, 0, 0);
+
+        //int i = m_initDeadListShader->readCounter(m_deadListUAV);
+
+        UINT initialCount[] = { -1 };
         m_emitParticles->setConstantBuffer(0, m_emitterConstantBuffer);
-        m_emitParticles->setConstantBuffer(1, m_deadListCountConstantBuffer);
-        m_emitParticles->setUAV(0, m_deadListUAV);
-        m_emitParticles->setUAV(1, m_particleUAV);
+        m_emitParticles->setConstantBuffer(2, m_deadListCountConstantBuffer);
+        m_emitParticles->setUAV(0, m_deadListUAV, initialCount);
+        m_emitParticles->setUAV(1, m_particleUAV, initialCount);
         m_emitParticles->begin();
         m_emitParticles->start(align(m_maxParticles, 256) / 256, 1, 1);
         m_emitParticles->end();
@@ -328,11 +348,21 @@ namespace DemoParticles
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
-        m_simulateShader->setUAV(0, m_indirectDrawArgsUAV);
+        UINT initialCount[] = { -1 };
+        m_simulateShader->setUAV(0, m_indirectDrawArgsUAV, initialCount);
+        m_simulateShader->setUAV(2, m_particleUAV, initialCount);
+        initialCount[0] = 0;
+        m_simulateShader->setUAV(1, m_aliveIndexUAV, initialCount);
         m_simulateShader->begin();
         m_simulateShader->start(align(m_maxParticles, 256) / 256, 1, 1);
         m_simulateShader->end();
         m_simulateShader->setUAV(0, nullptr);
+        m_simulateShader->setUAV(1, nullptr);
+        m_simulateShader->setUAV(2, nullptr);
+
+        context->CopyStructureCount(m_aliveListCountConstantBuffer.Get(), 0, m_aliveIndexUAV.Get());
+
+        //int i = m_simulateShader->readCounter(m_aliveIndexUAV);
    }
 
 }

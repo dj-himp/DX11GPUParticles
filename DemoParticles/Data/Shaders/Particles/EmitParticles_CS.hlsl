@@ -6,7 +6,7 @@ cbuffer emitterConstantBuffer : register(b0)
     float4 emitterPosition;
     float4 emitterDirection;
     uint emitterMaxSpawn;
-    
+
     uint3 emitterPadding;
 };
 
@@ -26,6 +26,7 @@ void main(uint3 id : SV_DispatchThreadID)
 
         //test
         p.position += (id.x / 1024.0) * emitterDirection;
+        p.age = 1.0;
 
         uint index = deadListBuffer.Consume();
         particleList[index] = p;

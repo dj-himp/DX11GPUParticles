@@ -3,6 +3,8 @@
 
 
 RWBuffer<uint> indirectDrawArgs : register(u0);
+RWStructuredBuffer<ParticleIndexElement> aliveParticleIndex: register(u1);
+RWStructuredBuffer<Particle> particleList : register(u2);
 
 //256 particles per thread group
 [numthreads(256, 1, 1)]
@@ -18,6 +20,18 @@ void main(uint3 id : SV_DispatchThreadID)
         indirectDrawArgs[4] = 0;
     }
 
-    InterlockedAdd(indirectDrawArgs[0], 1);
+    // Wait after draw args are written so no other threads can write to them before they are initialized
+    GroupMemoryBarrierWithGroupSync();
 
+    Particle p = particleList[id.x];
+    if(p.age > 0.0f)
+    {
+        ParticleIndexElement particle;
+        particle.distance = 0.0;
+        particle.index = id.x;
+        uint index = aliveParticleIndex.IncrementCounter();
+        aliveParticleIndex[index] = particle;
+
+        InterlockedAdd(indirectDrawArgs[0], 1);
+    }
 }

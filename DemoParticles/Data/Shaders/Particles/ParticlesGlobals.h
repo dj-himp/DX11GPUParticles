@@ -2,6 +2,7 @@
 struct Particle
 {
     float4 position;
+    float age;
 };
 
 struct ParticleIndexElement
