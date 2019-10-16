@@ -26,13 +26,13 @@ void main(uint3 id : SV_DispatchThreadID)
     GroupMemoryBarrierWithGroupSync();
 
     Particle p = particleList[id.x];
-    if(p.age <= p.lifeSpan)
+    if(p.age > 0)
     {
         //simulation
-        p.age += dt;
+        p.age -= dt;
         p.position += p.velocity * dt;
 
-        if(p.age <= p.lifeSpan)
+        if(p.age > 0)
         {
             ParticleIndexElement particle;
             particle.distance = 0.0;
@@ -44,7 +44,10 @@ void main(uint3 id : SV_DispatchThreadID)
         }
         else
         {
+            p.age = -1.0;
             deadParticleIndex.Append(id.x);
         }
     }
+
+    particleList[id.x] = p;
 }

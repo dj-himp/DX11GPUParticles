@@ -34,7 +34,7 @@ namespace DemoParticles
         int width = m_deviceResources->GetOutputWidth();
         int height = m_deviceResources->GetOutputHeight();
         m_nbParticles = width * height;
-        
+
         std::vector<Vector2> vertices;
         vertices.resize(m_nbParticles);
 
@@ -247,7 +247,7 @@ namespace DemoParticles
         {
             resetParticles();
             
-            //m_resetParticles = false;
+            m_resetParticles = false;
         }
 
         emitParticles();
@@ -318,9 +318,9 @@ namespace DemoParticles
         context->CopyStructureCount(m_deadListCountConstantBuffer.Get(), 0, m_deadListUAV.Get());
 
         context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
-        //context->UpdateSubresource(m_deadListCountConstantBuffer.Get(), 0, nullptr, &m_deadListCountConstantBufferData, 0, 0);
 
-        //int i = m_initDeadListShader->readCounter(m_deadListUAV);
+        int i = m_initDeadListShader->readCounter(m_deadListUAV);
+        DebugUtils::log(std::to_string(i));
 
         UINT initialCount[] = { -1 };
         m_emitParticles->setConstantBuffer(1, m_emitterConstantBuffer);
@@ -328,7 +328,7 @@ namespace DemoParticles
         m_emitParticles->setUAV(0, m_deadListUAV, initialCount);
         m_emitParticles->setUAV(1, m_particleUAV, initialCount);
         m_emitParticles->begin();
-        m_emitParticles->start(align(m_maxParticles, 256) / 256, 1, 1);
+        m_emitParticles->start(align(m_maxParticles, 1024) / 1024, 1, 1);
         m_emitParticles->end();
         m_emitParticles->setUAV(0, nullptr);
         m_emitParticles->setUAV(1, nullptr);

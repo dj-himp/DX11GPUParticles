@@ -93,6 +93,7 @@ namespace DemoParticles
         auto context = m_deviceResources->GetD3DDeviceContext();
 
         context->UpdateSubresource(m_sceneConstantBuffer.Get(), 0, nullptr, &m_sceneConstantBufferData, 0, 0);
+        context->CSSetConstantBuffers(0, 1, m_sceneConstantBuffer.GetAddressOf());
         context->VSSetConstantBuffers(0, 1, m_sceneConstantBuffer.GetAddressOf());
         context->GSSetConstantBuffers(0, 1, m_sceneConstantBuffer.GetAddressOf());
         context->PSSetConstantBuffers(0, 1, m_sceneConstantBuffer.GetAddressOf());

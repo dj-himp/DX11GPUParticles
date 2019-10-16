@@ -26,8 +26,8 @@ void main(uint3 id : SV_DispatchThreadID)
 
         p.velocity = emitterDirection;
         
-        p.lifeSpan = 20.0;
-        p.age = 0.0;
+        p.lifeSpan = 2.0;
+        p.age = 2.0;
         p.mass = 1.0;
 
         uint index = deadListBuffer.Consume();
