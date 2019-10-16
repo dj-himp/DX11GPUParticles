@@ -61,7 +61,6 @@ namespace DemoParticles
         assert(camera);
         
         Matrix m_world = Matrix::Identity;
-        //Matrix worldViewProj = /*m_world*/Matrix::Identity * camera->getViewProjection();
         XMStoreFloat4x4(&m_constantBufferData.world, m_world.Transpose());
     }
 

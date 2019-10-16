@@ -1,13 +1,5 @@
 #include "Globals.h"
 
-/*cbuffer MengerPSConstantBuffer : register(b0)
-{    
-    float4 cam_pos;
-    float4 cam_dir;
-    float time;
-};*/
-
-
 struct PixelShaderInput
 {
     float4 Position : SV_POSITION;

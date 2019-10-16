@@ -1,9 +1,3 @@
-/*#define PackParticlesRootSignature  "UAV(u0), " \
-                                    "UAV(u1), " \
-                                    "UAV(u2), " \
-                                    "SRV(t0), " \
-                                    //"SRV(t1)"
-*/
 
 RWTexture2D<float4> texOutput : register(u0);
 RWTexture2D<float4> texOutput2 : register(u1);
@@ -12,7 +6,6 @@ RWStructuredBuffer<uint> counterBuffer : register(u2);
 Texture2D<float4> srcTexture : register(t0);
 Texture2D<float4> srcTexture2 : register(t1);
 
-//[RootSignature(PackParticlesRootSignature)]
 [numthreads(32, 32, 1)]
 void main(uint3 id : SV_DispatchThreadID)
 {

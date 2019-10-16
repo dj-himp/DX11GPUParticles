@@ -1,13 +1,5 @@
 #include "../Globals.h"
 
-/*cbuffer ModelViewProjectionConstantBuffer : register(b0)
-{
-    float4x4 world;
-    float4x4 view;
-    float4x4 proj;
-};*/
-
-
 struct PixelShaderInput
 {
     float4 Position : SV_POSITION;

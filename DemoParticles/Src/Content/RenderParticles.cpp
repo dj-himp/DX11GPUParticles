@@ -232,10 +232,6 @@ namespace DemoParticles
             assert(0);
 
         m_worldConstantBufferData.world = m_world.Transpose();
-        
-        /*m_constantBufferDataGS.world = m_world.Transpose();
-        m_constantBufferDataGS.view = camera->getView().Transpose();
-        m_constantBufferDataGS.projection = camera->getProjection().Transpose();*/
 
         m_emitterConstantBufferData.position = Vector4(-1.0f, 0.0f, 0.0f, 1.0f);
         m_emitterConstantBufferData.direction = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
