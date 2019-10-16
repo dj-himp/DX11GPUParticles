@@ -2,12 +2,27 @@
 
 namespace DemoParticles
 {
-    struct ModelViewProjectionConstantBuffer
+    __declspec(align(16))
+    struct SceneConstantBuffer
+    {
+        DirectX::SimpleMath::Matrix view;
+        DirectX::SimpleMath::Matrix projection;
+        DirectX::SimpleMath::Matrix viewProj;
+
+        DirectX::XMFLOAT4 camPosition;
+        DirectX::XMFLOAT4 camDirection;
+        float             time;
+        float             dt;
+
+        DirectX::XMFLOAT4 frustumCorner[4];
+    };
+
+    /*struct ModelViewProjectionConstantBuffer
     {
         DirectX::SimpleMath::Matrix world;
         DirectX::SimpleMath::Matrix view;
         DirectX::SimpleMath::Matrix projection;
-    };
+    };*/
 
     struct QuadConstantBuffer
     {
@@ -18,7 +33,7 @@ namespace DemoParticles
     {
         DirectX::SimpleMath::Matrix world;
     };
-
+    /*
     struct ModelConstantBuffer
     {
         DirectX::SimpleMath::Matrix worldViewProj;
@@ -35,7 +50,7 @@ namespace DemoParticles
         DirectX::XMFLOAT4 camPosition;
         DirectX::XMFLOAT4 camDirection;
         float             time;
-    };
+    };*/
 
     struct EmitterConstantBuffer
     {

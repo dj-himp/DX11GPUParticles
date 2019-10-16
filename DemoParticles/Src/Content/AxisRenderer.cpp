@@ -46,19 +46,14 @@ namespace DemoParticles
 
         
 
-        CD3D11_BUFFER_DESC constantBufferDesc(sizeof(ModelConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
+        CD3D11_BUFFER_DESC constantBufferDesc(sizeof(m_constantBufferData), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateBuffer(
                 &constantBufferDesc,
                 nullptr,
-                &m_constantBufferVS
+                &m_constantBuffer
             )
         );
-
-        D3D11_BLEND_DESC blendDesc;
-        ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
-        blendDesc.RenderTarget[0].BlendEnable = FALSE;
-        //blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
     }
 
     void AxisRenderer::createWindowSizeDependentResources()
@@ -75,15 +70,14 @@ namespace DemoParticles
     {
         assert(camera);
         
-        Matrix worldViewProj = m_world * camera->getViewProjection();
-        XMStoreFloat4x4(&m_constantBufferData.worldViewProj, worldViewProj.Transpose());
+        m_constantBufferData.world = m_world.Transpose();
     }
 
     void AxisRenderer::render()
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
-        context->UpdateSubresource(m_constantBufferVS.Get(), 0, NULL, &m_constantBufferData, 0, 0);
+        context->UpdateSubresource(m_constantBuffer.Get(), 0, NULL, &m_constantBufferData, 0, 0);
 
         for (int i = 0; i < m_axis->getMeshCount(); ++i)
         {
@@ -96,7 +90,7 @@ namespace DemoParticles
             context->IASetInputLayout(m_shader->getInputLayout());
 
             context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
-            context->VSSetConstantBuffers1(0, 1, m_constantBufferVS.GetAddressOf(), nullptr, nullptr);
+            context->VSSetConstantBuffers(1, 1, m_constantBuffer.GetAddressOf());
 
             const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
             context->OMSetBlendState(RenderStatesHelper::Opaque().Get(), blendFactor, 0xffffffff);

@@ -31,9 +31,7 @@ namespace DemoParticles
 
         std::unique_ptr<Shader>     m_shader;
 
-        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_constantBufferVS;
-        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_constantBufferPS;
-        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_constantBufferGS;
+        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_constantBuffer;
         
     };
 }

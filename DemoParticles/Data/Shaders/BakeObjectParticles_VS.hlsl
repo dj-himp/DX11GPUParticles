@@ -1,4 +1,6 @@
-cbuffer WorldConstantBuffer : register(b0)
+#include "Globals.h"
+
+cbuffer WorldConstantBuffer : register(b1)
 {
     float4x4 world;
 };

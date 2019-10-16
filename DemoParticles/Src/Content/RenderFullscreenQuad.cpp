@@ -38,7 +38,7 @@ namespace DemoParticles
             m_deviceResources->GetD3DDevice()->CreateBuffer(
                 &constantBufferDesc,
                 nullptr,
-                &m_constantBufferVS
+                &m_constantBuffer
             )
         );
     }
@@ -50,7 +50,7 @@ namespace DemoParticles
 
     void RenderFullscreenQuad::releaseDeviceDependentResources()
     {
-        m_constantBufferVS.Reset();
+        m_constantBuffer.Reset();
     }
 
     void RenderFullscreenQuad::update(DX::StepTimer const& timer, Camera* camera /*= nullptr*/)
@@ -65,7 +65,7 @@ namespace DemoParticles
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
-        context->UpdateSubresource1(m_constantBufferVS.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
+        context->UpdateSubresource1(m_constantBuffer.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
 
         UINT stride = m_quad->getVertexStride();
         UINT offset = 0;
@@ -75,7 +75,7 @@ namespace DemoParticles
         context->IASetInputLayout(m_shader->getInputLayout());
 
         context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
-        context->VSSetConstantBuffers1(0, 1, m_constantBufferVS.GetAddressOf(), nullptr, nullptr);
+        context->VSSetConstantBuffers1(1, 1, m_constantBuffer.GetAddressOf(), nullptr, nullptr);
 
         context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
         

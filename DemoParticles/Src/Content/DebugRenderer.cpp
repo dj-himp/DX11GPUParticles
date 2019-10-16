@@ -31,12 +31,12 @@ namespace DemoParticles
         m_shader = std::make_unique<Shader>(m_deviceResources);
         m_shader->load(L"RenderDebugColor_VS.cso", L"RenderDebugColor_PS.cso", MeshFactory::getInstance().getVertexElements());
 
-        CD3D11_BUFFER_DESC constantBufferDesc(sizeof(ModelConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
+        CD3D11_BUFFER_DESC constantBufferDesc(sizeof(WorldConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateBuffer(
                 &constantBufferDesc,
                 nullptr,
-                &m_constantBufferVS
+                &m_constantBuffer
             )
         );
 
@@ -60,8 +60,9 @@ namespace DemoParticles
     {
         assert(camera);
         
-        Matrix worldViewProj = /*m_world*/Matrix::Identity * camera->getViewProjection();
-        XMStoreFloat4x4(&m_constantBufferData.worldViewProj, worldViewProj.Transpose());
+        Matrix m_world = Matrix::Identity;
+        //Matrix worldViewProj = /*m_world*/Matrix::Identity * camera->getViewProjection();
+        XMStoreFloat4x4(&m_constantBufferData.world, m_world.Transpose());
     }
 
     void DebugRenderer::render()
@@ -76,7 +77,7 @@ namespace DemoParticles
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
-        context->UpdateSubresource(m_constantBufferVS.Get(), 0, NULL, &m_constantBufferData, 0, 0);
+        context->UpdateSubresource(m_constantBuffer.Get(), 0, NULL, &m_constantBufferData, 0, 0);
 
         for (int i = 0; i < debugModel.m_model->getMeshCount(); ++i)
         {
@@ -89,7 +90,7 @@ namespace DemoParticles
             context->IASetInputLayout(m_shader->getInputLayout());
 
             context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
-            context->VSSetConstantBuffers(0, 1, m_constantBufferVS.GetAddressOf());
+            context->VSSetConstantBuffers(1, 1, m_constantBuffer.GetAddressOf());
 
             context->RSSetState(RenderStatesHelper::CullNone().Get());
 

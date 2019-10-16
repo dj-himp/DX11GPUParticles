@@ -1,9 +1,11 @@
-cbuffer MengerPSConstantBuffer : register(b0)
+#include "Globals.h"
+
+/*cbuffer MengerPSConstantBuffer : register(b0)
 {
     float3 camPosition;
     float3 camDirection;
     float time;
-};
+};*/
 
 struct PixelShaderInput
 {

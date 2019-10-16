@@ -266,6 +266,9 @@
     <ClInclude Include="Data\Shaders\Particles\ParticlesGlobals.h">
       <Filter>Data\Shaders\Particles</Filter>
     </ClInclude>
+    <ClInclude Include="Data\Shaders\Globals.h">
+      <Filter>Data\Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

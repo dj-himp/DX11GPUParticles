@@ -30,6 +30,6 @@ namespace DemoParticles
 
         DirectX::SimpleMath::Matrix m_world;
 
-        ModelConstantBuffer   m_constantBufferData;
+        WorldConstantBuffer   m_constantBufferData;
     };
 }

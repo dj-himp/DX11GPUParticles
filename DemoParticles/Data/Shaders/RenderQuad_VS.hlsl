@@ -7,7 +7,7 @@ SamplerState PointSampler
     AddressW = Clamp;
 };
 
-cbuffer ScreenQuadConstantBuffer : register(b0)
+cbuffer ScreenQuadConstantBuffer : register(b1)
 {
     float4x4 posScale;
 };

@@ -1,8 +1,9 @@
+#include "Globals.h"
 
-cbuffer FrustrumCornersConstantBuffer : register(b0)
+/*cbuffer FrustrumCornersConstantBuffer : register(b0)
 {
     float4 FrustumCorners[4];
-};
+};*/
 
 struct VertexShaderInput
 {

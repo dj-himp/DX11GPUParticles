@@ -1,6 +1,8 @@
-cbuffer ModelViewProjectionConstantBuffer : register(b0)
+#include "Globals.h"
+
+cbuffer WorldConstantBuffer : register(b1)
 {
-    float4x4 worldViewProj;
+    float4x4 world;
 };
 
 struct VertexShaderInput
@@ -20,7 +22,7 @@ PixelShaderInput main(VertexShaderInput input)
 {
     PixelShaderInput output;
 
-    output.Position = mul(float4(input.Position.xyz, 1.0), worldViewProj);
+    output.Position = mul(float4(input.Position.xyz, 1.0), mul(world, viewProj));
     output.color = input.color;
 
     return output;

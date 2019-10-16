@@ -1,6 +1,8 @@
 #pragma once
 #include "IScene.h"
 
+#include "Content/ShaderStructures.h"
+
 namespace DemoParticles
 {
     class MengerRenderer;
@@ -36,6 +38,9 @@ namespace DemoParticles
         std::unique_ptr<ComputeShader> m_computePackParticle;
 
         bool                            m_bakingDone = false;
+
+        SceneConstantBuffer                     m_sceneConstantBufferData;
+        Microsoft::WRL::ComPtr<ID3D11Buffer>    m_sceneConstantBuffer;
 
     };
 }

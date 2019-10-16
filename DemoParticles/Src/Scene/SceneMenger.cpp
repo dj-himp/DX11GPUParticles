@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "SceneMenger.h"
 
+#include "Common/DirectXHelper.h"
 #include "Camera/CameraControllerFPS.h"
+#include "Camera/Camera.h"
 #include "Content/MengerRenderer.h"
 #include "Common/RenderTarget.h"
 #include "Content/BakeModelParticles.h"
@@ -42,8 +44,10 @@ namespace DemoParticles
         m_computePackParticle = std::make_unique<ComputeShader>(m_deviceResources);// , 2, true);
         m_computePackParticle->load(L"PackParticles_CS.cso");
 
-        //m_renderParticles->setShaderResourceViews(m_rtBakePositions->getShaderResourceView(), m_rtBakeNormals->getShaderResourceView());
-        //m_renderParticles->setShaderResourceViews(m_computePackParticle->getRenderTarget(0)->getShaderResourceView(), m_computePackParticle->getRenderTarget(1)->getShaderResourceView());
+        CD3D11_BUFFER_DESC desc(sizeof(m_sceneConstantBufferData), D3D11_BIND_CONSTANT_BUFFER);
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&desc, nullptr, &m_sceneConstantBuffer)
+        );
     }
 
     void SceneMenger::createWindowSizeDependentResources()
@@ -62,6 +66,21 @@ namespace DemoParticles
 
     void SceneMenger::update(DX::StepTimer const& timer, Camera* camera /*= nullptr*/)
     {
+        m_sceneConstantBufferData.view = camera->getView().Transpose();
+        m_sceneConstantBufferData.projection = camera->getProjection().Transpose();
+        Matrix viewProj = camera->getView() * camera->getProjection();
+        m_sceneConstantBufferData.viewProj = viewProj.Transpose();
+        
+        std::vector<Vector3> corners = camera->getFrustrumCorners();
+        m_sceneConstantBufferData.frustumCorner[0] = DX::toVector4(corners[4]);
+        m_sceneConstantBufferData.frustumCorner[1] = DX::toVector4(corners[5]);
+        m_sceneConstantBufferData.frustumCorner[2] = DX::toVector4(corners[6]);
+        m_sceneConstantBufferData.frustumCorner[3] = DX::toVector4(corners[7]);
+        
+        m_sceneConstantBufferData.camPosition = DX::toVector4(camera->getPosition());
+        m_sceneConstantBufferData.camDirection = DX::toVector4(camera->getForward());
+        m_sceneConstantBufferData.time = timer.GetTotalSeconds();
+
         m_mengerRenderer->update(timer, camera);
         m_bakeModelParticles->update(timer);
         m_fullScreenQuad->update(timer);
@@ -71,6 +90,11 @@ namespace DemoParticles
     void SceneMenger::render()
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
+
+        context->UpdateSubresource(m_sceneConstantBuffer.Get(), 0, nullptr, &m_sceneConstantBufferData, 0, 0);
+        context->VSSetConstantBuffers(0, 1, m_sceneConstantBuffer.GetAddressOf());
+        context->GSSetConstantBuffers(0, 1, m_sceneConstantBuffer.GetAddressOf());
+        context->PSSetConstantBuffers(0, 1, m_sceneConstantBuffer.GetAddressOf());
 
         if (!m_bakingDone)
         {

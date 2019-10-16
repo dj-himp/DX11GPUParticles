@@ -68,16 +68,10 @@ namespace DemoParticles
         m_shader = std::make_unique<Shader>(m_deviceResources);
         m_shader->load(L"RenderParticles_VS.cso", L"RenderParticles_PS.cso", inputElementDesc, L"RenderParticles_GS.cso");
 
-        CD3D11_BUFFER_DESC constantBufferDescVS(sizeof(m_constantBufferDataVS), D3D11_BIND_CONSTANT_BUFFER);
+        CD3D11_BUFFER_DESC constantBufferDesc(sizeof(m_worldConstantBufferData), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateBuffer(&constantBufferDescVS, nullptr, &m_constantBufferVS)
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, &m_constantBuffer)
         );
-
-        CD3D11_BUFFER_DESC constantBufferDescGS(sizeof(m_constantBufferDataGS), D3D11_BIND_CONSTANT_BUFFER);
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateBuffer(&constantBufferDescGS, nullptr, &m_constantBufferGS)
-        );
-
         
         //MAIN PARTICLE POOL
 
@@ -237,11 +231,11 @@ namespace DemoParticles
         if (!camera)
             assert(0);
 
-        m_constantBufferDataVS.world = m_world.Transpose();
+        m_worldConstantBufferData.world = m_world.Transpose();
         
-        m_constantBufferDataGS.world = m_world.Transpose();
+        /*m_constantBufferDataGS.world = m_world.Transpose();
         m_constantBufferDataGS.view = camera->getView().Transpose();
-        m_constantBufferDataGS.projection = camera->getProjection().Transpose();
+        m_constantBufferDataGS.projection = camera->getProjection().Transpose();*/
 
         m_emitterConstantBufferData.position = Vector4(-1.0f, 0.0f, 0.0f, 1.0f);
         m_emitterConstantBufferData.direction = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
@@ -278,8 +272,8 @@ namespace DemoParticles
         context->VSSetShaderResources(0, ARRAYSIZE(vertexShaderSRVs), vertexShaderSRVs);
         context->VSSetConstantBuffers(3, 1, m_aliveListCountConstantBuffer.GetAddressOf());
 
-        context->UpdateSubresource(m_constantBufferGS.Get(), 0, nullptr, &m_constantBufferDataGS, 0, 0);
-        context->GSSetConstantBuffers(0, 1, m_constantBufferGS.GetAddressOf());
+        context->UpdateSubresource(m_constantBuffer.Get(), 0, nullptr, &m_worldConstantBufferData, 0, 0);
+        context->GSSetConstantBuffers(1, 1, m_constantBuffer.GetAddressOf());
 
         const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
         //context->OMSetBlendState(RenderStatesHelper::Additive().Get(), blendFactor, 0xffffffff);

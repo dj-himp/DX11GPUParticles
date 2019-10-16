@@ -37,7 +37,7 @@ namespace DemoParticles
 
         DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3(0.0f);
 
-        ModelConstantBuffer m_constantBufferData;
+        WorldConstantBuffer m_constantBufferData;
         
     };
 }

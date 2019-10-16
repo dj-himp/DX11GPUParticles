@@ -46,6 +46,6 @@ namespace DemoParticles
 
         std::vector<DebugModel> m_models;
 
-        ModelConstantBuffer   m_constantBufferData;
+        WorldConstantBuffer   m_constantBufferData;
     };
 }

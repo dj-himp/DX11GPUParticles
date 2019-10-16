@@ -47,8 +47,7 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11Buffer>    m_vertexBuffer;
         UINT                                    m_vertexStride;
 
-        WorldConstantBuffer                 m_constantBufferDataVS;
-        ModelViewProjectionConstantBuffer   m_constantBufferDataGS;
+        WorldConstantBuffer                 m_worldConstantBufferData;
 
         Microsoft::WRL::ComPtr<ID3D11SamplerState> m_pointSamplerState;
 

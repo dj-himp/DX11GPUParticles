@@ -39,12 +39,12 @@ namespace DemoParticles
         m_shader->load(L"RenderModel_VS.cso", L"RenderModel_PS.cso", m_model->getInputElements());
 
         
-        CD3D11_BUFFER_DESC constantBufferDesc(sizeof(ModelConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
+        CD3D11_BUFFER_DESC constantBufferDesc(sizeof(m_constantBufferData), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateBuffer(
                 &constantBufferDesc,
                 nullptr,
-                &m_constantBufferVS
+                &m_constantBuffer
             )
         );
 
@@ -66,15 +66,14 @@ namespace DemoParticles
     {
         assert(camera);
 
-        Matrix worldViewProj = m_world * camera->getViewProjection();
-        XMStoreFloat4x4(&m_constantBufferData.worldViewProj, worldViewProj.Transpose());
+        XMStoreFloat4x4(&m_constantBufferData.world, m_world.Transpose());
     }
 
     void RenderModel::render()
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
         
-        context->UpdateSubresource1(m_constantBufferVS.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
+        context->UpdateSubresource1(m_constantBuffer.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
         
         for (int i = 0; i < m_model->getMeshCount(); ++i)
         {
@@ -87,7 +86,7 @@ namespace DemoParticles
             context->IASetInputLayout(m_shader->getInputLayout());
 
             context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
-            context->VSSetConstantBuffers1(0, 1, m_constantBufferVS.GetAddressOf(), nullptr, nullptr);
+            context->VSSetConstantBuffers(1, 1, m_constantBuffer.GetAddressOf());
 
             context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
 
@@ -99,8 +98,7 @@ namespace DemoParticles
 
     void RenderModel::updateConstantBuffer()
     {
-        Matrix worldViewProj = m_world * m_camera->getViewProjection();
-        XMStoreFloat4x4(&m_constantBufferData.worldViewProj, worldViewProj.Transpose());
+        XMStoreFloat4x4(&m_constantBufferData.world, m_world.Transpose());
     }
 
 }
