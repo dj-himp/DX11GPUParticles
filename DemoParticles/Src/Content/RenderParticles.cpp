@@ -323,7 +323,7 @@ namespace DemoParticles
         //int i = m_initDeadListShader->readCounter(m_deadListUAV);
 
         UINT initialCount[] = { -1 };
-        m_emitParticles->setConstantBuffer(0, m_emitterConstantBuffer);
+        m_emitParticles->setConstantBuffer(1, m_emitterConstantBuffer);
         m_emitParticles->setConstantBuffer(2, m_deadListCountConstantBuffer);
         m_emitParticles->setUAV(0, m_deadListUAV, initialCount);
         m_emitParticles->setUAV(1, m_particleUAV, initialCount);
@@ -340,7 +340,8 @@ namespace DemoParticles
 
         UINT initialCount[] = { -1 };
         m_simulateShader->setUAV(0, m_indirectDrawArgsUAV, initialCount);
-        m_simulateShader->setUAV(2, m_particleUAV, initialCount);
+        m_simulateShader->setUAV(2, m_deadListUAV, initialCount);
+        m_simulateShader->setUAV(3, m_particleUAV, initialCount);
         initialCount[0] = 0;
         m_simulateShader->setUAV(1, m_aliveIndexUAV, initialCount);
         m_simulateShader->begin();
@@ -349,6 +350,7 @@ namespace DemoParticles
         m_simulateShader->setUAV(0, nullptr);
         m_simulateShader->setUAV(1, nullptr);
         m_simulateShader->setUAV(2, nullptr);
+        m_simulateShader->setUAV(3, nullptr);
 
         context->CopyStructureCount(m_aliveListCountConstantBuffer.Get(), 0, m_aliveIndexUAV.Get());
 

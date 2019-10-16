@@ -1,7 +1,7 @@
 
 #include "ParticlesGlobals.h"
 
-cbuffer emitterConstantBuffer : register(b0)
+cbuffer emitterConstantBuffer : register(b1)
 {
     float4 emitterPosition;
     float4 emitterDirection;
@@ -24,9 +24,11 @@ void main(uint3 id : SV_DispatchThreadID)
         
         p.position = emitterPosition;
 
-        //test
-        p.position += (id.x / 1024.0) * emitterDirection;
-        p.age = 1.0;
+        p.velocity = emitterDirection;
+        
+        p.lifeSpan = 20.0;
+        p.age = 0.0;
+        p.mass = 1.0;
 
         uint index = deadListBuffer.Consume();
         particleList[index] = p;

@@ -33,7 +33,11 @@ namespace DemoParticles
         struct Particle
         {
             DirectX::SimpleMath::Vector4 position;
+            DirectX::SimpleMath::Vector4 velocity;
+            
+            float lifeSpan;
             float age;
+            float mass;
         };
 
         struct ParticleIndexElement

@@ -1,17 +1,19 @@
 
+#include "../Globals.h"
 #include "ParticlesGlobals.h"
 
 
 RWBuffer<uint> indirectDrawArgs : register(u0);
 RWStructuredBuffer<ParticleIndexElement> aliveParticleIndex: register(u1);
-RWStructuredBuffer<Particle> particleList : register(u2);
+AppendStructuredBuffer<uint> deadParticleIndex : register(u2);
+RWStructuredBuffer<Particle> particleList : register(u3);
 
 //256 particles per thread group
 [numthreads(256, 1, 1)]
 void main(uint3 id : SV_DispatchThreadID)
 {
     //first thread to initialise the arguments
-    if(id.x == 1)
+    if(id.x == 0)
     {
         indirectDrawArgs[0] = 0; // Number of primitives reset to zero
         indirectDrawArgs[1] = 1; // Number of instances is always 1
@@ -24,14 +26,25 @@ void main(uint3 id : SV_DispatchThreadID)
     GroupMemoryBarrierWithGroupSync();
 
     Particle p = particleList[id.x];
-    if(p.age > 0.0f)
+    if(p.age <= p.lifeSpan)
     {
-        ParticleIndexElement particle;
-        particle.distance = 0.0;
-        particle.index = id.x;
-        uint index = aliveParticleIndex.IncrementCounter();
-        aliveParticleIndex[index] = particle;
+        //simulation
+        p.age += dt;
+        p.position += p.velocity * dt;
 
-        InterlockedAdd(indirectDrawArgs[0], 1);
+        if(p.age <= p.lifeSpan)
+        {
+            ParticleIndexElement particle;
+            particle.distance = 0.0;
+            particle.index = id.x;
+            uint index = aliveParticleIndex.IncrementCounter();
+            aliveParticleIndex[index] = particle;
+
+            InterlockedAdd(indirectDrawArgs[0], 1);
+        }
+        else
+        {
+            deadParticleIndex.Append(id.x);
+        }
     }
 }

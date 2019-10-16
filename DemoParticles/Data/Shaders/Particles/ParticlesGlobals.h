@@ -2,7 +2,11 @@
 struct Particle
 {
     float4 position;
+    float4 velocity;
+
+    float lifeSpan;
     float age;
+    float mass;
 };
 
 struct ParticleIndexElement

@@ -80,6 +80,7 @@ namespace DemoParticles
         m_sceneConstantBufferData.camPosition = DX::toVector4(camera->getPosition());
         m_sceneConstantBufferData.camDirection = DX::toVector4(camera->getForward());
         m_sceneConstantBufferData.time = timer.GetTotalSeconds();
+        m_sceneConstantBufferData.dt = timer.GetElapsedSeconds();
 
         m_mengerRenderer->update(timer, camera);
         m_bakeModelParticles->update(timer);
