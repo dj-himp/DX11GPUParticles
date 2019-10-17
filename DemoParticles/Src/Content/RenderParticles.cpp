@@ -281,9 +281,9 @@ namespace DemoParticles
         context->GSSetConstantBuffers(1, 1, m_constantBuffer.GetAddressOf());
 
         const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
-        context->OMSetBlendState(RenderStatesHelper::AlphaBlend().Get(), blendFactor, 0xffffffff);
+        context->OMSetBlendState(RenderStatesHelper::Additive().Get(), blendFactor, 0xffffffff);
         context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
-        context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
+        context->RSSetState(RenderStatesHelper::CullNone().Get());
 
         context->DrawInstancedIndirect(m_indirectDrawArgsBuffer.Get(), 0);
 
@@ -339,7 +339,7 @@ namespace DemoParticles
         m_emitFromBufferParticles->setUAV(1, m_particleUAV, initialCount);
         m_emitFromBufferParticles->setUAV(2, m_bakedParticlesUAV);
         m_emitFromBufferParticles->begin();
-        //m_emitFromBufferParticles->start(align(m_emitterConstantBufferData.maxSpawn, 1024) / 1024, 1, 1);
+        //m_emitFromBufferParticles->start(align(500000, 1024) / 1024, 1, 1);
         m_emitFromBufferParticles->startIndirect(m_bakedIndirectArgsBuffer);
         m_emitFromBufferParticles->end();
         m_emitFromBufferParticles->setUAV(0, nullptr);

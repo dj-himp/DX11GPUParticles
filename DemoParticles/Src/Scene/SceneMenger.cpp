@@ -101,7 +101,7 @@ namespace DemoParticles
             m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_indirectComputeArgsBuffer.Get(), &indirectComputeArgsUAVDesc, &m_indirectComputeArgsUAV)
         );
 
-        CD3D11_BUFFER_DESC indirectArgsDesc(4 * sizeof(UINT), D3D11_BIND_CONSTANT_BUFFER);
+        CD3D11_BUFFER_DESC indirectArgsDesc(sizeof(InitIndirectComputeArgs1DConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateBuffer(&indirectArgsDesc, nullptr, &m_indirectComputeConstantBuffer)
         );
@@ -188,6 +188,11 @@ namespace DemoParticles
             m_computePackParticle->setSRV(1, nullptr);
             m_computePackParticle->setUAV(0, nullptr);
             m_computePackParticle->setUAV(1, nullptr);
+
+            InitIndirectComputeArgs1DConstantBuffer initBufferData;
+            initBufferData.nbThreadGroupX = 1024; //see in emit compute shader
+            context->UpdateSubresource(m_indirectComputeConstantBuffer.Get(), 0, nullptr, &initBufferData, 0, 0);
+
 
             m_initIndirectComputeArgsShader->begin();
             m_initIndirectComputeArgsShader->setConstantBuffer(1, m_indirectComputeConstantBuffer);

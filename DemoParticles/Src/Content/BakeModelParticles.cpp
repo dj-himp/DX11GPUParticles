@@ -50,7 +50,7 @@ namespace DemoParticles
         );
 
         //Z rotation is temporary as I need to know why the model is upside down
-        m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(0.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        m_world = Matrix::CreateScale(0.1f) * Matrix::CreateRotationX(0.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
     }
 
     void BakeModelParticles::createWindowSizeDependentResources()

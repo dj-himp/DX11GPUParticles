@@ -52,6 +52,12 @@ namespace DemoParticles
         UINT padding[3];
     };
 
+    struct InitIndirectComputeArgs1DConstantBuffer
+    {
+        UINT nbThreadGroupX;
+
+        UINT padding[3];
+    };
 
     // Used to send per-vertex data to the vertex shader.
     struct VertexPositionColor
