@@ -20,7 +20,7 @@ PixelShaderOutput main(PixelShaderInput input)
     output.Position = input.pos;
     output.Position.w = 1.0; // input.UVs.x;
     
-    output.Normal = float4(input.uv, 0, 1);
+    output.Normal = input.normal;// float4(input.uv, 0, 1);
     return output;
 
 }

@@ -15,7 +15,7 @@ RWStructuredBuffer<BakedParticle> bakedParticle : register(u2);
 
 //spawn per batch of 1024 particles
 
-[numthreads(1024, 1, 1)]
+[numthreads(64, 1, 1)]
 void main(uint3 id : SV_DispatchThreadID)
 {
     if(id.x < nbDeadParticles && id.x < emitterMaxSpawn)
@@ -25,9 +25,9 @@ void main(uint3 id : SV_DispatchThreadID)
 
         p.position = bp.position;
 
-        p.velocity = float4(0.0, 0.0, 0.0, 1.0);
+        p.velocity = bp.normal * 0.1f;// float4(0.0, 0.0, 0.0, 1.0);
         
-        p.lifeSpan = 1.0;
+        p.lifeSpan = 5.0;
         p.age = p.lifeSpan;
         p.mass = 1.0;
 

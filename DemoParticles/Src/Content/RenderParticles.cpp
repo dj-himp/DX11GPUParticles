@@ -246,6 +246,7 @@ namespace DemoParticles
         m_emitterConstantBufferData.direction = Vector4(0.0f, 0.1f, 0.0f, 1.0f);
         m_emitterConstantBufferData.maxSpawn = 1024;
 
+        m_emitFrequence -= timer.GetElapsedSeconds();
     }
 
     void RenderParticles::render()
@@ -259,7 +260,11 @@ namespace DemoParticles
             m_resetParticles = false;
         }
 
-        emitParticles();
+        if (m_emitFrequence <= 0.0f)
+        {
+            emitParticles();
+            m_emitFrequence = 2.0f;
+        }
         simulateParticles();
 
         context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);

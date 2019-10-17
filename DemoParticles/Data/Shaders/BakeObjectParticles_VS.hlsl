@@ -27,7 +27,7 @@ PixelShaderInput main(VertexShaderInput input)
     //output.Position = float4(2.0 * input.texCoord.x - 1.0, 1.0 - 2.0*input.texCoord.y, 0.0, 1.0);
     output.Position = float4(2.0 * input.texCoord.x - 1.0, 2.0 * input.texCoord.y - 1.0, 0.0, 1.0);
     output.pos = mul(float4(input.Position.xyz, 1.0), world);
-    output.normal = input.normal;
+    output.normal = mul(input.normal, world);
     output.uv = input.texCoord;
 
     return output;

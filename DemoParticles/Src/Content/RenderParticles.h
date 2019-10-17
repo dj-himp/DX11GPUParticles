@@ -99,5 +99,8 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_bakedIndirectArgsBuffer;
 
         bool m_resetParticles = true;
+
+        //temp
+        float m_emitFrequence = 0.0f;
     };
 }
