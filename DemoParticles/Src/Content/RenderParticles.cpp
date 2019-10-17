@@ -340,7 +340,7 @@ namespace DemoParticles
         m_emitFromBufferParticles->setUAV(2, m_bakedParticlesUAV);
         m_emitFromBufferParticles->begin();
         //m_emitFromBufferParticles->start(align(m_emitterConstantBufferData.maxSpawn, 1024) / 1024, 1, 1);
-        m_emitFromBufferParticles->startIndirect(m_indirectDrawArgsBuffer);
+        m_emitFromBufferParticles->startIndirect(m_bakedIndirectArgsBuffer);
         m_emitFromBufferParticles->end();
         m_emitFromBufferParticles->setUAV(0, nullptr);
         m_emitFromBufferParticles->setUAV(1, nullptr);
