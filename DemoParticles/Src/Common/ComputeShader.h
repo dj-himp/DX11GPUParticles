@@ -18,6 +18,7 @@ namespace DemoParticles
         void begin();
         void end();
         void start(int threadGroupX, int threadGroupY, int threadGroupZ);
+        void startIndirect(Microsoft::WRL::ComPtr<ID3D11Buffer> inderectBuffer, UINT alignedByteOffsetForArgs = 0);
 
         void setSRV(int slot, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView);
         void setUAV(int slot, Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> uav, UINT initialCount[] = nullptr);

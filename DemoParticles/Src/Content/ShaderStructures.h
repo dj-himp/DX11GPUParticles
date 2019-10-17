@@ -37,6 +37,14 @@ namespace DemoParticles
 
     };
 
+    struct EmitterFromBufferConstantBuffer
+    {
+        UINT maxSpawn;
+
+        UINT padding[3];
+
+    };
+
     struct DeadListCountConstantBuffer
     {
         UINT nbDeadParticles;

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "RenderParticles.h"
 
+#include "Common/DirectXHelper.h"
 #include "Common/Shader.h"
 #include "Common/ComputeShader.h"
 #include "Camera/Camera.h"
@@ -173,11 +174,19 @@ namespace DemoParticles
         m_emitParticles = std::make_unique<ComputeShader>(m_deviceResources);
         m_emitParticles->load(L"EmitParticles_CS.cso");
 
+        m_emitFromBufferParticles = std::make_unique<ComputeShader>(m_deviceResources);
+        m_emitFromBufferParticles->load(L"EmitParticlesFromBuffer_CS.cso");
 
         //EMITTER CONSTANT BUFFER
         CD3D11_BUFFER_DESC emitterConstantBufferDesc(sizeof(EmitterConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateBuffer(&emitterConstantBufferDesc, nullptr, &m_emitterConstantBuffer)
+        );
+
+        //EMITTER FROM BUFFER CONSTANT BUFFER
+        CD3D11_BUFFER_DESC emitterFromBufferConstantBufferDesc(sizeof(EmitterFromBufferConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&emitterFromBufferConstantBufferDesc, nullptr, &m_emitterFromBufferConstantBuffer)
         );
 
         //DeadList CONSTANT BUFFER
@@ -233,8 +242,8 @@ namespace DemoParticles
 
         m_worldConstantBufferData.world = m_world.Transpose();
 
-        m_emitterConstantBufferData.position = Vector4(-1.0f, 0.0f, 0.0f, 1.0f);
-        m_emitterConstantBufferData.direction = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
+        m_emitterConstantBufferData.position = DX::toVector4(camera->getPosition() + camera->getForward() * 4.0f);// Vector4(-1.0f, 0.0f, 0.0f, 1.0f);
+        m_emitterConstantBufferData.direction = Vector4(0.0f, 0.1f, 0.0f, 1.0f);
         m_emitterConstantBufferData.maxSpawn = 1024;
 
     }
@@ -272,9 +281,9 @@ namespace DemoParticles
         context->GSSetConstantBuffers(1, 1, m_constantBuffer.GetAddressOf());
 
         const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
-        //context->OMSetBlendState(RenderStatesHelper::Additive().Get(), blendFactor, 0xffffffff);
-        //context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
-        //context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
+        context->OMSetBlendState(RenderStatesHelper::AlphaBlend().Get(), blendFactor, 0xffffffff);
+        context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
+        context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
 
         context->DrawInstancedIndirect(m_indirectDrawArgsBuffer.Get(), 0);
 
@@ -317,10 +326,27 @@ namespace DemoParticles
         //copy the deadList counter to a constantBuffer
         context->CopyStructureCount(m_deadListCountConstantBuffer.Get(), 0, m_deadListUAV.Get());
 
-        context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
+        //int i = m_initDeadListShader->readCounter(m_deadListUAV);
+        //DebugUtils::log(std::to_string(i));
 
-        int i = m_initDeadListShader->readCounter(m_deadListUAV);
-        DebugUtils::log(std::to_string(i));
+        //update the number of baked particle (TO DO do it once if no changes)
+        context->CopyStructureCount(m_emitterFromBufferConstantBuffer.Get(), 0, m_bakedParticlesUAV.Get());
+
+        UINT initialCount[] = { -1 };
+        m_emitFromBufferParticles->setConstantBuffer(1, m_emitterFromBufferConstantBuffer);
+        m_emitFromBufferParticles->setConstantBuffer(2, m_deadListCountConstantBuffer);
+        m_emitFromBufferParticles->setUAV(0, m_deadListUAV, initialCount);
+        m_emitFromBufferParticles->setUAV(1, m_particleUAV, initialCount);
+        m_emitFromBufferParticles->setUAV(2, m_bakedParticlesUAV);
+        m_emitFromBufferParticles->begin();
+        //m_emitFromBufferParticles->start(align(m_emitterConstantBufferData.maxSpawn, 1024) / 1024, 1, 1);
+        m_emitFromBufferParticles->startIndirect(m_indirectDrawArgsBuffer);
+        m_emitFromBufferParticles->end();
+        m_emitFromBufferParticles->setUAV(0, nullptr);
+        m_emitFromBufferParticles->setUAV(1, nullptr);
+        m_emitFromBufferParticles->setUAV(2, nullptr);
+
+        /*context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
 
         UINT initialCount[] = { -1 };
         m_emitParticles->setConstantBuffer(1, m_emitterConstantBuffer);
@@ -328,10 +354,10 @@ namespace DemoParticles
         m_emitParticles->setUAV(0, m_deadListUAV, initialCount);
         m_emitParticles->setUAV(1, m_particleUAV, initialCount);
         m_emitParticles->begin();
-        m_emitParticles->start(align(m_maxParticles, 1024) / 1024, 1, 1);
+        m_emitParticles->start(align(m_emitterConstantBufferData.maxSpawn, 1024) / 1024, 1, 1);
         m_emitParticles->end();
         m_emitParticles->setUAV(0, nullptr);
-        m_emitParticles->setUAV(1, nullptr);
+        m_emitParticles->setUAV(1, nullptr);*/
     }
 
     void RenderParticles::simulateParticles()

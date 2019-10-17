@@ -60,6 +60,13 @@ namespace DemoParticles
         context->Dispatch(threadGroupX, threadGroupY, threadGroupZ);
     }
 
+    void ComputeShader::startIndirect(Microsoft::WRL::ComPtr<ID3D11Buffer> indirectBuffer, UINT alignedByteOffsetForArgs /*= 0*/)
+    {
+        auto context = m_deviceResources->GetD3DDeviceContext();
+
+        context->DispatchIndirect(indirectBuffer.Get(), alignedByteOffsetForArgs);
+    }
+
     void ComputeShader::setSRV(int slot, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView)
     {
         auto context = m_deviceResources->GetD3DDeviceContext();

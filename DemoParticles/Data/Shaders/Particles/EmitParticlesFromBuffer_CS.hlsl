@@ -1,10 +1,8 @@
-
+#include "../Globals.h"
 #include "ParticlesGlobals.h"
 
 cbuffer emitterConstantBuffer : register(b1)
 {
-    float4 emitterPosition;
-    float4 emitterDirection;
     uint emitterMaxSpawn;
 
     uint3 emitterPadding;
@@ -12,6 +10,8 @@ cbuffer emitterConstantBuffer : register(b1)
 
 ConsumeStructuredBuffer<uint> deadListBuffer : register(u0);
 RWStructuredBuffer<Particle> particleList : register(u1);
+RWStructuredBuffer<BakedParticle> bakedParticle : register(u2);
+
 
 //spawn per batch of 1024 particles
 
@@ -21,10 +21,11 @@ void main(uint3 id : SV_DispatchThreadID)
     if(id.x < nbDeadParticles && id.x < emitterMaxSpawn)
     {
         Particle p = (Particle) 0;
-        
-        p.position = emitterPosition;
+        BakedParticle bp = bakedParticle[id.x];
 
-        p.velocity = emitterDirection;
+        p.position = bp.position;
+
+        p.velocity = float4(0.0, 0.0, 0.0, 1.0);
         
         p.lifeSpan = 1.0;
         p.age = p.lifeSpan;

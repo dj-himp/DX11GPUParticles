@@ -24,7 +24,7 @@ void main(point PixelShaderInput input[1], inout TriangleStream<PixelShaderInput
     //TO DO : reduire particleSize plus la particule est proche de la cam
 
     //float particleSize = 0.0002f;
-    float particleSize = 0.01;
+    float particleSize = 0.009;
 
     //Camera Plane
     float3 right = view._m00_m10_m20;

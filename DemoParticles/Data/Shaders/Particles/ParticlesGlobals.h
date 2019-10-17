@@ -7,6 +7,7 @@ struct Particle
     float lifeSpan;
     float age;
     float mass;
+
 };
 
 struct ParticleIndexElement

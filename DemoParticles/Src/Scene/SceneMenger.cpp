@@ -48,6 +48,66 @@ namespace DemoParticles
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateBuffer(&desc, nullptr, &m_sceneConstantBuffer)
         );
+
+        //baking
+
+        m_maxBakeBufferSize = m_deviceResources->GetOutputWidth() * m_deviceResources->GetOutputHeight();
+
+        D3D11_BUFFER_DESC bakeBufferDesc;
+        bakeBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+        bakeBufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+        bakeBufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+        bakeBufferDesc.ByteWidth = sizeof(BackedParticle) * m_maxBakeBufferSize;
+        bakeBufferDesc.StructureByteStride = sizeof(BackedParticle);
+        bakeBufferDesc.CPUAccessFlags = 0;
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&bakeBufferDesc, nullptr, &m_backedBuffer)
+        );
+
+        D3D11_UNORDERED_ACCESS_VIEW_DESC bakeUAVDesc;
+        bakeUAVDesc.Format = DXGI_FORMAT_UNKNOWN;
+        bakeUAVDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+        bakeUAVDesc.Buffer.FirstElement = 0;
+        bakeUAVDesc.Buffer.NumElements = m_maxBakeBufferSize;
+        bakeUAVDesc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_COUNTER;
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_backedBuffer.Get(), &bakeUAVDesc, &m_bakedUAV)
+        );
+
+
+        //indirect compute Args
+        D3D11_BUFFER_DESC indirectComputeArgsBufferDesc;
+        indirectComputeArgsBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+        indirectComputeArgsBufferDesc.ByteWidth = 3 * sizeof(UINT);
+        indirectComputeArgsBufferDesc.StructureByteStride = sizeof(UINT);
+        indirectComputeArgsBufferDesc.CPUAccessFlags = 0;
+        indirectComputeArgsBufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
+        indirectComputeArgsBufferDesc.MiscFlags = D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS;
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&indirectComputeArgsBufferDesc, nullptr, &m_indirectComputeArgsBuffer)
+        );
+
+        D3D11_UNORDERED_ACCESS_VIEW_DESC indirectComputeArgsUAVDesc;
+        indirectComputeArgsUAVDesc.Format = DXGI_FORMAT_R32_UINT;
+        indirectComputeArgsUAVDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+        indirectComputeArgsUAVDesc.Buffer.FirstElement = 0;
+        indirectComputeArgsUAVDesc.Buffer.NumElements = 3;
+        indirectComputeArgsUAVDesc.Buffer.Flags = 0;
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_indirectComputeArgsBuffer.Get(), &indirectComputeArgsUAVDesc, &m_indirectComputeArgsUAV)
+        );
+
+        CD3D11_BUFFER_DESC indirectArgsDesc(4 * sizeof(UINT), D3D11_BIND_CONSTANT_BUFFER);
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&indirectArgsDesc, nullptr, &m_indirectComputeConstantBuffer)
+        );
+
+        m_initIndirectComputeArgsShader = std::make_unique<ComputeShader>(m_deviceResources);
+        m_initIndirectComputeArgsShader->load(L"InitIndirectComputeArgs1D_CS.cso");
     }
 
     void SceneMenger::createWindowSizeDependentResources()
@@ -119,10 +179,25 @@ namespace DemoParticles
             m_computePackParticle->begin();
             m_computePackParticle->setSRV(0, m_rtBakePositions->getShaderResourceView());
             m_computePackParticle->setSRV(1, m_rtBakeNormals->getShaderResourceView());
+            UINT initialCount[] = { 0 };
+            m_computePackParticle->setUAV(0, m_bakedUAV, initialCount);
+            m_computePackParticle->setUAV(1, m_indirectComputeArgsUAV);
             m_computePackParticle->start(32, 22, 1);
             m_computePackParticle->end();
             m_computePackParticle->setSRV(0, nullptr);
             m_computePackParticle->setSRV(1, nullptr);
+            m_computePackParticle->setUAV(0, nullptr);
+            m_computePackParticle->setUAV(1, nullptr);
+
+            m_initIndirectComputeArgsShader->begin();
+            m_initIndirectComputeArgsShader->setConstantBuffer(1, m_indirectComputeConstantBuffer);
+            m_initIndirectComputeArgsShader->setUAV(0, m_indirectComputeArgsUAV);
+            m_initIndirectComputeArgsShader->start(1, 1, 1);
+            m_initIndirectComputeArgsShader->end();
+            m_initIndirectComputeArgsShader->setUAV(0, nullptr);
+
+            m_renderParticles->setBakedIndirectArgs(m_indirectComputeArgsBuffer);
+            m_renderParticles->setBakedParticleUAV(m_bakedUAV);
 
             m_bakingDone = true;
         }

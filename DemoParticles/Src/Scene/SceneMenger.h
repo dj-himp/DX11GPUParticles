@@ -42,5 +42,24 @@ namespace DemoParticles
         SceneConstantBuffer                     m_sceneConstantBufferData;
         Microsoft::WRL::ComPtr<ID3D11Buffer>    m_sceneConstantBuffer;
 
+
+        //baking
+        struct BackedParticle
+        {
+            DirectX::SimpleMath::Vector4 position;
+            DirectX::SimpleMath::Vector4 normal;
+        };
+
+        std::unique_ptr<ComputeShader> m_packShader;
+        Microsoft::WRL::ComPtr<ID3D11Buffer> m_backedBuffer;
+        Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> m_bakedUAV;
+
+        Microsoft::WRL::ComPtr<ID3D11Buffer> m_indirectComputeArgsBuffer;
+        Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> m_indirectComputeArgsUAV;
+        Microsoft::WRL::ComPtr<ID3D11Buffer> m_indirectComputeConstantBuffer;
+
+        std::unique_ptr<ComputeShader> m_initIndirectComputeArgsShader;
+
+        int m_maxBakeBufferSize;
     };
 }

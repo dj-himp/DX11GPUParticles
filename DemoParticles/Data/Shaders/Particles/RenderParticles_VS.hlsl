@@ -22,7 +22,9 @@ PixelShaderInput main(uint vertexId : SV_VertexID)
 
     output.Position = p.position;
     output.oPosition = p.position.xyz;
-    output.Color = float4(1.0, 0.0, 0.0, 1.0);
+
+    float alpha = p.age / p.lifeSpan;
+    output.Color = float4(1.0, 0.0, 0.0, alpha);
     output.Normal = float4(0.0, 0.0, 0.0, 1.0);
 
     return output;

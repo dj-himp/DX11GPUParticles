@@ -16,3 +16,8 @@ cbuffer sceneConstantBuffer : register(b0)
     float2 padding;
 };
 
+struct BakedParticle
+{
+    float4 position;
+    float4 normal;
+};

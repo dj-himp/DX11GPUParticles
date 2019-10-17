@@ -10,6 +10,7 @@ namespace DemoParticles
     class ModelLoader;
     class Camera;
     class RenderTarget;
+    class ComputeShader;
 
     class BakeModelParticles : public IRenderable
     {
@@ -39,6 +40,6 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3(0.0f);
 
         WorldConstantBuffer m_constantBufferData;
-        
+
     };
 }
