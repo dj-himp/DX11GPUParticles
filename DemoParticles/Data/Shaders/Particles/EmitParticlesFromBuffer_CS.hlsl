@@ -13,8 +13,6 @@ RWStructuredBuffer<Particle> particleList : register(u1);
 RWStructuredBuffer<BakedParticle> bakedParticle : register(u2);
 
 
-//spawn per batch of 1024 particles
-
 [numthreads(64, 1, 1)]
 void main(uint3 id : SV_DispatchThreadID)
 {
@@ -25,10 +23,13 @@ void main(uint3 id : SV_DispatchThreadID)
 
         p.position = bp.position;
 
-        p.velocity = bp.normal * 0.1f;// float4(0.0, 0.0, 0.0, 1.0);
+        p.velocity = bp.normal * 0.1f;
+        //p.velocity = float4(0.0, 0.0, 0.0, 1.0);  
         
-        p.lifeSpan = 5.0;
-        p.age = p.lifeSpan;
+        p.normal = bp.normal;
+
+        p.lifeSpan = -1.0;//5.0;
+        p.age = 5.0;
         p.mass = 1.0;
 
         uint index = deadListBuffer.Consume();

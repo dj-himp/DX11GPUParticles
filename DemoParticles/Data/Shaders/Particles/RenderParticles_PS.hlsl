@@ -15,9 +15,8 @@ PixelShaderOutput main(PixelShaderInput input)
 {
     PixelShaderOutput output;
 
-    output.color = float4(input.Color.xyz, 1.0);
-    //output.color = float4(0.2,0,0, 1.0);
-
+    output.color = 1.0 + normalize(input.Normal) * 0.5; //input.Color;
+    output.color.a = 0.1;
     return output;
 
 }

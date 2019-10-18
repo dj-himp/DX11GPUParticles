@@ -9,8 +9,8 @@
 #include "Content/BakeModelParticles.h"
 #include "Content/RenderFullscreenQuad.h"
 #include "Content/RenderParticles.h"
-
 #include "Common/ComputeShader.h"
+#include "Common/InputManager.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -140,7 +140,10 @@ namespace DemoParticles
         m_sceneConstantBufferData.camPosition = DX::toVector4(camera->getPosition());
         m_sceneConstantBufferData.camDirection = DX::toVector4(camera->getForward());
         m_sceneConstantBufferData.time = timer.GetTotalSeconds();
-        m_sceneConstantBufferData.dt = timer.GetElapsedSeconds();
+        if (InputManager::isKeyDown(Keyboard::Space))
+            m_sceneConstantBufferData.dt = 0.0f;
+        else
+            m_sceneConstantBufferData.dt = timer.GetElapsedSeconds();
 
         m_mengerRenderer->update(timer, camera);
         m_bakeModelParticles->update(timer);

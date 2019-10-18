@@ -28,14 +28,18 @@ void main(uint3 id : SV_DispatchThreadID)
     Particle p = particleList[id.x];
     if(p.age > 0)
     {
-        //simulation
-        p.age -= dt;
-        p.position += p.velocity * dt;
+        
+        //lifeSpan < 0.0 => invulnerable
+        if(p.lifeSpan >= 0.0)
+        {
+            p.age -= dt;
+            p.position += p.velocity * dt;
+        }
 
         if(p.age > 0)
         {
             ParticleIndexElement particle;
-            particle.distance = 0.0;
+            particle.distance = length(p.position - camPosition);
             particle.index = id.x;
             uint index = aliveParticleIndex.IncrementCounter();
             aliveParticleIndex[index] = particle;

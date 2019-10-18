@@ -171,6 +171,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Src\Common\SortLib.cpp" />
     <ClCompile Include="Src\Content\RenderParticles.cpp" />
     <ClCompile Include="Src\Common\ComputeShader.cpp" />
     <ClCompile Include="Src\Scene\SceneMenger.cpp" />
@@ -230,6 +231,7 @@
     <ClInclude Include="Extern\imgui\imstb_rectpack.h" />
     <ClInclude Include="Extern\imgui\imstb_textedit.h" />
     <ClInclude Include="Extern\imgui\imstb_truetype.h" />
+    <ClInclude Include="Src\Common\SortLib.h" />
     <ClInclude Include="Src\Content\RenderParticles.h" />
     <ClInclude Include="Src\Common\ComputeShader.h" />
     <ClInclude Include="Src\Scene\SceneMenger.h" />
@@ -414,6 +416,38 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.</AdditionalIncludeDirectories>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\SortLib\InitSortArgsCS.hlsl">
+      <FileType>Document</FileType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">InitDispatchArgs</EntryPointName>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\SortLib\ParticleSort.hlsl">
+      <FileType>Document</FileType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">BitonicSortStep</EntryPointName>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\SortLib\SortCS.hlsl">
+      <FileType>Document</FileType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">BitonicSortLDS</EntryPointName>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">SORT_SIZE=512</PreprocessorDefinitions>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\SortLib\SortInnerCS.hlsl">
+      <FileType>Document</FileType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">BitonicInnerSort</EntryPointName>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">SORT_SIZE=512</PreprocessorDefinitions>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\SortLib\SortStepCS2.hlsl">
+      <FileType>Document</FileType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">BitonicSortStep</EntryPointName>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

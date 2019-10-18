@@ -5,6 +5,7 @@
 #include "Common/Shader.h"
 #include "Common/ComputeShader.h"
 #include "Camera/Camera.h"
+#include "Common/SortLib.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -27,44 +28,10 @@ namespace DemoParticles
 
     void RenderParticles::createDeviceDependentResources()
     {
+        //NEED REFACTOR of Shader::Load to remove this 
         std::vector<D3D11_INPUT_ELEMENT_DESC> inputElementDesc = {
             { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         };
-        m_vertexStride = sizeof(Vector2);
-
-        int width = m_deviceResources->GetOutputWidth();
-        int height = m_deviceResources->GetOutputHeight();
-        m_nbParticles = width * height;
-
-        std::vector<Vector2> vertices;
-        vertices.resize(m_nbParticles);
-
-        for (int y = 0; y < height; y++)
-        {
-            float V = (float)y / (float)height;
-            for (int x = 0; x < width; x++)
-            {
-                float U = (float)x / (float)width;
-                vertices[width * y + x] = Vector2(U, V);
-            }
-        }
-
-        D3D11_BUFFER_DESC vertexBufferDesc;
-        ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
-        vertexBufferDesc.ByteWidth = m_vertexStride * m_nbParticles;
-        vertexBufferDesc.StructureByteStride = m_vertexStride;
-        vertexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
-        vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-
-        D3D11_SUBRESOURCE_DATA vertexBufferData;
-        ZeroMemory(&vertexBufferData, sizeof(vertexBufferData));
-        vertexBufferData.pSysMem = &vertices[0];
-        vertexBufferData.SysMemPitch = 0;
-        vertexBufferData.SysMemSlicePitch = 0;
-
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateBuffer(&vertexBufferDesc, &vertexBufferData, &m_vertexBuffer)
-        );
 
         m_shader = std::make_unique<Shader>(m_deviceResources);
         m_shader->load(L"RenderParticles_VS.cso", L"RenderParticles_PS.cso", inputElementDesc, L"RenderParticles_GS.cso");
@@ -223,6 +190,9 @@ namespace DemoParticles
 
         m_simulateShader = std::make_unique<ComputeShader>(m_deviceResources);
         m_simulateShader->load(L"SimulateParticles_CS.cso");
+
+        m_sortLib = std::make_unique<SortLib>();
+        m_sortLib->init(m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext());
     }
 
     void RenderParticles::createWindowSizeDependentResources()
@@ -263,9 +233,11 @@ namespace DemoParticles
         if (m_emitFrequence <= 0.0f)
         {
             emitParticles();
-            m_emitFrequence = 2.0f;
+            m_emitFrequence = 5.1f;
         }
         simulateParticles();
+
+        m_sortLib->run(m_maxParticles, m_aliveIndexUAV.Get(), m_aliveListCountConstantBuffer.Get());
 
         context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
         context->GSSetShader(m_shader->getGeometryShader(), nullptr, 0);
@@ -286,8 +258,8 @@ namespace DemoParticles
         context->GSSetConstantBuffers(1, 1, m_constantBuffer.GetAddressOf());
 
         const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
-        context->OMSetBlendState(RenderStatesHelper::Additive().Get(), blendFactor, 0xffffffff);
-        context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
+        context->OMSetBlendState(RenderStatesHelper::NonPremultiplied().Get(), blendFactor, 0xffffffff);
+        context->OMSetDepthStencilState(RenderStatesHelper::DepthRead().Get(), 0);
         context->RSSetState(RenderStatesHelper::CullNone().Get());
 
         context->DrawInstancedIndirect(m_indirectDrawArgsBuffer.Get(), 0);
@@ -344,7 +316,6 @@ namespace DemoParticles
         m_emitFromBufferParticles->setUAV(1, m_particleUAV, initialCount);
         m_emitFromBufferParticles->setUAV(2, m_bakedParticlesUAV);
         m_emitFromBufferParticles->begin();
-        //m_emitFromBufferParticles->start(align(500000, 1024) / 1024, 1, 1);
         m_emitFromBufferParticles->startIndirect(m_bakedIndirectArgsBuffer);
         m_emitFromBufferParticles->end();
         m_emitFromBufferParticles->setUAV(0, nullptr);

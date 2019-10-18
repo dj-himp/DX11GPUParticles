@@ -13,6 +13,7 @@ namespace DemoParticles
         static Microsoft::WRL::ComPtr<ID3D11BlendState> Opaque() { return instance().m_opaque; }
         static Microsoft::WRL::ComPtr<ID3D11BlendState> AlphaBlend() { return instance().m_alphaBlend; }
         static Microsoft::WRL::ComPtr<ID3D11BlendState> Additive() { return instance().m_additive; }
+        static Microsoft::WRL::ComPtr<ID3D11BlendState> NonPremultiplied() { return instance().m_nonPremultiplied; }
 
         static Microsoft::WRL::ComPtr<ID3D11DepthStencilState> DepthNone() { return instance().m_depthNone; }
         static Microsoft::WRL::ComPtr<ID3D11DepthStencilState> DepthDefault() { return instance().m_depthDefault; }
@@ -39,6 +40,7 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11BlendState> m_opaque;
         Microsoft::WRL::ComPtr<ID3D11BlendState> m_alphaBlend;
         Microsoft::WRL::ComPtr<ID3D11BlendState> m_additive;
+        Microsoft::WRL::ComPtr<ID3D11BlendState> m_nonPremultiplied;
 
         Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthNone;
         Microsoft::WRL::ComPtr<ID3D11DepthStencilState> m_depthDefault;

@@ -7,6 +7,7 @@
 namespace DemoParticles
 {
     class ComputeShader;
+    class SortLib;
 
     class RenderParticles : public IRenderable
     {
@@ -36,6 +37,7 @@ namespace DemoParticles
         struct Particle
         {
             DirectX::SimpleMath::Vector4 position;
+            DirectX::SimpleMath::Vector4 normal;
             DirectX::SimpleMath::Vector4 velocity;
             
             float lifeSpan;
@@ -64,7 +66,7 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_normalView;
 
         int m_nbParticles;
-        int m_maxParticles = 4000 * 1024;
+        int m_maxParticles = 500 * 1024;
 
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_particleBuffer;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_particleSRV;
@@ -99,6 +101,8 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_bakedIndirectArgsBuffer;
 
         bool m_resetParticles = true;
+
+        std::unique_ptr<SortLib>                            m_sortLib;
 
         //temp
         float m_emitFrequence = 0.0f;

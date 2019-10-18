@@ -43,6 +43,9 @@
     <Filter Include="Data\Shaders\Particles">
       <UniqueIdentifier>{96db913d-5517-4f22-a59c-abc079c77513}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Data\Shaders\SortLib">
+      <UniqueIdentifier>{459a6f53-8559-4829-b178-1e5bd751b494}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\App.cpp">
@@ -145,6 +148,9 @@
       <Filter>Src\Content</Filter>
     </ClCompile>
     <ClCompile Include="Src\Common\RenderStatesHelper.cpp">
+      <Filter>Src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\SortLib.cpp">
       <Filter>Src\Common</Filter>
     </ClCompile>
   </ItemGroup>
@@ -269,6 +275,9 @@
     <ClInclude Include="Data\Shaders\Globals.h">
       <Filter>Data\Shaders</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Common\SortLib.h">
+      <Filter>Src\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -347,6 +356,21 @@
     </FxCompile>
     <FxCompile Include="Data\Shaders\Particles\InitIndirectComputeArgs1D_CS.hlsl">
       <Filter>Data\Shaders\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\SortLib\InitSortArgsCS.hlsl">
+      <Filter>Data\Shaders\SortLib</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\SortLib\ParticleSort.hlsl">
+      <Filter>Data\Shaders\SortLib</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\SortLib\SortCS.hlsl">
+      <Filter>Data\Shaders\SortLib</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\SortLib\SortInnerCS.hlsl">
+      <Filter>Data\Shaders\SortLib</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\SortLib\SortStepCS2.hlsl">
+      <Filter>Data\Shaders\SortLib</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,9 @@
 struct Particle
 {
     float4 position;
+    float4 normal;
     float4 velocity;
+
 
     float lifeSpan;
     float age;
