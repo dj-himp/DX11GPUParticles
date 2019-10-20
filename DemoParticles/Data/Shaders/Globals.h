@@ -8,10 +8,11 @@ cbuffer sceneConstantBuffer : register(b0)
 
     float4 camPosition;
     float4 camDirection;
-    float time;
-    float dt;
 
     float4 FrustumCorners[4];
+
+    float time;
+    float dt;
 
     float2 padding;
 };

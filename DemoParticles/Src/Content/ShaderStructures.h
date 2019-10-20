@@ -2,19 +2,23 @@
 
 namespace DemoParticles
 {
-    __declspec(align(16))
+    //__declspec(align(16))
     struct SceneConstantBuffer
     {
         DirectX::SimpleMath::Matrix view;
         DirectX::SimpleMath::Matrix projection;
         DirectX::SimpleMath::Matrix viewProj;
 
-        DirectX::XMFLOAT4 camPosition;
-        DirectX::XMFLOAT4 camDirection;
+        DirectX::SimpleMath::Vector4 camPosition;
+        DirectX::SimpleMath::Vector4 camDirection;
+
+        DirectX::SimpleMath::Vector4 frustumCorner[4];
+
+        //put non float4 at the end
         float             time;
         float             dt;
 
-        DirectX::XMFLOAT4 frustumCorner[4];
+        UINT padding[2];
     };
 
     struct QuadConstantBuffer

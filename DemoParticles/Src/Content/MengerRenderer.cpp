@@ -73,6 +73,12 @@ namespace DemoParticles
 
         context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);
 
+        const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
+        context->OMSetBlendState(RenderStatesHelper::Opaque().Get(), blendFactor, 0xffffffff);
+        context->RSSetState(RenderStatesHelper::CullNone().Get());
+        context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
+
+
         context->DrawIndexed(m_quad->getMesh(0)->getIndexCount(), 0, 0);
     }
 }
