@@ -34,6 +34,24 @@ void main(uint3 id : SV_DispatchThreadID)
 
         //add one threadGroup for indirectCompute packing
         InterlockedAdd(indirectComputeArgs[0], 1);
+
+        if(srcPixel2.w > 0.5)
+        {
+            for (int i = 0; i < 4; ++i)
+            {
+                uint oldValue = particleList.IncrementCounter();
+
+                BakedParticle particle;
+                particle.position = srcPixel + i * srcPixel2 * 5.0;
+                particle.normal = float4(0.0, 1.0, 0.0, 1.0);//srcPixel2;
+
+                particleList[oldValue] = particle;
+
+                //add one threadGroup for indirectCompute packing
+                InterlockedAdd(indirectComputeArgs[0], 1);
+            }
+
+        }
     }
 }
 
