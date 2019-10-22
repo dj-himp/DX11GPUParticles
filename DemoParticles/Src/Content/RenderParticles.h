@@ -100,6 +100,9 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>   m_bakedParticlesUAV;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_bakedIndirectArgsBuffer;
 
+        ParticlesGlobalsConstantBuffer                      m_particlesGlobalSettingsBufferData;
+        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_particlesGlobalSettingsBuffer;
+
         bool m_resetParticles = true;
 
         std::unique_ptr<SortLib>                            m_sortLib;

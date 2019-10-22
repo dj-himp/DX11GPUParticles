@@ -111,6 +111,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
       <AdditionalIncludeDirectories>$(ProjectDir)\Extern;$(ProjectDir)\Src;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -145,6 +146,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -234,6 +236,7 @@
     <ClInclude Include="Src\Common\SortLib.h" />
     <ClInclude Include="Src\Content\RenderParticles.h" />
     <ClInclude Include="Src\Common\ComputeShader.h" />
+    <ClInclude Include="Src\GlobalSettings.h" />
     <ClInclude Include="Src\Scene\SceneMenger.h" />
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\Camera\CameraControllerFPS.h" />

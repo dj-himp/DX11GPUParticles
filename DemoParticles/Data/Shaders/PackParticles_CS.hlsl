@@ -29,29 +29,40 @@ void main(uint3 id : SV_DispatchThreadID)
         BakedParticle particle;
         particle.position = srcPixel;
         particle.normal = srcPixel2;
+        //particle.normal = float4(1.0, 0.0, 0.0, 1.0);
 
         particleList[oldValue] = particle;
 
         //add one threadGroup for indirectCompute packing
         InterlockedAdd(indirectComputeArgs[0], 1);
 
-        if(srcPixel2.w > 0.5)
+
+        //uncomment to add more particles on mesh (WIP)
+        /*if(srcPixel2.w > 0.5)
         {
-            for (int i = 0; i < 4; ++i)
+            float3 up = normalize(cross(srcPixel2.xyz, float3(1.0, 0.0, 0.0)));
+            float3 right = normalize(cross(up, srcPixel2.xyz));
+            float scale = 0.01;
+
+            for (int i = -1; i <= 1; i+=2)
             {
                 uint oldValue = particleList.IncrementCounter();
 
                 BakedParticle particle;
-                particle.position = srcPixel + i * srcPixel2 * 5.0;
-                particle.normal = float4(0.0, 1.0, 0.0, 1.0);//srcPixel2;
+                particle.position = float4(srcPixel.xyz + i * right * scale, srcPixel.w);
+                particle.normal = srcPixel2;
 
                 particleList[oldValue] = particle;
 
-                //add one threadGroup for indirectCompute packing
+                InterlockedAdd(indirectComputeArgs[0], 1);
+
+                particle.position = float4(srcPixel.xyz + i * up * scale, srcPixel.w);
+                particleList[oldValue] = particle;
+
                 InterlockedAdd(indirectComputeArgs[0], 1);
             }
 
-        }
+        }*/
     }
 }
 

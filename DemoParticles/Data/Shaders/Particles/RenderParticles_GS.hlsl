@@ -1,4 +1,5 @@
 #include "../Globals.h"
+#include "ParticlesGlobals.h"
 
 struct PixelShaderInput
 {
@@ -26,15 +27,23 @@ void main(point PixelShaderInput input[1], inout TriangleStream<PixelShaderInput
     //float particleSize = 0.0002f;
     float particleSize = 0.01;
 
-    //Camera Plane
-    float3 right = view._m00_m10_m20;
-    float3 up = view._m01_m11_m21;
+    float3 right;
+    float3 up;
+    
+    if (useBillboard)
+    {
+        //Camera Plane
+        right = view._m00_m10_m20;
+        up = view._m01_m11_m21;
+    }
+    else
+    {
+    //orient the particle to the normal;
+        up = normalize(cross(input[0].Normal.xyz, float3(1.0, 0.0, 0.0)));
+        right = normalize(cross(up, input[0].Normal.xyz));
+    }
 
     float4x4 viewProj = mul(view, proj);
-
-    //try to orient the particle to the normal;
-    //float3 forward = view._m02_m12_m22;
-
 
     //in counterClockwise and right handed coordinate
     // 1    3

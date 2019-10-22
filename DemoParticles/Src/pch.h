@@ -68,6 +68,7 @@
 #include "Common/DeviceResources.h"
 #include "Common/StepTimer.h"
 #include "Common/RenderStatesHelper.h"
+#include "GlobalSettings.h"
 
 namespace DX
 {

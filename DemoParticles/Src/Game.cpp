@@ -54,7 +54,7 @@ void Game::Initialize(HWND window, int width, int height)
 {
     m_mouse = std::make_unique<DirectX::Mouse>();
     m_keyboard = std::make_unique<DirectX::Keyboard>();
-
+    
     m_deviceResources->SetWindow(window, width, height);
 
     m_deviceResources->CreateDeviceResources();
@@ -89,7 +89,7 @@ void Game::Initialize(HWND window, int width, int height)
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.WantCaptureMouse = true;
+    io.WantCaptureMouse = true;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -172,24 +172,7 @@ void Game::Render()
 
     m_deviceResources->PIXEndEvent();
 
-    m_deviceResources->PIXBeginEvent(L"ImGui");
-    // Start the Dear ImGui frame
-    ImGui_ImplDX11_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
-
-    // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-    bool show_demo_window = true;
-    if (show_demo_window)
-        ImGui::ShowDemoWindow(&show_demo_window);
-
-    // Rendering
-    ImGui::Render();
-    //g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, NULL);
-    //g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, (float*)&clear_color);
-    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-    m_deviceResources->PIXEndEvent();
+    RenderImGui();
 
     // Show the new frame.
     m_deviceResources->Present();
@@ -292,4 +275,33 @@ void Game::OnDeviceRestored()
 
     CreateWindowSizeDependentResources();
 }
+
+void Game::RenderImGui()
+{
+    m_deviceResources->PIXBeginEvent(L"ImGui");
+    // Start the Dear ImGui frame
+    ImGui_ImplDX11_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+
+    // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+    /*bool show_demo_window = true;
+    if (show_demo_window)
+        ImGui::ShowDemoWindow(&show_demo_window);
+    */
+    ImGui::Begin("Particles globals");
+
+    ImGui::Checkbox("Use billboard", &ParticlesGlobals::g_useBillBoard);
+
+    ImGui::End();
+
+    // Rendering
+    ImGui::Render();
+    //g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, NULL);
+    //g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, (float*)&clear_color);
+    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
+    m_deviceResources->PIXEndEvent();
+}
+
 #pragma endregion

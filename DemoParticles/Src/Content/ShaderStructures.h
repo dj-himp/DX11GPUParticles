@@ -63,6 +63,13 @@ namespace DemoParticles
         UINT padding[3];
     };
 
+    struct ParticlesGlobalsConstantBuffer
+    {
+        bool useBillboard;
+        
+        UINT padding[3];
+    };
+
     // Used to send per-vertex data to the vertex shader.
     struct VertexPositionColor
     {

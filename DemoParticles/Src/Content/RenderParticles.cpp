@@ -35,11 +35,6 @@ namespace DemoParticles
 
         m_shader = std::make_unique<Shader>(m_deviceResources);
         m_shader->load(L"RenderParticles_VS.cso", L"RenderParticles_PS.cso", inputElementDesc, L"RenderParticles_GS.cso");
-
-        CD3D11_BUFFER_DESC constantBufferDesc(sizeof(m_worldConstantBufferData), D3D11_BIND_CONSTANT_BUFFER);
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, &m_constantBuffer)
-        );
         
         //MAIN PARTICLE POOL
 
@@ -188,6 +183,11 @@ namespace DemoParticles
             m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_indirectDrawArgsBuffer.Get(), &indirectDrawArgsUAVDesc, &m_indirectDrawArgsUAV)
         );
 
+        CD3D11_BUFFER_DESC particlesGlobalSettingsDesc(sizeof(m_particlesGlobalSettingsBufferData), D3D11_BIND_CONSTANT_BUFFER);
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&particlesGlobalSettingsDesc, nullptr, &m_particlesGlobalSettingsBuffer)
+        );
+
         m_simulateShader = std::make_unique<ComputeShader>(m_deviceResources);
         m_simulateShader->load(L"SimulateParticles_CS.cso");
 
@@ -210,18 +210,25 @@ namespace DemoParticles
         if (!camera)
             assert(0);
 
-        m_worldConstantBufferData.world = m_world.Transpose();
-
         m_emitterConstantBufferData.position = DX::toVector4(camera->getPosition() + camera->getForward() * 4.0f);// Vector4(-1.0f, 0.0f, 0.0f, 1.0f);
         m_emitterConstantBufferData.direction = Vector4(0.0f, 0.1f, 0.0f, 1.0f);
         m_emitterConstantBufferData.maxSpawn = 1024;
 
         m_emitFrequence -= timer.GetElapsedSeconds();
+
+        m_particlesGlobalSettingsBufferData.useBillboard = ParticlesGlobals::g_useBillBoard;
     }
 
     void RenderParticles::render()
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
+
+
+        context->UpdateSubresource(m_particlesGlobalSettingsBuffer.Get(), 0, nullptr, &m_particlesGlobalSettingsBufferData, 0, 0);
+        //context->PSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
+        //context->VSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
+        context->GSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
+        //context->CSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
 
         if (m_resetParticles)
         {
@@ -254,13 +261,10 @@ namespace DemoParticles
         context->VSSetShaderResources(0, ARRAYSIZE(vertexShaderSRVs), vertexShaderSRVs);
         context->VSSetConstantBuffers(3, 1, m_aliveListCountConstantBuffer.GetAddressOf());
 
-        context->UpdateSubresource(m_constantBuffer.Get(), 0, nullptr, &m_worldConstantBufferData, 0, 0);
-        context->GSSetConstantBuffers(1, 1, m_constantBuffer.GetAddressOf());
-
         const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
-        context->OMSetBlendState(RenderStatesHelper::NonPremultiplied().Get(), blendFactor, 0xffffffff);
+        context->OMSetBlendState(RenderStatesHelper::Opaque().Get(), blendFactor, 0xffffffff);
         context->OMSetDepthStencilState(RenderStatesHelper::DepthRead().Get(), 0);
-        context->RSSetState(RenderStatesHelper::CullNone().Get());
+        context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
 
         context->DrawInstancedIndirect(m_indirectDrawArgsBuffer.Get(), 0);
 

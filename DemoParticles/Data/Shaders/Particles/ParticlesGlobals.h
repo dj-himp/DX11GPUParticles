@@ -18,6 +18,13 @@ struct ParticleIndexElement
     float index;
 };
 
+cbuffer renderParticlesGlobals : register(b1)
+{
+    bool useBillboard;
+
+    uint3 particlesGlobalPadding;
+}
+
 cbuffer deadListCountConstantBuffer : register(b2)
 {
     uint nbDeadParticles;
