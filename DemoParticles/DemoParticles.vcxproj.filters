@@ -375,6 +375,7 @@
     <FxCompile Include="Data\Shaders\SortLib\SortStepCS2.hlsl">
       <Filter>Data\Shaders\SortLib</Filter>
     </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\RenderParticles_GS_ORIENTED.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Data\Models\CatMac.fbx">
@@ -384,5 +385,7 @@
       <Filter>Data\Models</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="Dlls\assimp-vc140-mt.dll" />
+    <CopyFileToFolders Include="Data\Models\TrexByJoel3d.fbx" />
+    <CopyFileToFolders Include="Data\Models\deer.fbx" />
   </ItemGroup>
 </Project>

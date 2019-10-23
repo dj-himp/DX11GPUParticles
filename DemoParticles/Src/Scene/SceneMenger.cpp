@@ -141,9 +141,9 @@ namespace DemoParticles
         m_sceneConstantBufferData.camDirection = DX::toVector4(camera->getForward());
         m_sceneConstantBufferData.time = timer.GetTotalSeconds();
         if (InputManager::isKeyDown(Keyboard::Space))
-            m_sceneConstantBufferData.dt = 0.0f;
+            m_sceneConstantBufferData.dt = timer.GetElapsedSeconds(); 
         else
-            m_sceneConstantBufferData.dt = timer.GetElapsedSeconds();
+            m_sceneConstantBufferData.dt = 0.0f;
 
         m_mengerRenderer->update(timer, camera);
         m_bakeModelParticles->update(timer);

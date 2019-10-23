@@ -2,6 +2,14 @@
 #include "../Globals.h"
 #include "ParticlesGlobals.h"
 
+cbuffer forceFieldsConstantBuffer : register(b4)
+{
+    uint type;
+    float4 position;
+    float gravity;
+
+    uint2 forceFieldsPadding;
+}
 
 RWBuffer<uint> indirectDrawArgs : register(u0);
 RWStructuredBuffer<ParticleIndexElement> aliveParticleIndex: register(u1);

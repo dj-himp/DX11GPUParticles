@@ -1,7 +1,7 @@
 #include "../Globals.h"
 #include "ParticlesGlobals.h"
 
-struct PixelShaderInput
+struct GeometryShaderInput
 {
     float4 Position : SV_POSITION;
     float3 oPosition : TEXCOORD0;
@@ -9,8 +9,18 @@ struct PixelShaderInput
     float4 Normal : TEXCOORD2;
 };
 
+struct PixelShaderInput
+{
+    float4 Position : SV_POSITION;
+    float3 oPosition : TEXCOORD0;
+    float4 Color : TEXCOORD1;
+    float4 Normal : TEXCOORD2;
+    float3 center : TEXCOORD3;
+    float  radius : TEXCOORD4;
+};
+
 [maxvertexcount(4)]
-void main(point PixelShaderInput input[1], inout TriangleStream<PixelShaderInput> OutStream)
+void main(point GeometryShaderInput input[1], inout TriangleStream<PixelShaderInput> OutStream)
 {
     //discard if no particle
     if (input[0].Color.a <= 0.0)
@@ -25,7 +35,10 @@ void main(point PixelShaderInput input[1], inout TriangleStream<PixelShaderInput
     //TO DO : reduire particleSize plus la particule est proche de la cam
 
     //float particleSize = 0.0002f;
-    float particleSize = 0.01;
+    float particleSize = 0.03;
+
+    output.center = input[0].oPosition;
+    output.radius = particleSize;
 
     float3 right;
     float3 up;

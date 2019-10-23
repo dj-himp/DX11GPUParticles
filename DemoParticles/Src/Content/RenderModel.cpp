@@ -33,7 +33,8 @@ namespace DemoParticles
     void RenderModel::createDeviceDependentResources()
     {
         m_modelLoader = std::make_unique<ModelLoader>(m_deviceResources);
-        m_model = m_modelLoader->load("CatMac.fbx");
+        //m_model = m_modelLoader->load("CatMac.fbx");
+        m_model = m_modelLoader->load("deer.fbx");
 
         m_shader = std::make_unique<Shader>(m_deviceResources);
         m_shader->load(L"RenderModel_VS.cso", L"RenderModel_PS.cso", m_model->getInputElements());
@@ -49,7 +50,7 @@ namespace DemoParticles
         );
 
         //Z rotation is temporary as I need to know why the model is upside down
-        m_world = Matrix::CreateScale(1.0f) * Matrix::CreateRotationX(0.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        m_world = Matrix::CreateScale(0.001f) * Matrix::CreateRotationX(0.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
     }
 
     void RenderModel::createWindowSizeDependentResources()

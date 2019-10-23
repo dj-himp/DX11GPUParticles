@@ -4,7 +4,7 @@
 StructuredBuffer<Particle> particleList : register(t0);
 StructuredBuffer<ParticleIndexElement> aliveParticlesIndex : register(t1);
 
-struct PixelShaderInput
+struct GeometryShaderInput
 {
     float4 Position : SV_POSITION;
     float3 oPosition : TEXCOORD0;
@@ -12,9 +12,9 @@ struct PixelShaderInput
     float4 Normal : TEXCOORD2;
 };
 
-PixelShaderInput main(uint vertexId : SV_VertexID)
+GeometryShaderInput main(uint vertexId : SV_VertexID)
 {
-    PixelShaderInput output;
+    GeometryShaderInput output;
     
     uint index = aliveParticlesIndex[nbAliveParticles - vertexId - 1].index;
     

@@ -262,7 +262,7 @@ namespace DemoParticles
         context->VSSetConstantBuffers(3, 1, m_aliveListCountConstantBuffer.GetAddressOf());
 
         const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
-        context->OMSetBlendState(RenderStatesHelper::Opaque().Get(), blendFactor, 0xffffffff);
+        context->OMSetBlendState(RenderStatesHelper::NonPremultiplied().Get(), blendFactor, 0xffffffff);
         context->OMSetDepthStencilState(RenderStatesHelper::DepthRead().Get(), 0);
         context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
 
