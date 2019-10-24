@@ -7,27 +7,34 @@ namespace DemoParticles
 {
     class Model;   
 
-    class DebugRenderer : public IRenderable
+    class DebugRenderer
     {
     public:
-        DebugRenderer(const DX::DeviceResources* deviceResources);
 
-        virtual void init() override;
-        virtual void release() override;
+        static DebugRenderer& instance();
 
-        virtual void createDeviceDependentResources() override;
-        virtual void createWindowSizeDependentResources() override;
+        void setDeviceResources(const DX::DeviceResources* deviceResources) { m_deviceResources = deviceResources; }
 
-        virtual void releaseDeviceDependentResources() override;
+        void init();
+        void release();
 
-        virtual void update(DX::StepTimer const& timer, Camera* camera = nullptr) override;
+        void createDeviceDependentResources();
+        void createWindowSizeDependentResources();
+
+        void releaseDeviceDependentResources();
+
+        void update(DX::StepTimer const& timer, Camera* camera = nullptr);
        
-        virtual void render() override;
+        void render();
 
         void pushBackModel(std::unique_ptr<Model> model, DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity);
 
     private:
-        
+
+        const DX::DeviceResources* m_deviceResources;
+
+        DebugRenderer();
+
         struct DebugModel
         {
             std::unique_ptr<Model> m_model;
@@ -42,10 +49,10 @@ namespace DemoParticles
 
         void renderDebugModel(DebugModel& debugModel);
 
-        
-
         std::vector<DebugModel> m_models;
 
         WorldConstantBuffer   m_constantBufferData;
+        Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
+        std::unique_ptr<Shader> m_shader;
     };
 }

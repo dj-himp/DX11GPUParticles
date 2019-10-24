@@ -2,23 +2,36 @@
 #include "../Globals.h"
 #include "ParticlesGlobals.h"
 
-cbuffer forceFieldsConstantBuffer : register(b4)
+cbuffer simulateParticlesConstantBuffer : register(b1)
+{
+    uint nbWantedForceFields;
+
+    uint3 simulatePadding;
+}
+
+struct ForceField
 {
     uint type;
     float4 position;
     float gravity;
+    float inverse_range;
 
-    uint2 forceFieldsPadding;
-}
+    uint forceFieldPadding;
+};
 
 RWBuffer<uint> indirectDrawArgs : register(u0);
 RWStructuredBuffer<ParticleIndexElement> aliveParticleIndex: register(u1);
 AppendStructuredBuffer<uint> deadParticleIndex : register(u2);
 RWStructuredBuffer<Particle> particleList : register(u3);
 
+StructuredBuffer<ForceField> forceFieldBuffer : register(t0);
+
+#define MAX_FORCE_FIELDS 4
+groupshared ForceField forceFieldsList[MAX_FORCE_FIELDS];
+
 //256 particles per thread group
 [numthreads(256, 1, 1)]
-void main(uint3 id : SV_DispatchThreadID)
+void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_GroupIndex is a flatenned index
 {
     //first thread to initialise the arguments
     if(id.x == 0)
@@ -33,6 +46,18 @@ void main(uint3 id : SV_DispatchThreadID)
     // Wait after draw args are written so no other threads can write to them before they are initialized
     GroupMemoryBarrierWithGroupSync();
 
+    //load forceFields in to shared memory
+    uint nbForcefields = min(nbWantedForceFields, MAX_FORCE_FIELDS);
+    if (groupId < nbForcefields)
+    {
+        forceFieldsList[groupId].type = forceFieldBuffer[groupId].type;
+        forceFieldsList[groupId].position = forceFieldBuffer[groupId].position;
+        forceFieldsList[groupId].gravity = forceFieldBuffer[groupId].gravity;
+        forceFieldsList[groupId].inverse_range = forceFieldBuffer[groupId].inverse_range;
+    }
+
+    GroupMemoryBarrierWithGroupSync();
+
     Particle p = particleList[id.x];
     if(p.age > 0)
     {
@@ -43,6 +68,29 @@ void main(uint3 id : SV_DispatchThreadID)
             p.age -= dt;
             p.position += p.velocity * dt;
         }
+
+        float4 particleForce = 0;
+
+        for (uint i = 0; i < nbForcefields; ++i)
+        {
+            ForceField field = forceFieldsList[i];
+            float4 direction = field.position - p.position;
+            float distance = 0.0;
+            if (field.type == FORCEFIELD_TYPE_POINT)
+            {
+                distance = length(direction);
+            }
+            else if (forceFieldsList[i].type == FORCEFIELD_TYPE_PLANE)
+            {
+                
+            }
+
+            particleForce += direction * field.gravity * (1.0 - saturate(distance * field.inverse_range));
+        }
+
+        //integration
+        p.velocity += particleForce * dt;
+        p.position += p.velocity * dt;
 
         if(p.age > 0)
         {

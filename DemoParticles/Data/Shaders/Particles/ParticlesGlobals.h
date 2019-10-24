@@ -38,3 +38,6 @@ cbuffer aliveListCountConstantBuffer : register(b3)
 
     uint3 aliveListPadding;
 };
+
+static uint FORCEFIELD_TYPE_POINT = 0;
+static uint FORCEFIELD_TYPE_PLANE = 1;

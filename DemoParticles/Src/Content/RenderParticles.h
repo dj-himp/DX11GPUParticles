@@ -51,6 +51,12 @@ namespace DemoParticles
             float index; //index in the particle buffer
         };
 
+        enum class ForceFieldTypes
+        {
+            Point = 0,
+            Plane = 1,
+        };
+
         std::unique_ptr<Shader>     m_moveShader;
 
         Microsoft::WRL::ComPtr<ID3D11Buffer>    m_vertexBuffer;
@@ -102,6 +108,13 @@ namespace DemoParticles
 
         ParticlesGlobalsConstantBuffer                      m_particlesGlobalSettingsBufferData;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_particlesGlobalSettingsBuffer;
+
+        SimulateParticlesConstantBuffer                     m_simulateParticlesBufferData;
+        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_simulateParticlesBuffer;
+
+        ForceField                                          m_forceFieldsList[MAX_FORCE_FIELDS];
+        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_forceFieldsBuffer;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_forceFieldsSRV;
 
         bool m_resetParticles = true;
 

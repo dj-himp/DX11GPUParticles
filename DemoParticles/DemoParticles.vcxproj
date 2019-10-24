@@ -189,9 +189,6 @@
     <ClCompile Include="Src\Common\InputManager.cpp" />
     <ClCompile Include="Src\Common\RenderTarget.cpp" />
     <ClCompile Include="Src\Common\Shader.cpp" />
-    <ClCompile Include="Src\Content\AxisRenderer.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="Src\Content\BakeModelParticles.cpp" />
     <ClCompile Include="Src\Content\DebugRenderer.cpp" />
     <ClCompile Include="Src\Content\IRenderable.cpp" />
@@ -247,7 +244,6 @@
     <ClInclude Include="Src\Common\RenderTarget.h" />
     <ClInclude Include="Src\Common\Shader.h" />
     <ClInclude Include="Src\Common\StepTimer.h" />
-    <ClInclude Include="Src\Content\AxisRenderer.h" />
     <ClInclude Include="Src\Content\BakeModelParticles.h" />
     <ClInclude Include="Src\Content\DebugRenderer.h" />
     <ClInclude Include="Src\Content\IRenderable.h" />

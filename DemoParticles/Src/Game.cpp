@@ -9,7 +9,6 @@
 #include "Gui/imgui_impl_win32.h"
 #include "Gui/imgui_impl_dx11.h"
 
-#include "Content/AxisRenderer.h"
 //#include "Content/SampleFpsTextRenderer.h"
 #include "Camera/CameraControllerFPS.h"
 #include "Common/InputManager.h"
@@ -72,15 +71,16 @@ void Game::Initialize(HWND window, int width, int height)
     //std::vector< DirectX::SimpleMath::Vector3> corners = camera.getFrustrumCorners();
 
 
-    std::unique_ptr<DebugRenderer> debugRenderer = std::make_unique<DebugRenderer>(m_deviceResources.get());
-    debugRenderer->pushBackModel(MeshFactory::getInstance().createAxis());
+    //std::unique_ptr<DebugRenderer> debugRenderer = std::make_unique<DebugRenderer>(m_deviceResources.get());
+
+    DebugRenderer::instance().pushBackModel(MeshFactory::getInstance().createAxis());
     //debugRenderer->pushBackModel(MeshFactory::getInstance().createFrustum(corners));
 
     //m_renderables.push_back(std::make_unique<RenderModel>(m_deviceResources.get()));
     //m_renderables.push_back(std::make_unique<RenderFullscreenQuad>(m_deviceResources.get()));
     //m_renderables.push_back(std::make_unique<MengerRenderer>(m_deviceResources.get()));
     //m_renderables.push_back(std::make_unique<BakeModelParticles>(m_deviceResources.get()));
-    m_renderables.push_back(std::move(debugRenderer));
+    //m_renderables.push_back(std::move(debugRenderer));
 
     m_cameraControllerFPS = std::make_unique<CameraControllerFPS>(m_deviceResources.get());
 
@@ -138,6 +138,8 @@ void Game::Update(DX::StepTimer const& timer)
         renderable->update(m_timer, m_cameraControllerFPS->getCamera());
     }
 
+    DebugRenderer::instance().update(timer, m_cameraControllerFPS->getCamera());
+
     m_sceneMenger->update(timer, m_cameraControllerFPS->getCamera());
 
     //m_fpsTextRenderer->Update(m_timer);
@@ -165,6 +167,8 @@ void Game::Render()
     {
         renderable->render();
     }
+
+    DebugRenderer::instance().render();
 
     m_sceneMenger->render();
 
@@ -244,8 +248,11 @@ void Game::OnWindowSizeChanged(int width, int height)
 void Game::GetDefaultSize(int& width, int& height) const
 {
     // TODO: Change to desired default window size (note minimum size is 320x200).
-    width = 1024;
-    height = 720;
+    //width = 1024;
+    //height = 720;
+
+    width = 1600;
+    height = 900;
 }
 #pragma endregion
 
@@ -256,12 +263,15 @@ void Game::CreateDeviceDependentResources()
     auto device = m_deviceResources->GetD3DDevice();
 
     RenderStatesHelper::instance().init(m_deviceResources.get());
+
+    DebugRenderer::instance().setDeviceResources(m_deviceResources.get());
+    DebugRenderer::instance().createDeviceDependentResources();
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
 void Game::CreateWindowSizeDependentResources()
 {
-    // TODO: Initialize windows-size dependent objects here.
+    DebugRenderer::instance().createWindowSizeDependentResources();
 }
 
 void Game::OnDeviceLost()
@@ -292,7 +302,10 @@ void Game::RenderImGui()
     ImGui::Begin("Particles globals");
 
     ImGui::Checkbox("Use billboard", &ParticlesGlobals::g_useBillBoard);
-
+    ImGui::Checkbox("Disable culling", &ParticlesGlobals::g_cullNone);
+    const char* items[] = { "Opaque", "NonPremultiplied", "Additive" };
+    ImGui::Combo("Blend Mode", &ParticlesGlobals::g_blendMode, items, 3);
+    
     ImGui::End();
 
     // Rendering

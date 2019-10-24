@@ -38,8 +38,15 @@ namespace DemoParticles
         m_mengerRenderer->createDeviceDependentResources();
         m_renderParticles->createDeviceDependentResources();
 
-        m_rtBakePositions = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, m_deviceResources->GetOutputWidth(), m_deviceResources->GetOutputHeight());
-        m_rtBakeNormals = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, m_deviceResources->GetOutputWidth(), m_deviceResources->GetOutputHeight());
+        //int width = m_deviceResources->GetOutputWidth();
+        //int height = m_deviceResources->GetOutputHeight();
+
+        int width = 1024;
+        int height = 720;
+        m_bakingViewport = CD3D11_VIEWPORT(0.0f, 0.0f, width, height);
+
+        m_rtBakePositions = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, width, height);
+        m_rtBakeNormals = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, width, height);
 
         m_computePackParticle = std::make_unique<ComputeShader>(m_deviceResources);// , 2, true);
         m_computePackParticle->load(L"PackParticles_CS.cso");
@@ -51,7 +58,7 @@ namespace DemoParticles
 
         //baking
 
-        m_maxBakeBufferSize = m_deviceResources->GetOutputWidth() * m_deviceResources->GetOutputHeight();
+        m_maxBakeBufferSize = width * height;
 
         D3D11_BUFFER_DESC bakeBufferDesc;
         bakeBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -140,10 +147,14 @@ namespace DemoParticles
         m_sceneConstantBufferData.camPosition = DX::toVector4(camera->getPosition());
         m_sceneConstantBufferData.camDirection = DX::toVector4(camera->getForward());
         m_sceneConstantBufferData.time = timer.GetTotalSeconds();
+        
+        static bool started = false;
         if (InputManager::isKeyDown(Keyboard::Space))
-            m_sceneConstantBufferData.dt = timer.GetElapsedSeconds(); 
-        else
-            m_sceneConstantBufferData.dt = 0.0f;
+        {
+            started = true;
+        }
+
+        m_sceneConstantBufferData.dt = started ? timer.GetElapsedSeconds() : 0.0f;
 
         m_mengerRenderer->update(timer, camera);
         m_bakeModelParticles->update(timer);
@@ -172,10 +183,14 @@ namespace DemoParticles
             ID3D11RenderTargetView* renderTargets[2] = { m_rtBakePositions->getRenderTargetView().Get(), m_rtBakeNormals->getRenderTargetView().Get() };
             context->OMSetRenderTargets(2, renderTargets, nullptr);
 
+            context->RSSetViewports(1, &m_bakingViewport);
             context->ClearRenderTargetView(renderTargets[0], Colors::Transparent);
             context->ClearRenderTargetView(renderTargets[1], Colors::Transparent);
 
             m_bakeModelParticles->render();
+
+            D3D11_VIEWPORT viewport = m_deviceResources->GetScreenViewport();
+            context->RSSetViewports(1, &viewport);
 
             context->OMSetRenderTargets(nbRT, previousRenderTargets, previousDepthStencil);
 

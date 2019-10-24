@@ -90,9 +90,6 @@
     <ClCompile Include="Src\Common\InputManager.cpp">
       <Filter>Src\Common</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Content\AxisRenderer.cpp">
-      <Filter>Src\Content</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Content\IRenderable.cpp">
       <Filter>Src\Content</Filter>
     </ClCompile>
@@ -202,9 +199,6 @@
     </ClInclude>
     <ClInclude Include="Src\Common\InputManager.h">
       <Filter>Src\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Content\AxisRenderer.h">
-      <Filter>Src\Content</Filter>
     </ClInclude>
     <ClInclude Include="Src\Content\IRenderable.h">
       <Filter>Src\Content</Filter>

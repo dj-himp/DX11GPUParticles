@@ -25,7 +25,7 @@ namespace DemoParticles
 
     void DemoParticles::CameraControllerFPS::update(DX::StepTimer const& timer)
     {
-        float m_movementSpeed = 1.0f;
+        float m_movementSpeed = 5.0f;
         Vector3 movement(0.0f);
 
         bool hasMoved = false;

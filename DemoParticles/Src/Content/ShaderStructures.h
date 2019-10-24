@@ -70,6 +70,24 @@ namespace DemoParticles
         UINT padding[3];
     };
 
+    struct SimulateParticlesConstantBuffer
+    {
+        UINT nbWantedForceFields;
+
+        UINT padding[3];
+    };
+
+#define MAX_FORCE_FIELDS 4 //also change it in the shader
+    struct ForceField
+    {
+        UINT type;
+        DirectX::SimpleMath::Vector4 position;
+        float gravity;
+        float inverse_range;
+
+        UINT padding;
+    };
+
     // Used to send per-vertex data to the vertex shader.
     struct VertexPositionColor
     {

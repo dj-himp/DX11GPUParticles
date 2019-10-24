@@ -28,7 +28,7 @@ void main(uint3 id : SV_DispatchThreadID)
         
         p.normal = bp.normal;
 
-        p.lifeSpan = 5.0;
+        p.lifeSpan = -1.0; //5.0;
         p.age = 5.0;
         p.mass = 1.0;
 

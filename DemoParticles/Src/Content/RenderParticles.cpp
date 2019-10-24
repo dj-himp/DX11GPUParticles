@@ -188,6 +188,33 @@ namespace DemoParticles
             m_deviceResources->GetD3DDevice()->CreateBuffer(&particlesGlobalSettingsDesc, nullptr, &m_particlesGlobalSettingsBuffer)
         );
 
+        CD3D11_BUFFER_DESC simulateParticlesDesc(sizeof(SimulateParticlesConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&simulateParticlesDesc, nullptr, &m_simulateParticlesBuffer)
+        );
+
+        D3D11_BUFFER_DESC forceFieldsDesc;
+        forceFieldsDesc.Usage = D3D11_USAGE_DEFAULT;
+        forceFieldsDesc.ByteWidth = sizeof(ForceField) * MAX_FORCE_FIELDS;
+        forceFieldsDesc.StructureByteStride = sizeof(ForceField);
+        forceFieldsDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+        forceFieldsDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+        forceFieldsDesc.CPUAccessFlags = 0;
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&forceFieldsDesc, nullptr, &m_forceFieldsBuffer)
+        );
+
+        D3D11_SHADER_RESOURCE_VIEW_DESC forceFieldsSRVDesc;
+        forceFieldsSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
+        forceFieldsSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+        forceFieldsSRVDesc.Buffer.FirstElement = 0;
+        forceFieldsSRVDesc.Buffer.NumElements = MAX_FORCE_FIELDS;
+        
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateShaderResourceView(m_forceFieldsBuffer.Get(), &forceFieldsSRVDesc, &m_forceFieldsSRV)
+        );
+
         m_simulateShader = std::make_unique<ComputeShader>(m_deviceResources);
         m_simulateShader->load(L"SimulateParticles_CS.cso");
 
@@ -217,6 +244,28 @@ namespace DemoParticles
         m_emitFrequence -= timer.GetElapsedSeconds();
 
         m_particlesGlobalSettingsBufferData.useBillboard = ParticlesGlobals::g_useBillBoard;
+
+        m_simulateParticlesBufferData.nbWantedForceFields = 4;
+
+        m_forceFieldsList[0].type = (UINT)ForceFieldTypes::Point;
+        m_forceFieldsList[0].position = Vector4(-4.0f, 0.0f, 0.0f, 1.0f);
+        m_forceFieldsList[0].gravity = 0.4f;
+        m_forceFieldsList[0].inverse_range = 1.0f / 10.0f; //avoid division in shader
+
+        m_forceFieldsList[1].type = (UINT)ForceFieldTypes::Point;
+        m_forceFieldsList[1].position = Vector4(4.0f, 0.0f, 0.0f, 1.0f);
+        m_forceFieldsList[1].gravity = 0.4f;
+        m_forceFieldsList[1].inverse_range = 1.0f / 10.0f; //avoid division in shader
+
+        m_forceFieldsList[2].type = (UINT)ForceFieldTypes::Point;
+        m_forceFieldsList[2].position = Vector4(0.0f, 0.0f, 4.0f, 1.0f);
+        m_forceFieldsList[2].gravity = 0.4f;
+        m_forceFieldsList[2].inverse_range = 1.0f / 10.0f; //avoid division in shader
+
+        m_forceFieldsList[3].type = (UINT)ForceFieldTypes::Point;
+        m_forceFieldsList[3].position = Vector4(0.0f, 0.0f, -4.0f, 1.0f);
+        m_forceFieldsList[3].gravity = 0.4f;
+        m_forceFieldsList[3].inverse_range = 1.0f / 10.0f; //avoid division in shader
     }
 
     void RenderParticles::render()
@@ -225,6 +274,13 @@ namespace DemoParticles
 
 
         context->UpdateSubresource(m_particlesGlobalSettingsBuffer.Get(), 0, nullptr, &m_particlesGlobalSettingsBufferData, 0, 0);
+        context->UpdateSubresource(m_simulateParticlesBuffer.Get(), 0, nullptr, &m_particlesGlobalSettingsBufferData, 0, 0);
+
+        //TODO only upload when dirty
+        context->UpdateSubresource(m_simulateParticlesBuffer.Get(), 0, nullptr, &m_simulateParticlesBufferData, 0, 0);
+        context->UpdateSubresource(m_forceFieldsBuffer.Get(), 0, nullptr, &m_forceFieldsList, 0, 0);
+
+        context->CSSetConstantBuffers(1, 1, m_simulateParticlesBuffer.GetAddressOf());
         //context->PSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
         //context->VSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
         context->GSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
@@ -262,9 +318,29 @@ namespace DemoParticles
         context->VSSetConstantBuffers(3, 1, m_aliveListCountConstantBuffer.GetAddressOf());
 
         const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
-        context->OMSetBlendState(RenderStatesHelper::NonPremultiplied().Get(), blendFactor, 0xffffffff);
-        context->OMSetDepthStencilState(RenderStatesHelper::DepthRead().Get(), 0);
-        context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
+        switch (ParticlesGlobals::g_blendMode)
+        {
+        case 0:
+            context->OMSetBlendState(RenderStatesHelper::Opaque().Get(), blendFactor, 0xffffffff);
+            context->OMSetDepthStencilState(RenderStatesHelper::DepthDefault().Get(), 0);
+            break;
+        case 1:
+            context->OMSetBlendState(RenderStatesHelper::NonPremultiplied().Get(), blendFactor, 0xffffffff);
+            context->OMSetDepthStencilState(RenderStatesHelper::DepthRead().Get(), 0);
+            break;
+        case 2:
+            context->OMSetBlendState(RenderStatesHelper::Additive().Get(), blendFactor, 0xffffffff);
+            context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
+            break;
+        default:
+            break;
+        }
+        //context->OMSetBlendState(RenderStatesHelper::NonPremultiplied().Get(), blendFactor, 0xffffffff);
+        //context->OMSetDepthStencilState(RenderStatesHelper::DepthRead().Get(), 0);
+        if(ParticlesGlobals::g_cullNone)
+            context->RSSetState(RenderStatesHelper::CullNone().Get());
+        else
+            context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
 
         context->DrawInstancedIndirect(m_indirectDrawArgsBuffer.Get(), 0);
 
@@ -350,6 +426,7 @@ namespace DemoParticles
         m_simulateShader->setUAV(3, m_particleUAV, initialCount);
         initialCount[0] = 0;
         m_simulateShader->setUAV(1, m_aliveIndexUAV, initialCount);
+        m_simulateShader->setSRV(0, m_forceFieldsSRV);
         m_simulateShader->begin();
         m_simulateShader->start(align(m_maxParticles, 256) / 256, 1, 1);
         m_simulateShader->end();
@@ -357,6 +434,7 @@ namespace DemoParticles
         m_simulateShader->setUAV(1, nullptr);
         m_simulateShader->setUAV(2, nullptr);
         m_simulateShader->setUAV(3, nullptr);
+        m_simulateShader->setSRV(0, nullptr);
 
         context->CopyStructureCount(m_aliveListCountConstantBuffer.Get(), 0, m_aliveIndexUAV.Get());
 

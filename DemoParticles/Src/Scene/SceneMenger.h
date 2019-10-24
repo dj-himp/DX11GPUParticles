@@ -60,6 +60,8 @@ namespace DemoParticles
 
         std::unique_ptr<ComputeShader> m_initIndirectComputeArgsShader;
 
+        D3D11_VIEWPORT m_bakingViewport;
+
         int m_maxBakeBufferSize;
     };
 }
