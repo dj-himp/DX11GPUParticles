@@ -6,6 +6,9 @@
 #include "Common/ComputeShader.h"
 #include "Camera/Camera.h"
 #include "Common/SortLib.h"
+#include "Content/DebugRenderer.h"
+#include "Model/MeshFactory.h"
+#include "Model/Model.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -220,6 +223,8 @@ namespace DemoParticles
 
         m_sortLib = std::make_unique<SortLib>();
         m_sortLib->init(m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext());
+
+        initForceFields();
     }
 
     void RenderParticles::createWindowSizeDependentResources()
@@ -245,33 +250,14 @@ namespace DemoParticles
 
         m_particlesGlobalSettingsBufferData.useBillboard = ParticlesGlobals::g_useBillBoard;
 
-        m_simulateParticlesBufferData.nbWantedForceFields = 4;
-
-        m_forceFieldsList[0].type = (UINT)ForceFieldTypes::Point;
-        m_forceFieldsList[0].position = Vector4(-4.0f, 0.0f, 0.0f, 1.0f);
-        m_forceFieldsList[0].gravity = 0.4f;
-        m_forceFieldsList[0].inverse_range = 1.0f / 10.0f; //avoid division in shader
-
-        m_forceFieldsList[1].type = (UINT)ForceFieldTypes::Point;
-        m_forceFieldsList[1].position = Vector4(4.0f, 0.0f, 0.0f, 1.0f);
-        m_forceFieldsList[1].gravity = 0.4f;
-        m_forceFieldsList[1].inverse_range = 1.0f / 10.0f; //avoid division in shader
-
-        m_forceFieldsList[2].type = (UINT)ForceFieldTypes::Point;
-        m_forceFieldsList[2].position = Vector4(0.0f, 0.0f, 4.0f, 1.0f);
-        m_forceFieldsList[2].gravity = 0.4f;
-        m_forceFieldsList[2].inverse_range = 1.0f / 10.0f; //avoid division in shader
-
-        m_forceFieldsList[3].type = (UINT)ForceFieldTypes::Point;
-        m_forceFieldsList[3].position = Vector4(0.0f, 0.0f, -4.0f, 1.0f);
-        m_forceFieldsList[3].gravity = 0.4f;
-        m_forceFieldsList[3].inverse_range = 1.0f / 10.0f; //avoid division in shader
+        
     }
 
     void RenderParticles::render()
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
+        
 
         context->UpdateSubresource(m_particlesGlobalSettingsBuffer.Get(), 0, nullptr, &m_particlesGlobalSettingsBufferData, 0, 0);
         context->UpdateSubresource(m_simulateParticlesBuffer.Get(), 0, nullptr, &m_particlesGlobalSettingsBufferData, 0, 0);
@@ -440,5 +426,37 @@ namespace DemoParticles
 
         //int i = m_simulateShader->readCounter(m_aliveIndexUAV);
    }
+
+    void RenderParticles::initForceFields()
+    {
+        m_simulateParticlesBufferData.nbWantedForceFields = 4;
+
+        m_forceFieldsList[0].type = (UINT)ForceFieldTypes::Point;
+        m_forceFieldsList[0].position = Vector4(-4.0f, 2.0f, 0.0f, 1.0f);
+        m_forceFieldsList[0].gravity = 0.4f;
+        m_forceFieldsList[0].inverse_range = 1.0f / 10.0f; //avoid division in shader
+
+        m_forceFieldsList[1].type = (UINT)ForceFieldTypes::Point;
+        m_forceFieldsList[1].position = Vector4(4.0f, 2.0f, 0.0f, 1.0f);
+        m_forceFieldsList[1].gravity = 0.6f;
+        m_forceFieldsList[1].inverse_range = 1.0f / 10.0f; //avoid division in shader
+
+        m_forceFieldsList[2].type = (UINT)ForceFieldTypes::Point;
+        m_forceFieldsList[2].position = Vector4(0.0f, 2.0f, 4.0f, 1.0f);
+        m_forceFieldsList[2].gravity = 0.4f;
+        m_forceFieldsList[2].inverse_range = 1.0f / 10.0f; //avoid division in shader
+
+        m_forceFieldsList[3].type = (UINT)ForceFieldTypes::Point;
+        m_forceFieldsList[3].position = Vector4(0.0f, 2.0f, -4.0f, 1.0f);
+        m_forceFieldsList[3].gravity = 0.8f;
+        m_forceFieldsList[3].inverse_range = 1.0f / 10.0f; //avoid division in shader
+        
+        //debug render
+        for (int i = 0; i < m_simulateParticlesBufferData.nbWantedForceFields; ++i)
+        {
+            Matrix world = Matrix::CreateTranslation(Vector3(m_forceFieldsList[i].position.x, m_forceFieldsList[i].position.y, m_forceFieldsList[i].position.z));
+            DebugRenderer::instance().pushBackModel(MeshFactory::getInstance().createAxis(), world);
+        }
+    }
 
 }

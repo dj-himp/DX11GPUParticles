@@ -33,6 +33,7 @@ namespace DemoParticles
         void resetParticles();
         void emitParticles();
         void simulateParticles();
+        void initEmitters();
 
         struct Particle
         {
@@ -72,7 +73,7 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_normalView;
 
         int m_nbParticles;
-        int m_maxParticles = 500 * 1024;
+        int m_maxParticles = 1000 * 1024;//500 * 1024; //need to augment MAX_NUM_TG in sortLib.cpp
 
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_particleBuffer;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_particleSRV;

@@ -66,14 +66,15 @@ namespace DemoParticles
     {
         assert(camera);
         
-        Matrix m_world = Matrix::Identity;
-        XMStoreFloat4x4(&m_constantBufferData.world, m_world.Transpose());
+        //Matrix m_world = Matrix::Identity;
+        //m_constantBufferData.world = m_world.Transpose();
     }
 
     void DebugRenderer::render()
     {
         for (auto& debugModel : m_models)
         {
+            m_constantBufferData.world = debugModel.m_world.Transpose();
             renderDebugModel(debugModel);
         }
     }
@@ -87,7 +88,7 @@ namespace DemoParticles
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
-        context->UpdateSubresource(m_constantBuffer.Get(), 0, NULL, &m_constantBufferData, 0, 0);
+        context->UpdateSubresource(m_constantBuffer.Get(), 0, nullptr, &m_constantBufferData, 0, 0);
 
         for (int i = 0; i < debugModel.m_model->getMeshCount(); ++i)
         {

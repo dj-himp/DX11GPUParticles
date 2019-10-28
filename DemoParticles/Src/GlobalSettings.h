@@ -7,8 +7,8 @@ namespace DemoParticles
     public:
         //inline for static variable only on C++17
         static inline bool g_useBillBoard = false;
-        static inline bool g_cullNone = false;
-        static inline int g_blendMode = 0;
+        static inline bool g_cullNone = true;
+        static inline int g_blendMode = 1;
     };
 
 }

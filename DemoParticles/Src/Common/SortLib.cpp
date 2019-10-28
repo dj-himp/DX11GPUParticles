@@ -32,7 +32,7 @@
 
 namespace DemoParticles
 {
-    const int MAX_NUM_TG = 1024;//128; // max 128 * 512 elements = 64k elements
+    const int MAX_NUM_TG = 2048;// 1024;//128; // max 128 * 512 elements = 64k elements
     typedef struct SortConstants
     {
         int x, y, z, w;
