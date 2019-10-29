@@ -33,7 +33,7 @@ namespace DemoParticles
         void resetParticles();
         void emitParticles();
         void simulateParticles();
-        void initEmitters();
+        void initForceFields();
 
         struct Particle
         {
@@ -56,6 +56,7 @@ namespace DemoParticles
         {
             Point = 0,
             Plane = 1,
+            Custom = 2,
         };
 
         std::unique_ptr<Shader>     m_moveShader;

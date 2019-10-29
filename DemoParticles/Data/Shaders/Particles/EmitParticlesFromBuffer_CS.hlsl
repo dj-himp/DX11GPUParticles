@@ -30,7 +30,7 @@ void main(uint3 id : SV_DispatchThreadID)
 
         p.lifeSpan = -1.0; //5.0;
         p.age = 5.0;
-        p.mass = 1.0;
+        p.mass = 0.1;
 
         uint index = deadListBuffer.Consume();
         particleList[index] = p;

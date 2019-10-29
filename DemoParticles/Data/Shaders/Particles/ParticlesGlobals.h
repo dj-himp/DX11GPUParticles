@@ -41,3 +41,4 @@ cbuffer aliveListCountConstantBuffer : register(b3)
 
 static uint FORCEFIELD_TYPE_POINT = 0;
 static uint FORCEFIELD_TYPE_PLANE = 1;
+static uint FORCEFIELD_TYPE_CUSTOM = 1;

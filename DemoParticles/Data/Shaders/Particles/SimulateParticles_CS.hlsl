@@ -84,13 +84,27 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             {
                 
             }
+            else if (forceFieldsList[i].type == FORCEFIELD_TYPE_CUSTOM)
+            {
+                uint len = length(p.position);
+                direction.x = cos(len);
+                direction.y = sin(len);
+                direction.z = tan(len);
 
-            particleForce += direction * field.gravity * (1.0 - saturate(distance * field.inverse_range));
+                distance = length(direction);
+
+            }
+
+            particleForce += direction * p.mass * field.gravity * (1.0 - saturate(distance * field.inverse_range));
         }
 
         //integration
-        p.velocity += particleForce * dt;
-        p.position += p.velocity * dt;
+        //p.velocity += particleForce * dt;
+        //p.position += p.velocity * dt;
+
+        float3 acceleration = particleForce.xyz * dt;
+        p.position.xyz += (p.velocity.xyz + 0.5f * acceleration) * dt;
+        p.velocity.xyz += acceleration;
 
         if(p.age > 0)
         {
