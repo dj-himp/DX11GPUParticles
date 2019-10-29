@@ -14,11 +14,16 @@ namespace DemoParticles
 
         DirectX::SimpleMath::Vector4 frustumCorner[4];
 
+        DirectX::SimpleMath::Vector4 sunDirection;
+        DirectX::SimpleMath::Vector4 sunColor; // w is diffuse power
+        DirectX::SimpleMath::Vector4 sunSpecColor; // w is specPower
+        float sceneAmbientPower;
+
         //put non float4 at the end
         float             time;
         float             dt;
 
-        UINT padding[2];
+        UINT padding[1];
     };
 
     struct QuadConstantBuffer

@@ -10,6 +10,7 @@
 #include "Model/MeshFactory.h"
 #include "Model/Model.h"
 
+using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
@@ -218,6 +219,10 @@ namespace DemoParticles
             m_deviceResources->GetD3DDevice()->CreateShaderResourceView(m_forceFieldsBuffer.Get(), &forceFieldsSRVDesc, &m_forceFieldsSRV)
         );
 
+        DX::ThrowIfFailed(
+            CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"noisy-texture-256x256.dds", &m_noiseTexture, &m_noiseTextureSRV)
+        );
+
         m_simulateShader = std::make_unique<ComputeShader>(m_deviceResources);
         m_simulateShader->load(L"SimulateParticles_CS.cso");
 
@@ -279,10 +284,10 @@ namespace DemoParticles
             m_resetParticles = false;
         }
 
-        if (m_emitFrequence <= 0.0f)
+        if (m_emitFrequence <= 0.0f && m_emitFrequence > -1.0f)
         {
             emitParticles();
-            m_emitFrequence = 5.1f;
+            m_emitFrequence = -1.0f;// 5.1f;
         }
         simulateParticles();
 
@@ -413,6 +418,7 @@ namespace DemoParticles
         initialCount[0] = 0;
         m_simulateShader->setUAV(1, m_aliveIndexUAV, initialCount);
         m_simulateShader->setSRV(0, m_forceFieldsSRV);
+        m_simulateShader->setSRV(1, m_noiseTextureSRV);
         m_simulateShader->begin();
         m_simulateShader->start(align(m_maxParticles, 256) / 256, 1, 1);
         m_simulateShader->end();
@@ -421,6 +427,7 @@ namespace DemoParticles
         m_simulateShader->setUAV(2, nullptr);
         m_simulateShader->setUAV(3, nullptr);
         m_simulateShader->setSRV(0, nullptr);
+        m_simulateShader->setSRV(1, nullptr);
 
         context->CopyStructureCount(m_aliveListCountConstantBuffer.Get(), 0, m_aliveIndexUAV.Get());
 

@@ -1,3 +1,5 @@
+#include "../Globals.h"
+
 struct PixelShaderInput
 {
     float4 Position : SV_POSITION;
@@ -16,8 +18,23 @@ struct PixelShaderOutput
 PixelShaderOutput main(PixelShaderInput input)
 {
     PixelShaderOutput output;
+    float3 normal = normalize(input.Normal.xyz);
 
-    output.color = 1.0 + normalize(input.Normal) * 0.5; //input.Color;
+    float3 ambient = sunColor.xyz * sceneAmbientPower;
+
+    float NdotL = max(dot(normal, sunDirection.xyz), 0.0);
+    float3 diffuse = NdotL * sunColor.xyz * sunColor.w;
+
+    float3 viewDirection = normalize(camPosition.xyz - input.oPosition);
+    float3 h = normalize(sunDirection.xyz + viewDirection);
+
+    float NdotH = max(dot(normal, h), 0.0);
+    float specIntensity = pow(saturate(NdotH), 32.0);
+    float3 specular = specIntensity * sunSpecColor.xyz * sunSpecColor.w;
+
+    output.color.xyz = ambient + diffuse + specular; // * objectColor
+
+    //output.color = 1.0 + normalize(input.Normal) * 0.5; //input.Color;
     //output.color = normalize(input.Normal); //input.Color;
     output.color.a = 0.8;
 

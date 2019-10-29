@@ -122,6 +122,9 @@ namespace DemoParticles
 
         std::unique_ptr<SortLib>                            m_sortLib;
 
+        Microsoft::WRL::ComPtr<ID3D11Resource>              m_noiseTexture;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_noiseTextureSRV;
+
         //temp
         float m_emitFrequence = 0.0f;
     };

@@ -54,6 +54,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\ImageContentTask.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -286,6 +287,11 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Data\Textures\CatMac__C.png" />
+    <ImageContentTask Include="Data\Textures\noisy-texture-256x256.png">
+      <Compress Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">None</Compress>
+      <GeneratePremultipliedAlpha Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GeneratePremultipliedAlpha>
+      <GenerateMips Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GenerateMips>
+    </ImageContentTask>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Data\Shaders\BakeObjectParticles_PS.hlsl">
@@ -471,6 +477,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\directxtk_desktop_2015.2019.8.23.1\build\native\directxtk_desktop_2015.targets" Condition="Exists('..\packages\directxtk_desktop_2015.2019.8.23.1\build\native\directxtk_desktop_2015.targets')" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\ImageContentTask.targets" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -11,10 +11,15 @@ cbuffer sceneConstantBuffer : register(b0)
 
     float4 FrustumCorners[4];
 
+    float4 sunDirection;
+    float4 sunColor; // w is diffuse power
+    float4 sunSpecColor; // w is specPower
+    float sceneAmbientPower;
+
     float time;
     float dt;
 
-    float2 padding;
+    float padding;
 };
 
 struct BakedParticle

@@ -146,6 +146,14 @@ namespace DemoParticles
         
         m_sceneConstantBufferData.camPosition = DX::toVector4(camera->getPosition());
         m_sceneConstantBufferData.camDirection = DX::toVector4(camera->getForward());
+
+        Vector4 sunDirection = Vector4(0.5f, -0.5f, -0.5f, 1.0f);
+        sunDirection.Normalize();
+        m_sceneConstantBufferData.sunDirection = sunDirection;
+        m_sceneConstantBufferData.sunColor = Vector4(1.0f, 0.6f, 0.05f, 3.0f);
+        m_sceneConstantBufferData.sunSpecColor = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+        m_sceneConstantBufferData.sceneAmbientPower = 0.1f;
+
         m_sceneConstantBufferData.time = timer.GetTotalSeconds();
         
         static bool started = false;

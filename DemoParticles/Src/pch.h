@@ -70,6 +70,8 @@
 #include "Common/RenderStatesHelper.h"
 #include "GlobalSettings.h"
 
+#include <DDSTextureLoader.h>
+
 namespace DX
 {
     // Helper class for COM exceptions

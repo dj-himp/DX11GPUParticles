@@ -382,4 +382,7 @@
     <CopyFileToFolders Include="Data\Models\TrexByJoel3d.fbx" />
     <CopyFileToFolders Include="Data\Models\deer.fbx" />
   </ItemGroup>
+  <ItemGroup>
+    <ImageContentTask Include="Data\Textures\noisy-texture-256x256.png" />
+  </ItemGroup>
 </Project>

@@ -25,6 +25,7 @@ AppendStructuredBuffer<uint> deadParticleIndex : register(u2);
 RWStructuredBuffer<Particle> particleList : register(u3);
 
 StructuredBuffer<ForceField> forceFieldBuffer : register(t0);
+Texture2D<float4> noiseTexture : register(t1);
 
 #define MAX_FORCE_FIELDS 4
 groupshared ForceField forceFieldsList[MAX_FORCE_FIELDS];
@@ -79,6 +80,8 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             if (field.type == FORCEFIELD_TYPE_POINT)
             {
                 distance = length(direction);
+                //distance += length(noiseTexture[p.position.xy]);
+
             }
             else if (forceFieldsList[i].type == FORCEFIELD_TYPE_PLANE)
             {
