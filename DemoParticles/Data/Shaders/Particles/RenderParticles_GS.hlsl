@@ -61,7 +61,7 @@ void main(point GeometryShaderInput input[1], inout TriangleStream<PixelShaderIn
         //float3 newNormal = normalize(input[0].direction);
         
         //invert normal to face camera
-        //newNormal *= dot(newNormal, normalize(camDirection.xyz)) > 0.0 ? 1.0 : -1.0;
+        newNormal *= dot(newNormal, normalize(-camDirection.xyz)) > 0.0 ? 1.0 : -1.0;
 
         up = normalize(cross(newNormal, float3(1.0, 0.0, 0.0)));
         //up = normalize(cross(newNormal, input[0].direction));

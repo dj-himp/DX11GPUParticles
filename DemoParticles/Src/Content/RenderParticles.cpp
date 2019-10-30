@@ -379,7 +379,7 @@ namespace DemoParticles
         //DebugUtils::log(std::to_string(i));
 
         //update the number of baked particle (TO DO do it once if no changes)
-        /*context->CopyStructureCount(m_emitterFromBufferConstantBuffer.Get(), 0, m_bakedParticlesUAV.Get());
+        context->CopyStructureCount(m_emitterFromBufferConstantBuffer.Get(), 0, m_bakedParticlesUAV.Get());
 
         UINT initialCount[] = { -1 };
         m_emitFromBufferParticles->setConstantBuffer(1, m_emitterFromBufferConstantBuffer);
@@ -393,9 +393,9 @@ namespace DemoParticles
         m_emitFromBufferParticles->setUAV(0, nullptr);
         m_emitFromBufferParticles->setUAV(1, nullptr);
         m_emitFromBufferParticles->setUAV(2, nullptr);
-        */
+        
 
-        context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
+        /*context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
 
         UINT initialCount[] = { -1 };
         m_emitParticles->setConstantBuffer(1, m_emitterConstantBuffer);
@@ -407,6 +407,7 @@ namespace DemoParticles
         m_emitParticles->end();
         m_emitParticles->setUAV(0, nullptr);
         m_emitParticles->setUAV(1, nullptr);
+        */
     }
 
     void RenderParticles::simulateParticles()
