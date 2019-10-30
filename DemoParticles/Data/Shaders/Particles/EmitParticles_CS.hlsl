@@ -26,7 +26,7 @@ void main(uint3 id : SV_DispatchThreadID)
 
         p.velocity = emitterDirection;
         
-        p.lifeSpan = 1.0;
+        p.lifeSpan = 10.0;
         p.age = p.lifeSpan;
         p.mass = 1.0;
 

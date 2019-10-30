@@ -7,6 +7,7 @@ struct GeometryShaderInput
     float3 oPosition : TEXCOORD0;
     float4 Color : TEXCOORD1;
     float4 Normal : TEXCOORD2;
+    float3 direction : TEXCOORD3;
 };
 
 struct PixelShaderInput
@@ -51,9 +52,23 @@ void main(point GeometryShaderInput input[1], inout TriangleStream<PixelShaderIn
     }
     else
     {
-    //orient the particle to the normal;
-        up = normalize(cross(input[0].Normal.xyz, float3(1.0, 0.0, 0.0)));
-        right = normalize(cross(up, input[0].Normal.xyz));
+        //orient the particle to the normal;
+        //up = normalize(cross(input[0].Normal.xyz, float3(1.0, 0.0, 0.0)));
+        //right = normalize(cross(up, input[0].Normal.xyz));
+
+        //orient the particle perpendicullar to move direction;
+        float3 newNormal = normalize(cross(input[0].direction, float3(0.0, 1.0, 0.0)));
+        //float3 newNormal = normalize(input[0].direction);
+        
+        //invert normal to face camera
+        //newNormal *= dot(newNormal, normalize(camDirection.xyz)) > 0.0 ? 1.0 : -1.0;
+
+        up = normalize(cross(newNormal, float3(1.0, 0.0, 0.0)));
+        //up = normalize(cross(newNormal, input[0].direction));
+        right = normalize(cross(up, newNormal));
+        output.Normal = float4(newNormal, 0.0);
+        //output.Color = float4(newNormal, 1.0);
+
     }
 
     float4x4 viewProj = mul(view, proj);

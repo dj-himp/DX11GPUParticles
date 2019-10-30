@@ -32,9 +32,9 @@ PixelShaderOutput main(PixelShaderInput input)
     float specIntensity = pow(saturate(NdotH), 32.0);
     float3 specular = specIntensity * sunSpecColor.xyz * sunSpecColor.w;
 
-    output.color.xyz = ambient + diffuse + specular; // * objectColor
+    output.color.xyz = ambient + diffuse + specular;// * input.Color.xyz;
 
-    //output.color = 1.0 + normalize(input.Normal) * 0.5; //input.Color;
+    //output.color = 0.5 + normalize(input.Normal) * 0.5; //input.Color;
     //output.color = normalize(input.Normal); //input.Color;
     output.color.a = 0.8;
 

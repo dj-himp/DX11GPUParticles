@@ -161,6 +161,10 @@ namespace DemoParticles
         {
             started = true;
         }
+        if (InputManager::isKeyDown(Keyboard::C))
+        {
+            started = false;
+        }
 
         m_sceneConstantBufferData.dt = started ? timer.GetElapsedSeconds() : 0.0f;
 

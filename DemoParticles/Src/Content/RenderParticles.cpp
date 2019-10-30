@@ -247,8 +247,9 @@ namespace DemoParticles
         if (!camera)
             assert(0);
 
-        m_emitterConstantBufferData.position = DX::toVector4(camera->getPosition() + camera->getForward() * 4.0f);// Vector4(-1.0f, 0.0f, 0.0f, 1.0f);
-        m_emitterConstantBufferData.direction = Vector4(0.0f, 0.1f, 0.0f, 1.0f);
+        //m_emitterConstantBufferData.position = DX::toVector4(camera->getPosition() + camera->getForward() * 4.0f);
+        m_emitterConstantBufferData.position = Vector4(-1.0f, 0.0f, 0.0f, 1.0f);
+        m_emitterConstantBufferData.direction = Vector4(0.1f, 0.0f, 0.0f, 1.0f);
         m_emitterConstantBufferData.maxSpawn = 1024;
 
         m_emitFrequence -= timer.GetElapsedSeconds();
@@ -287,7 +288,7 @@ namespace DemoParticles
         if (m_emitFrequence <= 0.0f && m_emitFrequence > -1.0f)
         {
             emitParticles();
-            m_emitFrequence = -1.0f;// 5.1f;
+            m_emitFrequence = 0.0f;// -1.0f;// 5.1f;
         }
         simulateParticles();
 
@@ -378,7 +379,7 @@ namespace DemoParticles
         //DebugUtils::log(std::to_string(i));
 
         //update the number of baked particle (TO DO do it once if no changes)
-        context->CopyStructureCount(m_emitterFromBufferConstantBuffer.Get(), 0, m_bakedParticlesUAV.Get());
+        /*context->CopyStructureCount(m_emitterFromBufferConstantBuffer.Get(), 0, m_bakedParticlesUAV.Get());
 
         UINT initialCount[] = { -1 };
         m_emitFromBufferParticles->setConstantBuffer(1, m_emitterFromBufferConstantBuffer);
@@ -392,8 +393,9 @@ namespace DemoParticles
         m_emitFromBufferParticles->setUAV(0, nullptr);
         m_emitFromBufferParticles->setUAV(1, nullptr);
         m_emitFromBufferParticles->setUAV(2, nullptr);
+        */
 
-        /*context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
+        context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
 
         UINT initialCount[] = { -1 };
         m_emitParticles->setConstantBuffer(1, m_emitterConstantBuffer);
@@ -404,7 +406,7 @@ namespace DemoParticles
         m_emitParticles->start(align(m_emitterConstantBufferData.maxSpawn, 1024) / 1024, 1, 1);
         m_emitParticles->end();
         m_emitParticles->setUAV(0, nullptr);
-        m_emitParticles->setUAV(1, nullptr);*/
+        m_emitParticles->setUAV(1, nullptr);
     }
 
     void RenderParticles::simulateParticles()
