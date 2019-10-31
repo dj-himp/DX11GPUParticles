@@ -70,7 +70,7 @@ namespace DemoParticles
 
     struct ParticlesGlobalsConstantBuffer
     {
-        bool useBillboard;
+        UINT particleOrientation;
         
         UINT padding[3];
     };

@@ -254,7 +254,7 @@ namespace DemoParticles
 
         m_emitFrequence -= timer.GetElapsedSeconds();
 
-        m_particlesGlobalSettingsBufferData.useBillboard = ParticlesGlobals::g_useBillBoard;
+        m_particlesGlobalSettingsBufferData.particleOrientation = ParticlesGlobals::g_particlesOrientation;
 
         
     }

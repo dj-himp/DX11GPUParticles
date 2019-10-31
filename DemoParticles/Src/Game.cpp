@@ -308,8 +308,9 @@ void Game::RenderImGui()
     */
     ImGui::Begin("Particles globals");
 
-    ImGui::Checkbox("Use billboard", &ParticlesGlobals::g_useBillBoard);
     ImGui::Checkbox("Disable culling", &ParticlesGlobals::g_cullNone);
+    const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
+    ImGui::Combo("Particles orientation", &ParticlesGlobals::g_particlesOrientation, orientationItems, 3);
     const char* items[] = { "Opaque", "NonPremultiplied", "Additive" };
     ImGui::Combo("Blend Mode", &ParticlesGlobals::g_blendMode, items, 3);
     

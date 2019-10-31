@@ -10,7 +10,7 @@ struct GeometryShaderInput
     float3 oPosition : TEXCOORD0;
     float4 Color : TEXCOORD1;
     float4 Normal : TEXCOORD2;
-    float3 direction : TEXCOORD3;
+    float3 velocity : TEXCOORD3;
 };
 
 GeometryShaderInput main(uint vertexId : SV_VertexID)
@@ -23,7 +23,7 @@ GeometryShaderInput main(uint vertexId : SV_VertexID)
 
     output.Position = p.position;
     output.oPosition = p.position.xyz;
-    output.direction = normalize(p.velocity);
+    output.velocity = p.velocity;
 
     float alpha = p.lifeSpan >= 0.0 ? saturate(p.age / p.lifeSpan) : 0.1;
     output.Color = float4(1.0, alpha, 0.0, alpha);

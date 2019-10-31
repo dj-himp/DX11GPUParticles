@@ -7,7 +7,7 @@ struct GeometryShaderInput
     float3 oPosition : TEXCOORD0;
     float4 Color : TEXCOORD1;
     float4 Normal : TEXCOORD2;
-    float3 direction : TEXCOORD3;
+    float3 velocity : TEXCOORD3;
 };
 
 struct PixelShaderInput
@@ -44,30 +44,34 @@ void main(point GeometryShaderInput input[1], inout TriangleStream<PixelShaderIn
     float3 right;
     float3 up;
     
-    if (useBillboard)
+    if (orientation == PARTICLE_ORIENTATION_BILLBOARD)
     {
         //Camera Plane
         right = view._m00_m10_m20;
         up = view._m01_m11_m21;
     }
-    else
+    else if(orientation == PARTICLE_ORIENTATION_BACKED_NORMAL)
     {
         //orient the particle to the normal;
-        //up = normalize(cross(input[0].Normal.xyz, float3(1.0, 0.0, 0.0)));
-        //right = normalize(cross(up, input[0].Normal.xyz));
-
+        up = normalize(cross(input[0].Normal.xyz, float3(1.0, 0.0, 0.0)));
+        right = normalize(cross(up, input[0].Normal.xyz));
+    }
+    else if (orientation == PARTICLE_ORIENTATION_DIRECTION)
+    {
         //orient the particle perpendicullar to move direction;
-        float3 newNormal = normalize(cross(input[0].direction, float3(0.0, 1.0, 0.0)));
-        //float3 newNormal = normalize(input[0].direction);
+        float3 direction = normalize(input[0].velocity);
+        float3 newNormal = normalize(cross(direction, float3(0.0, 1.0, 0.0)));
         
         //invert normal to face camera
         newNormal *= dot(newNormal, normalize(-camDirection.xyz)) > 0.0 ? 1.0 : -1.0;
 
-        up = normalize(cross(newNormal, float3(1.0, 0.0, 0.0)));
-        //up = normalize(cross(newNormal, input[0].direction));
-        right = normalize(cross(up, newNormal));
+        //don't change rotation
+        //up = normalize(cross(newNormal, float3(1.0, 0.0, 0.0)));
+
+        //"rotate" the particle along it's direction
+        up = normalize(cross(newNormal, direction));
+        right = normalize(cross(up, newNormal)) * max(1.0, length(input[0].velocity) * 20.0);
         output.Normal = float4(newNormal, 0.0);
-        //output.Color = float4(newNormal, 1.0);
 
     }
 
