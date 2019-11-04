@@ -275,6 +275,12 @@
     <ClInclude Include="Src\GlobalSettings.h">
       <Filter>Src</Filter>
     </ClInclude>
+    <ClInclude Include="Data\Shaders\Noises\SimplexNoise3D.h">
+      <Filter>Data\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Shaders\Noises\ClassicNoise2D.h" />
+    <ClInclude Include="Data\Shaders\Noises\ClassicNoise3D.h" />
+    <ClInclude Include="Data\Shaders\Noises\SimplexNoise2D.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -369,7 +375,9 @@
     <FxCompile Include="Data\Shaders\SortLib\SortStepCS2.hlsl">
       <Filter>Data\Shaders\SortLib</Filter>
     </FxCompile>
-    <FxCompile Include="Data\Shaders\Particles\RenderParticles_GS_ORIENTED.hlsl" />
+    <FxCompile Include="Data\Shaders\Particles\RenderParticles_GS_ORIENTED.hlsl">
+      <Filter>Data\Shaders\Particles</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Data\Models\CatMac.fbx">

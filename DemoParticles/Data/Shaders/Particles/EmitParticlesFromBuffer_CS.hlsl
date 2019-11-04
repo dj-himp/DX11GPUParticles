@@ -23,8 +23,8 @@ void main(uint3 id : SV_DispatchThreadID)
 
         p.position = bp.position;
 
-        p.velocity = bp.normal * 3.0f;
-        //p.velocity = float4(0.0, 0.0, 0.0, 1.0);  
+        //p.velocity = bp.normal * 3.0f;
+        p.velocity = float4(0.0, 0.0, 0.0, 1.0);  
         
         p.normal = bp.normal;
 

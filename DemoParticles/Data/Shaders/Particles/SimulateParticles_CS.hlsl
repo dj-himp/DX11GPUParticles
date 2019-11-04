@@ -1,6 +1,7 @@
 
 #include "../Globals.h"
 #include "ParticlesGlobals.h"
+#include "../Noises/SimplexNoise3D.h"
 
 cbuffer simulateParticlesConstantBuffer : register(b1)
 {
@@ -29,6 +30,17 @@ Texture2D<float4> noiseTexture : register(t1);
 
 #define MAX_FORCE_FIELDS 4
 groupshared ForceField forceFieldsList[MAX_FORCE_FIELDS];
+
+float3 snoiseVec3(float3 x)
+{
+
+    float s = snoise(float3(x));
+    float s1 = snoise(float3(x.y - 19.1, x.z + 33.4, x.x + 47.2));
+    float s2 = snoise(float3(x.z + 74.2, x.x - 124.5, x.y + 99.4));
+    float3 c = float3(s, s1, s2);
+    return c;
+
+}
 
 //256 particles per thread group
 [numthreads(256, 1, 1)]
@@ -101,6 +113,31 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             particleForce += direction * p.mass * field.gravity * (1.0 - saturate(distance * field.inverse_range));
         }
 
+        bool addCurlNoise = true;
+        if (addCurlNoise)
+        {
+            float epsilon = 0.1;
+            float3 dx = float3(epsilon, 0.0, 0.0);
+            float3 dy = float3(0.0, epsilon, 0.0);
+            float3 dz = float3(0.0, 0.0, epsilon);
+
+            float3 p_x0 = snoiseVec3(p.position.xyz - dx);
+            float3 p_x1 = snoiseVec3(p.position.xyz + dx);
+            float3 p_y0 = snoiseVec3(p.position.xyz - dy);
+            float3 p_y1 = snoiseVec3(p.position.xyz + dy);
+            float3 p_z0 = snoiseVec3(p.position.xyz - dz);
+            float3 p_z1 = snoiseVec3(p.position.xyz + dz);
+
+            float x = p_y1.z - p_y0.z - p_z1.y + p_z0.y;
+            float y = p_z1.x - p_z0.x - p_x1.z + p_x0.z;
+            float z = p_x1.y - p_x0.y - p_y1.x + p_y0.x;
+
+            float divisor = 1.0 / (2.0 * epsilon);
+
+            particleForce += normalize(float4(x, y, z, 1.0) * divisor);
+
+        }
+
         //integration
         //p.velocity += particleForce * dt;
         //p.position += p.velocity * dt;
@@ -108,6 +145,8 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
         float3 acceleration = particleForce.xyz * dt;
         p.position.xyz += (p.velocity.xyz + 0.5f * acceleration) * dt;
         p.velocity.xyz += acceleration;
+
+        
 
         if(p.age > 0)
         {
