@@ -36,7 +36,8 @@ PixelShaderOutput main(PixelShaderInput input)
 
     //output.color = 0.5 + normalize(input.Normal) * 0.5; //input.Color;
     //output.color = normalize(input.Normal); //input.Color;
-    output.color.a = 0.8;
+    //output.color.a = 0.8;
+    output.color.a = input.Color.a;
 
     float len = length(input.oPosition - input.center);
     output.color.a = output.color.a * (1.0 - smoothstep(0.0, input.radius, len));

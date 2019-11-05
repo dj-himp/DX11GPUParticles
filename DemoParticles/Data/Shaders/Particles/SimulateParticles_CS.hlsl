@@ -3,7 +3,7 @@
 #include "ParticlesGlobals.h"
 #include "../Noises/SimplexNoise3D.h"
 
-cbuffer simulateParticlesConstantBuffer : register(b1)
+cbuffer simulateParticlesConstantBuffer : register(b4)
 {
     uint nbWantedForceFields;
 
@@ -40,6 +40,29 @@ float3 snoiseVec3(float3 x)
     float3 c = float3(s, s1, s2);
     return c;
 
+}
+
+float3 curlNoise(float3 p)
+{
+    float epsilon = 0.1;
+    float3 dx = float3(epsilon, 0.0, 0.0);
+    float3 dy = float3(0.0, epsilon, 0.0);
+    float3 dz = float3(0.0, 0.0, epsilon);
+
+    float3 p_x0 = snoiseVec3(p - dx);
+    float3 p_x1 = snoiseVec3(p + dx);
+    float3 p_y0 = snoiseVec3(p - dy);
+    float3 p_y1 = snoiseVec3(p + dy);
+    float3 p_z0 = snoiseVec3(p - dz);
+    float3 p_z1 = snoiseVec3(p + dz);
+
+    float x = p_y1.z - p_y0.z - p_z1.y + p_z0.y;
+    float y = p_z1.x - p_z0.x - p_x1.z + p_x0.z;
+    float z = p_x1.y - p_x0.y - p_y1.x + p_y0.x;
+
+    float divisor = 1.0 / (2.0 * epsilon);
+
+    return normalize(float3(x, y, z) * divisor);
 }
 
 //256 particles per thread group
@@ -84,7 +107,7 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
 
         float4 particleForce = 0;
 
-        /*for (uint i = 0; i < nbForcefields; ++i)
+        for (uint i = 0; i < nbForcefields; ++i)
         {
             ForceField field = forceFieldsList[i];
             float4 direction = field.position - p.position;
@@ -111,41 +134,22 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             }
 
             particleForce += direction * p.mass * field.gravity * (1.0 - saturate(distance * field.inverse_range));
-        }*/
-
-        //integration
-        //p.velocity += particleForce * dt;
-        //p.position += p.velocity * dt;
-
-        float3 acceleration = particleForce.xyz * dt;
-        p.position.xyz += (p.velocity.xyz + 0.5f * acceleration) * dt;
-        p.velocity.xyz += acceleration;
+        }
 
         bool addCurlNoise = true;
         if (addCurlNoise)
         {
-            float epsilon = 0.1;
-            float3 dx = float3(epsilon, 0.0, 0.0);
-            float3 dy = float3(0.0, epsilon, 0.0);
-            float3 dz = float3(0.0, 0.0, epsilon);
-
-            float3 p_x0 = snoiseVec3(p.position.xyz - dx);
-            float3 p_x1 = snoiseVec3(p.position.xyz + dx);
-            float3 p_y0 = snoiseVec3(p.position.xyz - dy);
-            float3 p_y1 = snoiseVec3(p.position.xyz + dy);
-            float3 p_z0 = snoiseVec3(p.position.xyz - dz);
-            float3 p_z1 = snoiseVec3(p.position.xyz + dz);
-
-            float x = p_y1.z - p_y0.z - p_z1.y + p_z0.y;
-            float y = p_z1.x - p_z0.x - p_x1.z + p_x0.z;
-            float z = p_x1.y - p_x0.y - p_y1.x + p_y0.x;
-
-            float divisor = 1.0 / (2.0 * epsilon);
-
-            p.position.xyz += normalize(float3(x, y, z) * divisor) * 0.1;
-
+            //p.position.xyz += curlNoise(p.position) * 0.1;
+            particleForce.xyz += curlNoise(p.position) * 10.0;
         }
         
+        //Add drag
+        float dragCoefficient = 0.1;
+        particleForce -= dragCoefficient * p.velocity;
+
+        float3 acceleration = particleForce.xyz * dt;
+        p.position.xyz += (p.velocity.xyz + 0.5f * acceleration) * dt;
+        p.velocity.xyz += acceleration;
 
         if(p.age > 0)
         {

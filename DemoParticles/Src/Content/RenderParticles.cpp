@@ -248,7 +248,8 @@ namespace DemoParticles
             assert(0);
 
         //m_emitterConstantBufferData.position = DX::toVector4(camera->getPosition() + camera->getForward() * 4.0f);
-        m_emitterConstantBufferData.position = Vector4(-1.0f, 0.0f, 0.0f, 1.0f);
+        //m_emitterConstantBufferData.position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+        m_emitterConstantBufferData.position = Vector4(cos(timer.GetTotalSeconds() * 0.5f) * 3.0f, 0.0f, sin(timer.GetTotalSeconds() * 0.5f) * 3.0f, 1.0f);
         m_emitterConstantBufferData.direction = Vector4(0.1f, 0.0f, 0.0f, 1.0f);
         m_emitterConstantBufferData.maxSpawn = 1024;
 
@@ -272,7 +273,8 @@ namespace DemoParticles
         context->UpdateSubresource(m_simulateParticlesBuffer.Get(), 0, nullptr, &m_simulateParticlesBufferData, 0, 0);
         context->UpdateSubresource(m_forceFieldsBuffer.Get(), 0, nullptr, &m_forceFieldsList, 0, 0);
 
-        context->CSSetConstantBuffers(1, 1, m_simulateParticlesBuffer.GetAddressOf());
+        context->CSSetConstantBuffers(4, 1, m_simulateParticlesBuffer.GetAddressOf());
+        
         //context->PSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
         //context->VSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
         context->GSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
