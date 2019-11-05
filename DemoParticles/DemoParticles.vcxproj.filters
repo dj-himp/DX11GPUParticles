@@ -46,6 +46,9 @@
     <Filter Include="Data\Shaders\SortLib">
       <UniqueIdentifier>{459a6f53-8559-4829-b178-1e5bd751b494}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Data\Shaders\Noises">
+      <UniqueIdentifier>{a27bc346-1295-4fda-9f65-59e5a8fcd11f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\App.cpp">
@@ -275,12 +278,21 @@
     <ClInclude Include="Src\GlobalSettings.h">
       <Filter>Src</Filter>
     </ClInclude>
-    <ClInclude Include="Data\Shaders\Noises\SimplexNoise3D.h">
-      <Filter>Data\Shaders</Filter>
+    <ClInclude Include="Data\Shaders\Noises\ClassicNoise2D.h">
+      <Filter>Data\Shaders\Noises</Filter>
     </ClInclude>
-    <ClInclude Include="Data\Shaders\Noises\ClassicNoise2D.h" />
-    <ClInclude Include="Data\Shaders\Noises\ClassicNoise3D.h" />
-    <ClInclude Include="Data\Shaders\Noises\SimplexNoise2D.h" />
+    <ClInclude Include="Data\Shaders\Noises\ClassicNoise3D.h">
+      <Filter>Data\Shaders\Noises</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Shaders\Noises\SimplexNoise2D.h">
+      <Filter>Data\Shaders\Noises</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Shaders\Noises\Random.h">
+      <Filter>Data\Shaders\Noises</Filter>
+    </ClInclude>
+    <ClInclude Include="Data\Shaders\Noises\SimplexNoise3D.h">
+      <Filter>Data\Shaders\Noises</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

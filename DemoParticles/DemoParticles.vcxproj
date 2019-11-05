@@ -225,6 +225,7 @@
     <ClInclude Include="Data\Shaders\Globals.h" />
     <ClInclude Include="Data\Shaders\Noises\ClassicNoise2D.h" />
     <ClInclude Include="Data\Shaders\Noises\ClassicNoise3D.h" />
+    <ClInclude Include="Data\Shaders\Noises\Random.h" />
     <ClInclude Include="Data\Shaders\Noises\SimplexNoise2D.h" />
     <ClInclude Include="Data\Shaders\Particles\ParticlesGlobals.h" />
     <ClInclude Include="Data\Shaders\Noises\SimplexNoise3D.h" />

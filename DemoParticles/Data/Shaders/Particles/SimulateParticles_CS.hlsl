@@ -79,12 +79,12 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
         if(p.lifeSpan >= 0.0)
         {
             p.age -= dt;
-            p.position += p.velocity * dt;
+            //p.position += p.velocity * dt;
         }
 
         float4 particleForce = 0;
 
-        for (uint i = 0; i < nbForcefields; ++i)
+        /*for (uint i = 0; i < nbForcefields; ++i)
         {
             ForceField field = forceFieldsList[i];
             float4 direction = field.position - p.position;
@@ -111,7 +111,15 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             }
 
             particleForce += direction * p.mass * field.gravity * (1.0 - saturate(distance * field.inverse_range));
-        }
+        }*/
+
+        //integration
+        //p.velocity += particleForce * dt;
+        //p.position += p.velocity * dt;
+
+        float3 acceleration = particleForce.xyz * dt;
+        p.position.xyz += (p.velocity.xyz + 0.5f * acceleration) * dt;
+        p.velocity.xyz += acceleration;
 
         bool addCurlNoise = true;
         if (addCurlNoise)
@@ -134,18 +142,9 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
 
             float divisor = 1.0 / (2.0 * epsilon);
 
-            particleForce += normalize(float4(x, y, z, 1.0) * divisor);
+            p.position.xyz += normalize(float3(x, y, z) * divisor) * 0.1;
 
         }
-
-        //integration
-        //p.velocity += particleForce * dt;
-        //p.position += p.velocity * dt;
-
-        float3 acceleration = particleForce.xyz * dt;
-        p.position.xyz += (p.velocity.xyz + 0.5f * acceleration) * dt;
-        p.velocity.xyz += acceleration;
-
         
 
         if(p.age > 0)
