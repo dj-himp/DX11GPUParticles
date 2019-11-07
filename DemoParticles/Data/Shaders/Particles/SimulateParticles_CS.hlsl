@@ -5,19 +5,19 @@
 
 cbuffer simulateParticlesConstantBuffer : register(b4)
 {
-    uint nbWantedForceFields;
+    uint nbWantedAttractors;
 
     uint3 simulatePadding;
 }
 
-struct ForceField
+struct Attractor
 {
-    uint type;
     float4 position;
     float gravity;
-    float inverse_range;
+    float mass;
+    float killZoneRadius;
 
-    uint forceFieldPadding;
+    uint attractorPadding;
 };
 
 RWBuffer<uint> indirectDrawArgs : register(u0);
@@ -25,11 +25,11 @@ RWStructuredBuffer<ParticleIndexElement> aliveParticleIndex: register(u1);
 AppendStructuredBuffer<uint> deadParticleIndex : register(u2);
 RWStructuredBuffer<Particle> particleList : register(u3);
 
-StructuredBuffer<ForceField> forceFieldBuffer : register(t0);
+StructuredBuffer<Attractor> attractorBuffer : register(t0);
 Texture2D<float4> noiseTexture : register(t1);
 
-#define MAX_FORCE_FIELDS 4
-groupshared ForceField forceFieldsList[MAX_FORCE_FIELDS];
+#define MAX_ATTRACTORS 4
+groupshared Attractor attractorList[MAX_ATTRACTORS];
 
 float3 snoiseVec3(float3 x)
 {
@@ -82,14 +82,14 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
     // Wait after draw args are written so no other threads can write to them before they are initialized
     GroupMemoryBarrierWithGroupSync();
 
-    //load forceFields in to shared memory
-    uint nbForcefields = min(nbWantedForceFields, MAX_FORCE_FIELDS);
-    if (groupId < nbForcefields)
+    //load attractors in to shared memory
+    uint nbAttractors = min(nbWantedAttractors, MAX_ATTRACTORS);
+    if (groupId < nbAttractors)
     {
-        forceFieldsList[groupId].type = forceFieldBuffer[groupId].type;
-        forceFieldsList[groupId].position = forceFieldBuffer[groupId].position;
-        forceFieldsList[groupId].gravity = forceFieldBuffer[groupId].gravity;
-        forceFieldsList[groupId].inverse_range = forceFieldBuffer[groupId].inverse_range;
+        attractorList[groupId].position = attractorBuffer[groupId].position;
+        attractorList[groupId].gravity = attractorBuffer[groupId].gravity;
+        attractorList[groupId].mass = attractorBuffer[groupId].mass;
+        attractorList[groupId].killZoneRadius = attractorBuffer[groupId].killZoneRadius;
     }
 
     GroupMemoryBarrierWithGroupSync();
@@ -102,54 +102,45 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
         if(p.lifeSpan >= 0.0)
         {
             p.age -= dt;
-            //p.position += p.velocity * dt;
         }
 
         float4 particleForce = 0;
 
-        for (uint i = 0; i < nbForcefields; ++i)
+        for (uint i = 0; i < nbAttractors; ++i)
         {
-            ForceField field = forceFieldsList[i];
-            float4 direction = field.position - p.position;
-            float distance = 0.0;
-            if (field.type == FORCEFIELD_TYPE_POINT)
-            {
-                distance = length(direction);
-                //distance += length(noiseTexture[p.position.xy]);
+            Attractor a = attractorList[i];
+            float4 direction = a.position - p.position;
+            float distance = length(direction);
 
-            }
-            else if (forceFieldsList[i].type == FORCEFIELD_TYPE_PLANE)
-            {
-                
-            }
-            else if (forceFieldsList[i].type == FORCEFIELD_TYPE_CUSTOM)
-            {
-                uint len = length(p.position);
-                direction.x = cos(len);
-                direction.y = sin(len);
-                direction.z = tan(len);
-
-                distance = length(direction);
-
-            }
-
-            particleForce += direction * p.mass * field.gravity * (1.0 - saturate(distance * field.inverse_range));
+            particleForce += normalize(direction) * (a.gravity * p.mass * a.mass) / (max(1.0, distance * distance));
         }
 
         bool addCurlNoise = true;
         if (addCurlNoise)
         {
-            //p.position.xyz += curlNoise(p.position) * 0.1;
-            particleForce.xyz += curlNoise(p.position) * 10.0;
+            //p.position.xyz += curlNoise(p.position.xyz) * 0.1;
+            //particleForce.xyz += curlNoise(p.position.xyz) * 10.0;
+            particleForce.xyz += curlNoise(particleForce.xyz) * 10.0;
         }
         
         //Add drag
-        float dragCoefficient = 0.1;
+        float dragCoefficient = 0.0001;
         particleForce -= dragCoefficient * p.velocity;
 
-        float3 acceleration = particleForce.xyz * dt;
-        p.position.xyz += (p.velocity.xyz + 0.5f * acceleration) * dt;
-        p.velocity.xyz += acceleration;
+        float3 acceleration = particleForce.xyz / p.mass;
+        p.velocity.xyz += acceleration * dt;
+        p.position.xyz += p.velocity.xyz * dt;
+
+        //kill particles inside attractors killzone (if killZoneRadius >= 0.0)
+        for (uint i = 0; i < nbAttractors; ++i)
+        {
+            Attractor a = attractorList[i];
+            float distance = length(a.position - p.position);
+            if(distance < a.killZoneRadius)
+            {
+                p.age = 0.0;
+            }
+        }
 
         if(p.age > 0)
         {

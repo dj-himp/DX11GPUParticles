@@ -39,10 +39,6 @@ cbuffer aliveListCountConstantBuffer : register(b3)
     uint3 aliveListPadding;
 };
 
-static uint FORCEFIELD_TYPE_POINT = 0;
-static uint FORCEFIELD_TYPE_PLANE = 1;
-static uint FORCEFIELD_TYPE_CUSTOM = 1;
-
 static uint PARTICLE_ORIENTATION_BILLBOARD = 0;
 static uint PARTICLE_ORIENTATION_BACKED_NORMAL = 1;
 static uint PARTICLE_ORIENTATION_DIRECTION = 2;

@@ -1,4 +1,4 @@
-cbuffer initIndirectComputeArgs1DConstantBuffer : register(b1)
+cbuffer initIndirectComputeArgs1DConstantBuffer : register(b4)
 {
     uint nbThreadGroupX;
 

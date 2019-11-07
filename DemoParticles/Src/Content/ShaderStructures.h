@@ -77,20 +77,20 @@ namespace DemoParticles
 
     struct SimulateParticlesConstantBuffer
     {
-        UINT nbWantedForceFields;
+        UINT nbWantedAttractors;
 
         UINT padding[3];
     };
 
-#define MAX_FORCE_FIELDS 4 //also change it in the shader
-    struct ForceField
+#define MAX_ATTRACTORS 4 //also change it in the shader
+    struct Attractor
     {
-        UINT type;
         DirectX::SimpleMath::Vector4 position;
         float gravity;
-        float inverse_range;
+        float mass;
+        float killZoneRadius;
 
-        UINT padding;
+        UINT padding[1];
     };
 
     // Used to send per-vertex data to the vertex shader.

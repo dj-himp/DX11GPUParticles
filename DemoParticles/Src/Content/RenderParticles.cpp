@@ -197,26 +197,26 @@ namespace DemoParticles
             m_deviceResources->GetD3DDevice()->CreateBuffer(&simulateParticlesDesc, nullptr, &m_simulateParticlesBuffer)
         );
 
-        D3D11_BUFFER_DESC forceFieldsDesc;
-        forceFieldsDesc.Usage = D3D11_USAGE_DEFAULT;
-        forceFieldsDesc.ByteWidth = sizeof(ForceField) * MAX_FORCE_FIELDS;
-        forceFieldsDesc.StructureByteStride = sizeof(ForceField);
-        forceFieldsDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-        forceFieldsDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-        forceFieldsDesc.CPUAccessFlags = 0;
+        D3D11_BUFFER_DESC attractorsDesc;
+        attractorsDesc.Usage = D3D11_USAGE_DEFAULT;
+        attractorsDesc.ByteWidth = sizeof(Attractor) * MAX_ATTRACTORS;
+        attractorsDesc.StructureByteStride = sizeof(Attractor);
+        attractorsDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+        attractorsDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+        attractorsDesc.CPUAccessFlags = 0;
 
         DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateBuffer(&forceFieldsDesc, nullptr, &m_forceFieldsBuffer)
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&attractorsDesc, nullptr, &m_attractorsBuffer)
         );
 
-        D3D11_SHADER_RESOURCE_VIEW_DESC forceFieldsSRVDesc;
-        forceFieldsSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
-        forceFieldsSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
-        forceFieldsSRVDesc.Buffer.FirstElement = 0;
-        forceFieldsSRVDesc.Buffer.NumElements = MAX_FORCE_FIELDS;
+        D3D11_SHADER_RESOURCE_VIEW_DESC attractorsSRVDesc;
+        attractorsSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
+        attractorsSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+        attractorsSRVDesc.Buffer.FirstElement = 0;
+        attractorsSRVDesc.Buffer.NumElements = MAX_ATTRACTORS;
         
         DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateShaderResourceView(m_forceFieldsBuffer.Get(), &forceFieldsSRVDesc, &m_forceFieldsSRV)
+            m_deviceResources->GetD3DDevice()->CreateShaderResourceView(m_attractorsBuffer.Get(), &attractorsSRVDesc, &m_attractorsSRV)
         );
 
         DX::ThrowIfFailed(
@@ -229,7 +229,7 @@ namespace DemoParticles
         m_sortLib = std::make_unique<SortLib>();
         m_sortLib->init(m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext());
 
-        initForceFields();
+        initAttractors();
     }
 
     void RenderParticles::createWindowSizeDependentResources()
@@ -248,10 +248,10 @@ namespace DemoParticles
             assert(0);
 
         //m_emitterConstantBufferData.position = DX::toVector4(camera->getPosition() + camera->getForward() * 4.0f);
-        //m_emitterConstantBufferData.position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+        //m_emitterConstantBufferData.position = Vector4(10.0f, 10.0f, 0.0f, 1.0f);
         m_emitterConstantBufferData.position = Vector4(cos(timer.GetTotalSeconds() * 0.5f) * 3.0f, 0.0f, sin(timer.GetTotalSeconds() * 0.5f) * 3.0f, 1.0f);
         m_emitterConstantBufferData.direction = Vector4(0.1f, 0.0f, 0.0f, 1.0f);
-        m_emitterConstantBufferData.maxSpawn = 1024;
+        m_emitterConstantBufferData.maxSpawn = 20000;
 
         m_emitFrequence -= timer.GetElapsedSeconds();
 
@@ -264,16 +264,9 @@ namespace DemoParticles
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
-        
-
         context->UpdateSubresource(m_particlesGlobalSettingsBuffer.Get(), 0, nullptr, &m_particlesGlobalSettingsBufferData, 0, 0);
-        context->UpdateSubresource(m_simulateParticlesBuffer.Get(), 0, nullptr, &m_particlesGlobalSettingsBufferData, 0, 0);
+        //context->UpdateSubresource(m_simulateParticlesBuffer.Get(), 0, nullptr, &m_particlesGlobalSettingsBufferData, 0, 0);
 
-        //TODO only upload when dirty
-        context->UpdateSubresource(m_simulateParticlesBuffer.Get(), 0, nullptr, &m_simulateParticlesBufferData, 0, 0);
-        context->UpdateSubresource(m_forceFieldsBuffer.Get(), 0, nullptr, &m_forceFieldsList, 0, 0);
-
-        context->CSSetConstantBuffers(4, 1, m_simulateParticlesBuffer.GetAddressOf());
         
         //context->PSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
         //context->VSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
@@ -384,7 +377,7 @@ namespace DemoParticles
         /*context->CopyStructureCount(m_emitterFromBufferConstantBuffer.Get(), 0, m_bakedParticlesUAV.Get());
 
         UINT initialCount[] = { -1 };
-        m_emitFromBufferParticles->setConstantBuffer(1, m_emitterFromBufferConstantBuffer);
+        m_emitFromBufferParticles->setConstantBuffer(4, m_emitterFromBufferConstantBuffer);
         m_emitFromBufferParticles->setConstantBuffer(2, m_deadListCountConstantBuffer);
         m_emitFromBufferParticles->setUAV(0, m_deadListUAV, initialCount);
         m_emitFromBufferParticles->setUAV(1, m_particleUAV, initialCount);
@@ -400,7 +393,7 @@ namespace DemoParticles
         context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
 
         UINT initialCount[] = { -1 };
-        m_emitParticles->setConstantBuffer(1, m_emitterConstantBuffer);
+        m_emitParticles->setConstantBuffer(4, m_emitterConstantBuffer);
         m_emitParticles->setConstantBuffer(2, m_deadListCountConstantBuffer);
         m_emitParticles->setUAV(0, m_deadListUAV, initialCount);
         m_emitParticles->setUAV(1, m_particleUAV, initialCount);
@@ -416,13 +409,18 @@ namespace DemoParticles
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
+        context->UpdateSubresource(m_simulateParticlesBuffer.Get(), 0, nullptr, &m_simulateParticlesBufferData, 0, 0);
+        context->UpdateSubresource(m_attractorsBuffer.Get(), 0, nullptr, &m_attractorList, 0, 0);
+
+        context->CSSetConstantBuffers(4, 1, m_simulateParticlesBuffer.GetAddressOf());
+
         UINT initialCount[] = { -1 };
         m_simulateShader->setUAV(0, m_indirectDrawArgsUAV, initialCount);
         m_simulateShader->setUAV(2, m_deadListUAV, initialCount);
         m_simulateShader->setUAV(3, m_particleUAV, initialCount);
         initialCount[0] = 0;
         m_simulateShader->setUAV(1, m_aliveIndexUAV, initialCount);
-        m_simulateShader->setSRV(0, m_forceFieldsSRV);
+        m_simulateShader->setSRV(0, m_attractorsSRV);
         m_simulateShader->setSRV(1, m_noiseTextureSRV);
         m_simulateShader->begin();
         m_simulateShader->start(align(m_maxParticles, 256) / 256, 1, 1);
@@ -439,34 +437,34 @@ namespace DemoParticles
         //int i = m_simulateShader->readCounter(m_aliveIndexUAV);
    }
 
-    void RenderParticles::initForceFields()
+    void RenderParticles::initAttractors()
     {
-        m_simulateParticlesBufferData.nbWantedForceFields = 0;
+        m_simulateParticlesBufferData.nbWantedAttractors = 4;
+       
+        m_attractorList[0].position = Vector4(-4.0f, 2.0f, 0.0f, 1.0f);
+        m_attractorList[0].gravity = 10.0f;
+        m_attractorList[0].mass = 5.0f;
+        m_attractorList[0].killZoneRadius = 0.5f;
 
-        m_forceFieldsList[0].type = (UINT)ForceFieldTypes::Point;
-        m_forceFieldsList[0].position = Vector4(-4.0f, 2.0f, 0.0f, 1.0f);
-        m_forceFieldsList[0].gravity = 0.4f;
-        m_forceFieldsList[0].inverse_range = 1.0f / 10.0f; //avoid division in shader
+        m_attractorList[1].position = Vector4(4.0f, 2.0f, 0.0f, 1.0f);
+        m_attractorList[1].gravity = 10.0f;
+        m_attractorList[1].mass = 5.0f;
+        m_attractorList[1].killZoneRadius = 0.5f;
 
-        m_forceFieldsList[1].type = (UINT)ForceFieldTypes::Point;
-        m_forceFieldsList[1].position = Vector4(4.0f, 2.0f, 0.0f, 1.0f);
-        m_forceFieldsList[1].gravity = 0.6f;
-        m_forceFieldsList[1].inverse_range = 1.0f / 10.0f; //avoid division in shader
+        m_attractorList[2].position = Vector4(0.0f, 2.0f, 4.0f, 1.0f);
+        m_attractorList[2].gravity = 10.0f;
+        m_attractorList[2].mass = 5.0f;
+        m_attractorList[2].killZoneRadius = 0.5f;
 
-        m_forceFieldsList[2].type = (UINT)ForceFieldTypes::Point;
-        m_forceFieldsList[2].position = Vector4(0.0f, 2.0f, 4.0f, 1.0f);
-        m_forceFieldsList[2].gravity = 0.4f;
-        m_forceFieldsList[2].inverse_range = 1.0f / 10.0f; //avoid division in shader
-
-        m_forceFieldsList[3].type = (UINT)ForceFieldTypes::Point;
-        m_forceFieldsList[3].position = Vector4(0.0f, 2.0f, -4.0f, 1.0f);
-        m_forceFieldsList[3].gravity = 0.8f;
-        m_forceFieldsList[3].inverse_range = 1.0f / 10.0f; //avoid division in shader
+        m_attractorList[3].position = Vector4(0.0f, 2.0f, -4.0f, 1.0f);
+        m_attractorList[3].gravity = 10.0f;
+        m_attractorList[3].mass = 5.0f;
+        m_attractorList[3].killZoneRadius = 0.5f;
         
         //debug render
-        for (int i = 0; i < m_simulateParticlesBufferData.nbWantedForceFields; ++i)
+        for (int i = 0; i < m_simulateParticlesBufferData.nbWantedAttractors; ++i)
         {
-            Matrix world = Matrix::CreateTranslation(Vector3(m_forceFieldsList[i].position.x, m_forceFieldsList[i].position.y, m_forceFieldsList[i].position.z));
+            Matrix world = Matrix::CreateTranslation(Vector3(m_attractorList[i].position.x, m_attractorList[i].position.y, m_attractorList[i].position.z));
             DebugRenderer::instance().pushBackModel(MeshFactory::getInstance().createAxis(), world);
         }
     }

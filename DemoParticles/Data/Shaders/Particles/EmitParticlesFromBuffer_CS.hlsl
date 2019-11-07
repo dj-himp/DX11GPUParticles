@@ -1,7 +1,7 @@
 #include "../Globals.h"
 #include "ParticlesGlobals.h"
 
-cbuffer emitterConstantBuffer : register(b1)
+cbuffer emitterConstantBuffer : register(b4)
 {
     uint emitterMaxSpawn;
 
@@ -28,8 +28,8 @@ void main(uint3 id : SV_DispatchThreadID)
         
         p.normal = bp.normal;
 
-        p.lifeSpan = -1.0; //5.0;
-        p.age = 5.0;
+        p.lifeSpan = 1.0;//-1.0; //5.0;
+        p.age = 1.0;
         p.mass = 0.1;
 
         uint index = deadListBuffer.Consume();

@@ -33,7 +33,7 @@ namespace DemoParticles
         void resetParticles();
         void emitParticles();
         void simulateParticles();
-        void initForceFields();
+        void initAttractors();
 
         struct Particle
         {
@@ -50,13 +50,6 @@ namespace DemoParticles
         {
             float distance; //squared distance from camera
             float index; //index in the particle buffer
-        };
-
-        enum class ForceFieldTypes
-        {
-            Point = 0,
-            Plane = 1,
-            Custom = 2,
         };
 
         std::unique_ptr<Shader>     m_moveShader;
@@ -114,9 +107,9 @@ namespace DemoParticles
         SimulateParticlesConstantBuffer                     m_simulateParticlesBufferData;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_simulateParticlesBuffer;
 
-        ForceField                                          m_forceFieldsList[MAX_FORCE_FIELDS];
-        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_forceFieldsBuffer;
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_forceFieldsSRV;
+        Attractor                                           m_attractorList[MAX_ATTRACTORS];
+        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_attractorsBuffer;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_attractorsSRV;
 
         bool m_resetParticles = true;
 

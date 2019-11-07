@@ -156,7 +156,7 @@ namespace DemoParticles
 
         m_sceneConstantBufferData.time = timer.GetTotalSeconds();
         
-        static bool started = false;
+        static bool started = true;
         if (InputManager::isKeyDown(Keyboard::Space))
         {
             started = true;
@@ -225,7 +225,7 @@ namespace DemoParticles
 
 
             m_initIndirectComputeArgsShader->begin();
-            m_initIndirectComputeArgsShader->setConstantBuffer(1, m_indirectComputeConstantBuffer);
+            m_initIndirectComputeArgsShader->setConstantBuffer(4, m_indirectComputeConstantBuffer);
             m_initIndirectComputeArgsShader->setUAV(0, m_indirectComputeArgsUAV);
             m_initIndirectComputeArgsShader->start(1, 1, 1);
             m_initIndirectComputeArgsShader->end();
