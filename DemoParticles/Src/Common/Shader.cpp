@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Shader.h"
 
-#include "Common/DirectXHelper.h"
-
 namespace DemoParticles
 {
     Shader::Shader(const DX::DeviceResources* deviceResources)

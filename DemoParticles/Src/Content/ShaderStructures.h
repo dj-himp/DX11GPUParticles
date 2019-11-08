@@ -36,7 +36,7 @@ namespace DemoParticles
         DirectX::SimpleMath::Matrix world;
     };
     
-    struct EmitterConstantBuffer
+    struct EmitterSphereConstantBuffer
     {
         DirectX::SimpleMath::Vector4 position;
         DirectX::SimpleMath::Vector4 direction;

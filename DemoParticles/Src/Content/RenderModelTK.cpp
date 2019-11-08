@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "RenderModelTK.h"
 
-#include "..\Common\DirectXHelper.h"
-
 using namespace DirectX::SimpleMath;
 
 namespace DemoParticles

@@ -69,6 +69,7 @@
 #include "Common/StepTimer.h"
 #include "Common/RenderStatesHelper.h"
 #include "GlobalSettings.h"
+#include "Common/DirectXHelper.h"
 
 #include <DDSTextureLoader.h>
 

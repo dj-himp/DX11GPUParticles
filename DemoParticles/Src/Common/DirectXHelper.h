@@ -20,6 +20,9 @@ namespace DX
         return DirectX::SimpleMath::Vector4(vec3.x, vec3.y, vec3.z, w);
     }
 
+    // Helper function to align values
+    inline int align(int value, int alignment) { return (value + (alignment - 1)) & ~(alignment - 1); }
+
 	// Function that reads from a binary file asynchronously.
 	/*inline Concurrency::task<std::vector<byte>> ReadDataAsync(const std::wstring& filename)
 	{

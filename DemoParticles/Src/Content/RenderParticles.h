@@ -8,6 +8,7 @@ namespace DemoParticles
 {
     class ComputeShader;
     class SortLib;
+    class IParticleEmitter;
 
     class RenderParticles : public IRenderable
     {
@@ -34,6 +35,7 @@ namespace DemoParticles
         void emitParticles();
         void simulateParticles();
         void initAttractors();
+        void initEmitters();
 
         struct Particle
         {
@@ -81,14 +83,6 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>   m_aliveIndexUAV;
 
         std::unique_ptr<ComputeShader>                      m_initDeadListShader;
-        std::unique_ptr<ComputeShader>                      m_emitParticles;
-        std::unique_ptr<ComputeShader>                      m_emitFromBufferParticles;
-
-        EmitterConstantBuffer                               m_emitterConstantBufferData;
-        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_emitterConstantBuffer;
-
-        EmitterFromBufferConstantBuffer                     m_emitterFromBufferConstantBufferData;
-        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_emitterFromBufferConstantBuffer;
 
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_deadListCountConstantBuffer;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_aliveListCountConstantBuffer;
@@ -118,7 +112,6 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11Resource>              m_noiseTexture;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_noiseTextureSRV;
 
-        //temp
-        float m_emitFrequence = 0.0f;
+        std::vector<std::unique_ptr<IParticleEmitter>>      m_particleEmitters;
     };
 }

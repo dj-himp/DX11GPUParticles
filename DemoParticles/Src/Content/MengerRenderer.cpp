@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "MengerRenderer.h"
 
-#include "Common/DirectXHelper.h"
 #include "Model/Model.h"
 #include "Camera/Camera.h"
 #include "Common/Shader.h"

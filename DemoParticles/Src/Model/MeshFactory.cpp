@@ -2,7 +2,6 @@
 #include "MeshFactory.h"
 
 #include "Content/ShaderStructures.h"
-#include "Common/DirectXHelper.h"
 #include "Model.h"
 #include "ModelMesh.h"
 

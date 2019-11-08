@@ -4,7 +4,6 @@
 #include "Model.h"
 #include "ModelMesh.h"
 #include "..\Content\ShaderStructures.h"
-#include "..\Common\DirectXHelper.h"
 
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>

@@ -157,6 +157,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Content\ParticleEmitterBuffer.cpp" />
+    <ClCompile Include="Src\Content\ParticleEmitterSphere.cpp" />
     <ClCompile Include="Src\Common\RenderStatesHelper.cpp" />
     <ClCompile Include="Extern\imgui\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -175,6 +177,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Src\Common\SortLib.cpp" />
+    <ClCompile Include="Src\Content\IParticleEmitter.cpp" />
     <ClCompile Include="Src\Content\RenderParticles.cpp" />
     <ClCompile Include="Src\Common\ComputeShader.cpp" />
     <ClCompile Include="Src\Scene\SceneMenger.cpp" />
@@ -229,6 +232,8 @@
     <ClInclude Include="Data\Shaders\Noises\SimplexNoise2D.h" />
     <ClInclude Include="Data\Shaders\Particles\ParticlesGlobals.h" />
     <ClInclude Include="Data\Shaders\Noises\SimplexNoise3D.h" />
+    <ClInclude Include="Src\Content\ParticleEmitterBuffer.h" />
+    <ClInclude Include="Src\Content\ParticleEmitterSphere.h" />
     <ClInclude Include="Src\Common\RenderStatesHelper.h" />
     <ClInclude Include="Extern\imgui\imconfig.h" />
     <ClInclude Include="Extern\imgui\imgui.h" />
@@ -237,6 +242,7 @@
     <ClInclude Include="Extern\imgui\imstb_textedit.h" />
     <ClInclude Include="Extern\imgui\imstb_truetype.h" />
     <ClInclude Include="Src\Common\SortLib.h" />
+    <ClInclude Include="Src\Content\IParticleEmitter.h" />
     <ClInclude Include="Src\Content\RenderParticles.h" />
     <ClInclude Include="Src\Common\ComputeShader.h" />
     <ClInclude Include="Src\GlobalSettings.h" />

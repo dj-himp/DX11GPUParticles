@@ -1,8 +1,6 @@
 ﻿#include "pch.h"
 #include "SampleFpsTextRenderer.h"
 
-#include "Common/DirectXHelper.h"
-
 using namespace DemoParticles;
 using namespace Microsoft::WRL;
 

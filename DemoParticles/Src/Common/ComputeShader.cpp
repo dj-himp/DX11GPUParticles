@@ -2,7 +2,6 @@
 #include "ComputeShader.h"
 
 #include "Common/RenderTarget.h"
-#include "Common/DirectXHelper.h"
 
 namespace DemoParticles
 {

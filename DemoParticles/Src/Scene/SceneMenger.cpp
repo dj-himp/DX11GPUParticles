@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "SceneMenger.h"
 
-#include "Common/DirectXHelper.h"
 #include "Camera/CameraControllerFPS.h"
 #include "Camera/Camera.h"
 #include "Content/MengerRenderer.h"
@@ -35,8 +34,8 @@ namespace DemoParticles
 
     void SceneMenger::createDeviceDependentResources()
     {
-        m_mengerRenderer->createDeviceDependentResources();
-        m_renderParticles->createDeviceDependentResources();
+//         m_mengerRenderer->createDeviceDependentResources();
+//         m_renderParticles->createDeviceDependentResources();
 
         //int width = m_deviceResources->GetOutputWidth();
         //int height = m_deviceResources->GetOutputHeight();
@@ -115,6 +114,12 @@ namespace DemoParticles
 
         m_initIndirectComputeArgsShader = std::make_unique<ComputeShader>(m_deviceResources);
         m_initIndirectComputeArgsShader->load(L"InitIndirectComputeArgs1D_CS.cso");
+
+        m_renderParticles->setBakedIndirectArgs(m_indirectComputeArgsBuffer);
+        m_renderParticles->setBakedParticleUAV(m_bakedUAV);
+
+        m_mengerRenderer->createDeviceDependentResources();
+        m_renderParticles->createDeviceDependentResources();
     }
 
     void SceneMenger::createWindowSizeDependentResources()
@@ -231,8 +236,8 @@ namespace DemoParticles
             m_initIndirectComputeArgsShader->end();
             m_initIndirectComputeArgsShader->setUAV(0, nullptr);
 
-            m_renderParticles->setBakedIndirectArgs(m_indirectComputeArgsBuffer);
-            m_renderParticles->setBakedParticleUAV(m_bakedUAV);
+            //m_renderParticles->setBakedIndirectArgs(m_indirectComputeArgsBuffer);
+            //m_renderParticles->setBakedParticleUAV(m_bakedUAV);
 
             m_bakingDone = true;
         }

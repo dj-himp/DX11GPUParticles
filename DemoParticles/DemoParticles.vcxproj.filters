@@ -153,6 +153,15 @@
     <ClCompile Include="Src\Common\SortLib.cpp">
       <Filter>Src\Common</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Content\ParticleEmitterSphere.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Content\IParticleEmitter.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Content\ParticleEmitterBuffer.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\DeviceResources.h">
@@ -292,6 +301,15 @@
     </ClInclude>
     <ClInclude Include="Data\Shaders\Noises\SimplexNoise3D.h">
       <Filter>Data\Shaders\Noises</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\IParticleEmitter.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\ParticleEmitterSphere.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\ParticleEmitterBuffer.h">
+      <Filter>Src\Content</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
