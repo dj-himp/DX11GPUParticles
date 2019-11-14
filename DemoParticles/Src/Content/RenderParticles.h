@@ -113,5 +113,9 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_noiseTextureSRV;
 
         std::vector<std::unique_ptr<IParticleEmitter>>      m_particleEmitters;
+
+        //TEMP
+        Microsoft::WRL::ComPtr<ID3D11Texture3D>             m_forceFieldTexture;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_forceFieldTextureSRV;
     };
 }

@@ -157,7 +157,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Common\FGAParser.cpp" />
     <ClCompile Include="Src\Content\ParticleEmitterBuffer.cpp" />
+    <ClCompile Include="Src\Content\ParticleEmitterCube.cpp" />
     <ClCompile Include="Src\Content\ParticleEmitterSphere.cpp" />
     <ClCompile Include="Src\Common\RenderStatesHelper.cpp" />
     <ClCompile Include="Extern\imgui\imgui.cpp">
@@ -232,7 +234,9 @@
     <ClInclude Include="Data\Shaders\Noises\SimplexNoise2D.h" />
     <ClInclude Include="Data\Shaders\Particles\ParticlesGlobals.h" />
     <ClInclude Include="Data\Shaders\Noises\SimplexNoise3D.h" />
+    <ClInclude Include="Src\Common\FGAParser.h" />
     <ClInclude Include="Src\Content\ParticleEmitterBuffer.h" />
+    <ClInclude Include="Src\Content\ParticleEmitterCube.h" />
     <ClInclude Include="Src\Content\ParticleEmitterSphere.h" />
     <ClInclude Include="Src\Common\RenderStatesHelper.h" />
     <ClInclude Include="Extern\imgui\imconfig.h" />
@@ -294,6 +298,36 @@
     <CopyFileToFolders Include="Data\Models\deer.fbx">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\forceFieldTest.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\VF_CurveTile_1.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\VF_CurveTile_2.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\VF_CurveTile_3.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\VF_FluidVol.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\VF_Point.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\VF_Smoke.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\VF_Turbulence.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\VF_Vortex.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\VF_Wind.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -320,14 +354,17 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.</AdditionalIncludeDirectories>
     </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\EmitParticlesCube_CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Data\Shaders\Particles\EmitParticlesFromBuffer_CS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="Data\Shaders\Particles\EmitParticles_CS.hlsl">
+    <FxCompile Include="Data\Shaders\Particles\EmitParticlesSphere_CS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../;.</AdditionalIncludeDirectories>
     </FxCompile>
     <FxCompile Include="Data\Shaders\Particles\InitIndirectComputeArgs1D_CS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>

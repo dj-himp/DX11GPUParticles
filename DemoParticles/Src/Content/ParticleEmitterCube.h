@@ -7,10 +7,10 @@ namespace DemoParticles
 {
     class ComputeShader;
 
-    class ParticleEmitterSphere : public IParticleEmitter
+    class ParticleEmitterCube : public IParticleEmitter
     {
     public:
-        ParticleEmitterSphere(const DX::DeviceResources* deviceResources);
+        ParticleEmitterCube(const DX::DeviceResources* deviceResources);
         
         virtual void createDeviceDependentResources() override;
 
@@ -21,7 +21,7 @@ namespace DemoParticles
         
         std::unique_ptr<ComputeShader>                      m_emitParticles;
 
-        EmitterSphereConstantBuffer                         m_emitterConstantBufferData;
+        EmitterCubeConstantBuffer                           m_emitterConstantBufferData;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_emitterConstantBuffer;
 
         float m_emitDelay = 0.0f;

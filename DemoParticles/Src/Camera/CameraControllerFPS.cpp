@@ -49,12 +49,12 @@ namespace DemoParticles
             movement.x -= m_movementSpeed * timer.GetElapsedSeconds();
             hasMoved = true;
         }
-        if (InputManager::isKeyDown(Keyboard::A))
+        if (InputManager::isKeyDown(Keyboard::Space))
         {
             movement.y += m_movementSpeed * timer.GetElapsedSeconds();
             hasMoved = true;
         }
-        if (InputManager::isKeyDown(Keyboard::E))
+        if (InputManager::isKeyDown(Keyboard::LeftShift))
         {
             movement.y -= m_movementSpeed * timer.GetElapsedSeconds();
             hasMoved = true;

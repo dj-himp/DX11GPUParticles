@@ -8,6 +8,7 @@ namespace DemoParticles
     ParticleEmitterBuffer::ParticleEmitterBuffer(const DX::DeviceResources* deviceResources)
         : IParticleEmitter(deviceResources)
     {
+
     }
 
     void ParticleEmitterBuffer::createDeviceDependentResources()
@@ -23,11 +24,16 @@ namespace DemoParticles
 
     void ParticleEmitterBuffer::update(DX::StepTimer const& timer)
     {
-        IParticleEmitter::update(timer);
+
     }
 
     void ParticleEmitterBuffer::emit()
     {
+        if (m_hasEmitted)
+        {
+            return;
+        }
+
         if (m_bufferUAV == nullptr)
         {
             assert(0);
@@ -52,5 +58,7 @@ namespace DemoParticles
         m_emitFromBufferParticles->setUAV(1, nullptr);
         m_emitFromBufferParticles->setUAV(2, nullptr);
         
+
+        m_hasEmitted = true;
     }
 }

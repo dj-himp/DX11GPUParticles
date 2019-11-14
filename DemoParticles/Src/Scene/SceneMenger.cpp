@@ -162,7 +162,7 @@ namespace DemoParticles
         m_sceneConstantBufferData.time = timer.GetTotalSeconds();
         
         static bool started = true;
-        if (InputManager::isKeyDown(Keyboard::Space))
+        if (InputManager::isKeyDown(Keyboard::B))
         {
             started = true;
         }

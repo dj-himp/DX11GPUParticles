@@ -39,7 +39,15 @@ namespace DemoParticles
     struct EmitterSphereConstantBuffer
     {
         DirectX::SimpleMath::Vector4 position;
-        DirectX::SimpleMath::Vector4 direction;
+        UINT maxSpawn;
+
+        UINT padding[3];
+
+    };
+
+    struct EmitterCubeConstantBuffer
+    {
+        DirectX::SimpleMath::Matrix world;
         UINT maxSpawn;
 
         UINT padding[3];
@@ -77,6 +85,9 @@ namespace DemoParticles
 
     struct SimulateParticlesConstantBuffer
     {
+        //TEMP
+        DirectX::SimpleMath::Matrix forceFieldWorld2Volume;
+
         UINT nbWantedAttractors;
 
         UINT padding[3];

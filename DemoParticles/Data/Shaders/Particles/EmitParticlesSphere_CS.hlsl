@@ -6,7 +6,6 @@
 cbuffer emitterConstantBuffer : register(b4)
 {
     float4 emitterPosition;
-    float4 emitterDirection;
     uint emitterMaxSpawn;
 
     uint3 emitterPadding;
@@ -21,13 +20,13 @@ void main(uint3 id : SV_DispatchThreadID)
 {
     if(id.x < nbDeadParticles && id.x < emitterMaxSpawn)
     {
-        rng_state = wang_hash(id.x);
+        rng_state = wang_hash(id.x * time);
 
         Particle p = (Particle) 0;
         
         p.position = emitterPosition;
         float3 position = float3(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() -0.5);
-        position = normalize(position) * max(0.5, sin(time) * 1.5);
+        position = normalize(position);// * max(0.5, sin(time) * 1.5);
         p.position.xyz += position;
         p.position.w = 1.0;
 

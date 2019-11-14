@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "ParticleEmitterSphere.h"
+#include "ParticleEmitterCube.h"
 
 #include "../Common/ComputeShader.h"
 
@@ -7,24 +7,24 @@ using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
 {
-    ParticleEmitterSphere::ParticleEmitterSphere(const DX::DeviceResources* deviceResources)
+    ParticleEmitterCube::ParticleEmitterCube(const DX::DeviceResources* deviceResources)
         : IParticleEmitter(deviceResources)
     {
-        
+        m_emitDelay = 0.1f;
     }
 
-    void ParticleEmitterSphere::createDeviceDependentResources()
+    void ParticleEmitterCube::createDeviceDependentResources()
     {
         m_emitParticles = std::make_unique<ComputeShader>(m_deviceResources);
-        m_emitParticles->load(L"EmitParticlesSphere_CS.cso");
+        m_emitParticles->load(L"EmitParticlesCube_CS.cso");
 
-        CD3D11_BUFFER_DESC emitterConstantBufferDesc(sizeof(EmitterSphereConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
+        CD3D11_BUFFER_DESC emitterConstantBufferDesc(sizeof(EmitterCubeConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateBuffer(&emitterConstantBufferDesc, nullptr, &m_emitterConstantBuffer)
         );
     }
 
-    void ParticleEmitterSphere::update(DX::StepTimer const& timer)
+    void ParticleEmitterCube::update(DX::StepTimer const& timer)
     {
         //false to reset if the previous render emit particles
         m_needEmit = false;
@@ -36,13 +36,15 @@ namespace DemoParticles
             m_needEmit = true;
         }
 
-        //m_emitterConstantBufferData.position = DX::toVector4(camera->getPosition() + camera->getForward() * 4.0f);
-        //m_emitterConstantBufferData.position = Vector4(10.0f, 10.0f, 0.0f, 1.0f);
-        m_emitterConstantBufferData.position = Vector4(cos(timer.GetTotalSeconds() * 0.5f) * 3.0f, 0.0f, sin(timer.GetTotalSeconds() * 0.5f) * 3.0f, 1.0f);       
-        m_emitterConstantBufferData.maxSpawn = 20000;
+        m_emitterConstantBufferData.world = Matrix::CreateScale(8.0f, 8.0f, 8.0f);
+        m_emitterConstantBufferData.world *= Matrix::CreateRotationX(0.0f);
+        m_emitterConstantBufferData.world *= Matrix::CreateRotationY(0.0f);
+        m_emitterConstantBufferData.world *= Matrix::CreateRotationZ(0.0f);
+        m_emitterConstantBufferData.world *= Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        m_emitterConstantBufferData.maxSpawn = 200000;
     }
 
-    void ParticleEmitterSphere::emit()
+    void ParticleEmitterCube::emit()
     {
         if (!m_needEmit)
         {

@@ -60,17 +60,17 @@ namespace DX
         unsigned int            GetDeviceOptions() const { return m_options; }
 
         // Performance events
-        void PIXBeginEvent(_In_z_ const wchar_t* name)
+        void PIXBeginEvent(_In_z_ const wchar_t* name) const
         {
             m_d3dAnnotation->BeginEvent(name);
         }
 
-        void PIXEndEvent()
+        void PIXEndEvent() const
         {
             m_d3dAnnotation->EndEvent();
         }
 
-        void PIXSetMarker(_In_z_ const wchar_t* name)
+        void PIXSetMarker(_In_z_ const wchar_t* name) const
         {
             m_d3dAnnotation->SetMarker(name);
         }

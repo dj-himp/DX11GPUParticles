@@ -31,5 +31,7 @@ namespace DemoParticles
 
         Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>   m_bufferUAV;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_indirectArgsBuffer;
+
+        bool m_hasEmitted = false;
     };
 }
