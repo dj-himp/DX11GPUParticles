@@ -157,6 +157,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Content\ParticleEmitterPoint.cpp" />
+    <ClCompile Include="Src\Content\RenderForceField.cpp" />
     <ClCompile Include="Src\Common\FGAParser.cpp" />
     <ClCompile Include="Src\Content\ParticleEmitterBuffer.cpp" />
     <ClCompile Include="Src\Content\ParticleEmitterCube.cpp" />
@@ -234,6 +236,8 @@
     <ClInclude Include="Data\Shaders\Noises\SimplexNoise2D.h" />
     <ClInclude Include="Data\Shaders\Particles\ParticlesGlobals.h" />
     <ClInclude Include="Data\Shaders\Noises\SimplexNoise3D.h" />
+    <ClInclude Include="Src\Content\ParticleEmitterPoint.h" />
+    <ClInclude Include="Src\Content\RenderForceField.h" />
     <ClInclude Include="Src\Common\FGAParser.h" />
     <ClInclude Include="Src\Content\ParticleEmitterBuffer.h" />
     <ClInclude Include="Src\Content\ParticleEmitterCube.h" />
@@ -362,12 +366,28 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\EmitParticlesPoint_CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Data\Shaders\Particles\EmitParticlesSphere_CS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Data\Shaders\Particles\InitIndirectComputeArgs1D_CS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\RenderForceField_GS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\RenderForceField_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\RenderForceField_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Data\Shaders\Particles\RenderParticles_GS_ORIENTED.hlsl">

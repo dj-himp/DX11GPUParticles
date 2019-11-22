@@ -5,12 +5,6 @@ namespace DemoParticles
     class FGAParser
     {
     public:
-        FGAParser() {}
-        //~FGAParser();
-
-        Microsoft::WRL::ComPtr<ID3D11Texture3D> parse(const char* filename, const DX::DeviceResources* deviceResources);
-
-    private:
 
         struct FGAContent
         {
@@ -21,6 +15,13 @@ namespace DemoParticles
             DirectX::SimpleMath::Vector3 boundMax;
             std::vector<DirectX::SimpleMath::Vector4> forces;
         };
+
+        FGAParser() {}
+        //~FGAParser();
+
+         void parse(const char* filename, FGAContent& content);
+
+    private:
 
         char* parseUntilDelimiter(char* buffer, char delimiter);
         char* parseFloat(char* buffer, float& outFloat);

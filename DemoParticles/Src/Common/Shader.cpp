@@ -34,15 +34,18 @@ namespace DemoParticles
             )
         );*/
 
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateInputLayout(
-                vertexDesc.data(),
-                vertexDesc.size(),
-                vs_blob->GetBufferPointer(),
-                vs_blob->GetBufferSize(),
-                &m_inputLayout
-            )
-        );
+        if (vertexDesc.size() > 0)
+        {
+            DX::ThrowIfFailed(
+                m_deviceResources->GetD3DDevice()->CreateInputLayout(
+                    vertexDesc.data(),
+                    vertexDesc.size(),
+                    vs_blob->GetBufferPointer(),
+                    vs_blob->GetBufferSize(),
+                    &m_inputLayout
+                )
+            );
+        }
 
         ID3DBlob* ps_blob;
         D3DReadFileToBlob(pixelFilename.c_str(), &ps_blob);

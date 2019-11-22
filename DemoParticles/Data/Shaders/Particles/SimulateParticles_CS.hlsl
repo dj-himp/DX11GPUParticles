@@ -7,6 +7,7 @@ cbuffer simulateParticlesConstantBuffer : register(b4)
 {
     //TEMP
     float4x4 forceFieldWorld2Volume;
+    float4x4 forceFieldVolume2World;
 
     uint nbWantedAttractors;
 
@@ -126,28 +127,44 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             particleForce += normalize(direction) * (a.gravity * p.mass * a.mass) / (max(1.0, distance * distance));
         }
 
-        float3 forceFieldUV = mul(float4(p.position.xyz, 1.0), forceFieldWorld2Volume).xyz;
-        float3 force = forceFieldTexture.SampleLevel(LinearWrapSampler, forceFieldUV, 0).xyz;
-        force = mul(float4(force, 0.0), forceFieldWorld2Volume).xyz;
-        particleForce.xyz += force;// * 10.0;
+        bool addForceField = false;
+        if (addForceField)
+        {
+            float3 forceFieldUV = mul(float4(p.position.xyz, 1.0), forceFieldWorld2Volume).xyz;
+            float3 force = forceFieldTexture.SampleLevel(LinearWrapSampler, saturate(forceFieldUV), 0).xyz;
+            //force = mul(float4(force, 0.0), forceFieldVolume2World).xyz;
+            particleForce.xyz += force; // * 0.1;
+        }
 
         //TEST Aizawa attractor
-        /*particleForce.x = (p.position.z - 0.8) * p.position.x - 1.5 * p.position.y;
-        particleForce.y = 1.5 * p.position.x + (p.position.z - 0.8) * p.position.y;
-        particleForce.z = 0.688128 + 1.102 * p.position.z - (pow(p.position.z, 3) / 3.0) - (p.position.x * p.position.x + p.position.y * p.position.y) * (1.0 + 1.122 * p.position.z) + 0.1 * p.position.z * p.position.x * p.position.x * p.position.x;
-        */
+        bool addAizama = true;
+        if(addAizama)
+        {
+            float a = 0.41;
+            float b = 0.45;
+            float c = 0.27;
+            float d = 6.5;
+            float e = 0.75;
+            float f = 3.0;
+            particleForce.x = (p.position.z - b) * p.position.x - d * p.position.y;
+            particleForce.y = 1.5 * p.position.x + (p.position.z - 0.8) * p.position.y;
+            particleForce.z = c + a * p.position.z - (pow(p.position.z, 3) / 3.0) - (p.position.x * p.position.x + p.position.y * p.position.y) * (1.0 + e * p.position.z) + f * p.position.z * p.position.x * p.position.x * p.position.x;
+            //p.velocity.x = (p.position.z - b) * p.position.x - d * p.position.y;
+            //p.velocity.y = 1.5 * p.position.x + (p.position.z - 0.8) * p.position.y;
+            //p.velocity.z = c + a * p.position.z - (pow(p.position.z, 3) / 3.0) - (p.position.x * p.position.x + p.position.y * p.position.y) * (1.0 + e * p.position.z) + f * p.position.z * p.position.x * p.position.x * p.position.x;
+        }
 
         bool addCurlNoise = false;
         if (addCurlNoise)
         {
-            //p.position.xyz += curlNoise(p.position.xyz) * 0.1;
-            //particleForce.xyz += curlNoise(p.position.xyz) * 10.0;
-            particleForce.xyz += curlNoise(particleForce.xyz) * 10.0;
+            //particleForce.xyz += curlNoise(p.velocity.xyz); // * 10.0;
+            //particleForce.xyz += curlNoise(p.position.xyz);// * 10.0;
+            particleForce.xyz += curlNoise(particleForce.xyz);// * 10.0;
         }
         
-        //Add drag
+    //Add drag
         bool addDrag = false;
-        if(addDrag)
+        if (addDrag)
         {
             float dragCoefficient = 0.0001;
             particleForce -= dragCoefficient * p.velocity;
@@ -155,21 +172,25 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
 
         float3 acceleration = particleForce.xyz / p.mass;
         p.velocity.xyz += acceleration * dt;
-        //p.velocity.xyz = particleForce.xyz;
+    
+        //TEMP
+        float cap = 10.0;
+        p.velocity.xyz = clamp(p.velocity.xyz, float3(-cap, -cap, -cap), float3(cap, cap, cap));
+
         p.position.xyz += p.velocity.xyz * dt;
 
-        //kill particles inside attractors killzone (if killZoneRadius >= 0.0)
+    //kill particles inside attractors killzone (if killZoneRadius >= 0.0)
         for (uint i = 0; i < nbAttractors; ++i)
         {
             Attractor a = attractorList[i];
             float distance = length(a.position - p.position);
-            if(distance < a.killZoneRadius)
+            if (distance < a.killZoneRadius)
             {
                 p.age = 0.0;
             }
         }
 
-        if(p.age > 0)
+        if (p.age > 0)
         {
             ParticleIndexElement particle;
             particle.distance = length(p.position - camPosition);

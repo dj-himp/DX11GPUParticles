@@ -24,7 +24,7 @@ namespace DemoParticles
 
     void ParticleEmitterBuffer::update(DX::StepTimer const& timer)
     {
-
+        m_emitterConstantBufferData.maxSpawn = 2000000;
     }
 
     void ParticleEmitterBuffer::emit()
@@ -42,11 +42,13 @@ namespace DemoParticles
 
         auto context = m_deviceResources->GetD3DDeviceContext();
 
-        //int i = m_initDeadListShader->readCounter(m_deadListUAV);
+        //int i = m_emitFromBufferParticles->readCounter(m_bufferUAV);
         //DebugUtils::log(std::to_string(i));
 
         //update the number of baked particle (TO DO do it once if no changes)
         context->CopyStructureCount(m_emitterConstantBuffer.Get(), 0, m_bufferUAV.Get());
+
+        context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
 
         UINT initialCount[] = { -1 };
         m_emitFromBufferParticles->setConstantBuffer(4, m_emitterConstantBuffer);
@@ -54,8 +56,6 @@ namespace DemoParticles
         m_emitFromBufferParticles->begin();
         m_emitFromBufferParticles->startIndirect(m_indirectArgsBuffer);
         m_emitFromBufferParticles->end();
-        m_emitFromBufferParticles->setUAV(0, nullptr);
-        m_emitFromBufferParticles->setUAV(1, nullptr);
         m_emitFromBufferParticles->setUAV(2, nullptr);
         
 

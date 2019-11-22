@@ -9,9 +9,9 @@
 #include "Model/MeshFactory.h"
 #include "Model/Model.h"
 #include "ParticleEmitterSphere.h"
+#include "ParticleEmitterPoint.h"
 #include "ParticleEmitterCube.h"
 #include "ParticleEmitterBuffer.h"
-#include "Common/FGAParser.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -37,7 +37,32 @@ namespace DemoParticles
     {
 
         FGAParser parser;
-        m_forceFieldTexture = parser.parse("forceFieldTest.fga", m_deviceResources);
+        //parser.parse("forceFieldTest.fga", m_content);
+        //parser.parse("VF_Vortex.fga", m_content);
+        //parser.parse("VF_Smoke.fga", m_content);
+        //parser.parse("VF_Turbulence.fga", m_content);
+        //parser.parse("VF_FluidVol.fga", m_content);
+        parser.parse("VF_Point.fga", m_content);
+
+        D3D11_TEXTURE3D_DESC desc;
+        desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+        desc.CPUAccessFlags = 0;
+        desc.Width = m_content.sizeX;
+        desc.Height = m_content.sizeY;
+        desc.Depth = m_content.sizeZ;
+        desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+        desc.MipLevels = 1;
+        desc.Usage = D3D11_USAGE_DEFAULT;
+        desc.MiscFlags = 0;
+
+        D3D11_SUBRESOURCE_DATA data;
+        data.pSysMem = &m_content.forces[0];
+        data.SysMemPitch = m_content.sizeX;
+        data.SysMemSlicePitch = m_content.sizeY;
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateTexture3D(&desc, &data, &m_forceFieldTexture)
+        );
 
         D3D11_SHADER_RESOURCE_VIEW_DESC forceFieldTextureSRVDesc;
         forceFieldTextureSRVDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -248,13 +273,14 @@ namespace DemoParticles
             assert(0);
 
         m_particlesGlobalSettingsBufferData.particleOrientation = ParticlesGlobals::g_particlesOrientation;
+        m_particlesGlobalSettingsBufferData.color = Vector4(ParticlesGlobals::g_particlesColor);
 
-        //TEMP hardcoded to check
-        //use FGA value instead
-        Vector3 volumeOffset = Vector3(-8.0);
-        Vector3 volumeScale = Vector3(8.0f) - Vector3(-8.0f);
-        Matrix volume2World = Matrix::CreateScale(volumeScale) * Matrix::CreateTranslation(volumeOffset);
+        Vector3 volumeOffset = m_content.boundMin;
+        Vector3 volumeScale = m_content.boundMax - m_content.boundMin;
+        Matrix volume2World = Matrix::CreateScale(volumeScale * 0.01f) * Matrix::CreateTranslation(volumeOffset * 0.01f);
+        //m_simulateParticlesBufferData.forceFieldVolume2World = volume2World;
         m_simulateParticlesBufferData.forceFieldWorld2Volume = volume2World.Invert();
+        m_simulateParticlesBufferData.forceFieldWorld2Volume = m_simulateParticlesBufferData.forceFieldWorld2Volume.Transpose();
 
         for (auto&& emitter : m_particleEmitters)
         {
@@ -273,10 +299,10 @@ namespace DemoParticles
         //context->UpdateSubresource(m_simulateParticlesBuffer.Get(), 0, nullptr, &m_particlesGlobalSettingsBufferData, 0, 0);
 
         
-        //context->PSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
-        //context->VSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
+        context->PSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
+        context->VSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
         context->GSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
-        //context->CSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
+        context->CSSetConstantBuffers(1, 1, m_particlesGlobalSettingsBuffer.GetAddressOf());
 
         if (m_resetParticles)
         {
@@ -412,7 +438,7 @@ namespace DemoParticles
         m_simulateShader->setSRV(0, m_attractorsSRV);
         m_simulateShader->setSRV(1, m_noiseTextureSRV);
         m_simulateShader->setSRV(2, m_forceFieldTextureSRV);
-        context->CSSetSamplers(0, 1, RenderStatesHelper::PointWrap().GetAddressOf());
+        context->CSSetSamplers(0, 1, RenderStatesHelper::LinearClamp().GetAddressOf());
         m_simulateShader->begin();
         m_simulateShader->start(DX::align(m_maxParticles, 256) / 256, 1, 1);
         m_simulateShader->end();
@@ -466,13 +492,20 @@ namespace DemoParticles
         /*std::unique_ptr<ParticleEmitterSphere> sphereEmitter = std::make_unique<ParticleEmitterSphere>(m_deviceResources);
         sphereEmitter->createDeviceDependentResources();
 
-        m_particleEmitters.push_back(std::move(sphereEmitter));*/
+        m_particleEmitters.push_back(std::move(sphereEmitter));
+        */
 
-        std::unique_ptr<ParticleEmitterCube> cubeEmitter = std::make_unique<ParticleEmitterCube>(m_deviceResources);
+        std::unique_ptr<ParticleEmitterPoint> pointEmitter = std::make_unique<ParticleEmitterPoint>(m_deviceResources);
+        pointEmitter->createDeviceDependentResources();
+
+        m_particleEmitters.push_back(std::move(pointEmitter));
+        
+        /*std::unique_ptr<ParticleEmitterCube> cubeEmitter = std::make_unique<ParticleEmitterCube>(m_deviceResources);
         cubeEmitter->createDeviceDependentResources();
+        cubeEmitter->setCubeSize(Vector3(m_content.sizeX, m_content.sizeY, m_content.sizeZ));
 
         m_particleEmitters.push_back(std::move(cubeEmitter));
-        
+        */
 
         /*std::unique_ptr<ParticleEmitterBuffer> bufferEmitter = std::make_unique<ParticleEmitterBuffer>(m_deviceResources);
         bufferEmitter->createDeviceDependentResources();

@@ -20,6 +20,7 @@ struct ParticleIndexElement
 
 cbuffer renderParticlesGlobals : register(b1)
 {
+    float4 color;
     uint orientation;
 
     uint3 particlesGlobalPadding;

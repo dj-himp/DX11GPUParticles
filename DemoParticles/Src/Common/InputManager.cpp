@@ -33,6 +33,12 @@ namespace DemoParticles
         return mouseState.leftButton;
     }
 
+    bool InputManager::isRightMouseButtonDown()
+    {
+        auto mouseState = Mouse::Get().GetState();
+        return mouseState.rightButton;
+    }
+
     void InputManager::update()
     {
         /*auto keyboardState = Keyboard::Get().GetState();

@@ -37,9 +37,9 @@ namespace DemoParticles
         }
 
         //m_emitterConstantBufferData.position = DX::toVector4(camera->getPosition() + camera->getForward() * 4.0f);
-        //m_emitterConstantBufferData.position = Vector4(10.0f, 10.0f, 0.0f, 1.0f);
-        m_emitterConstantBufferData.position = Vector4(cos(timer.GetTotalSeconds() * 0.5f) * 3.0f, 0.0f, sin(timer.GetTotalSeconds() * 0.5f) * 3.0f, 1.0f);       
-        m_emitterConstantBufferData.maxSpawn = 20000;
+        m_emitterConstantBufferData.position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+        //m_emitterConstantBufferData.position = Vector4(cos(timer.GetTotalSeconds() * 0.5f) * 3.0f, 0.0f, sin(timer.GetTotalSeconds() * 0.5f) * 3.0f, 1.0f);       
+        m_emitterConstantBufferData.maxSpawn = 1000;
     }
 
     void ParticleEmitterSphere::emit()

@@ -314,6 +314,8 @@ void Game::RenderImGui()
     const char* items[] = { "Opaque", "NonPremultiplied", "Additive" };
     ImGui::Combo("Blend Mode", &ParticlesGlobals::g_blendMode, items, 3);
     
+    ImGui::ColorPicker4("Particles color", ParticlesGlobals::g_particlesColor);
+
     ImGui::End();
 
     // Rendering

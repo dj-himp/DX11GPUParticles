@@ -26,6 +26,11 @@ namespace DemoParticles
     void DemoParticles::CameraControllerFPS::update(DX::StepTimer const& timer)
     {
         float m_movementSpeed = 5.0f;
+        if (InputManager::isKeyDown(Keyboard::LeftShift))
+        {
+            m_movementSpeed *= 2.0f;
+        }
+
         Vector3 movement(0.0f);
 
         bool hasMoved = false;
@@ -54,7 +59,7 @@ namespace DemoParticles
             movement.y += m_movementSpeed * timer.GetElapsedSeconds();
             hasMoved = true;
         }
-        if (InputManager::isKeyDown(Keyboard::LeftShift))
+        if (InputManager::isKeyDown(Keyboard::LeftControl))
         {
             movement.y -= m_movementSpeed * timer.GetElapsedSeconds();
             hasMoved = true;
@@ -65,7 +70,7 @@ namespace DemoParticles
             m_camera->movePositionRelative(movement);
         }
 
-        if (InputManager::isLeftMouseButtonDown())
+        if (InputManager::isRightMouseButtonDown())
         {
             Vector2 mousePosition = InputManager::getMousePosition();
             if (!m_isMouseMoveStarted)

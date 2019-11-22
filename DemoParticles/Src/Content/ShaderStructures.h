@@ -22,8 +22,9 @@ namespace DemoParticles
         //put non float4 at the end
         float             time;
         float             dt;
+        float             rngSeed;
 
-        UINT padding[1];
+        //UINT padding[1];
     };
 
     struct QuadConstantBuffer
@@ -78,6 +79,7 @@ namespace DemoParticles
 
     struct ParticlesGlobalsConstantBuffer
     {
+        DirectX::SimpleMath::Vector4 color;
         UINT particleOrientation;
         
         UINT padding[3];
@@ -87,10 +89,18 @@ namespace DemoParticles
     {
         //TEMP
         DirectX::SimpleMath::Matrix forceFieldWorld2Volume;
+        DirectX::SimpleMath::Matrix forceFieldVolume2World;
 
         UINT nbWantedAttractors;
 
         UINT padding[3];
+    };
+
+    struct RenderForceFieldConstantBuffer
+    {
+        DirectX::SimpleMath::Vector3 size;
+
+        UINT padding[1];
     };
 
 #define MAX_ATTRACTORS 4 //also change it in the shader

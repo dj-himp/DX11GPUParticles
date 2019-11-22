@@ -36,7 +36,7 @@ namespace DemoParticles
             m_needEmit = true;
         }
 
-        m_emitterConstantBufferData.world = Matrix::CreateScale(8.0f, 8.0f, 8.0f);
+        m_emitterConstantBufferData.world = Matrix::CreateScale(m_cubeSize);
         m_emitterConstantBufferData.world *= Matrix::CreateRotationX(0.0f);
         m_emitterConstantBufferData.world *= Matrix::CreateRotationY(0.0f);
         m_emitterConstantBufferData.world *= Matrix::CreateRotationZ(0.0f);

@@ -3,6 +3,7 @@
 #include "IRenderable.h"
 
 #include "Content/ShaderStructures.h"
+#include "Common/FGAParser.h"
 
 namespace DemoParticles
 {
@@ -117,5 +118,7 @@ namespace DemoParticles
         //TEMP
         Microsoft::WRL::ComPtr<ID3D11Texture3D>             m_forceFieldTexture;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_forceFieldTextureSRV;
+        FGAParser::FGAContent                               m_content;
+
     };
 }

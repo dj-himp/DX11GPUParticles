@@ -18,8 +18,9 @@ cbuffer sceneConstantBuffer : register(b0)
 
     float time;
     float dt;
+    float rngSeed;
 
-    float padding;
+    //float padding;
 };
 
 struct BakedParticle

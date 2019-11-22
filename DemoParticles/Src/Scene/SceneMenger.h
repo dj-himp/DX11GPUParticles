@@ -11,6 +11,7 @@ namespace DemoParticles
     class RenderFullscreenQuad;
     class ComputeShader;
     class RenderParticles;
+    class RenderForceField;
 
     class SceneMenger : public IScene
     {
@@ -31,6 +32,7 @@ namespace DemoParticles
         std::unique_ptr<BakeModelParticles> m_bakeModelParticles;
         std::unique_ptr<RenderFullscreenQuad> m_fullScreenQuad;
         std::unique_ptr<RenderParticles> m_renderParticles;
+        std::unique_ptr<RenderForceField> m_renderForceField;
 
         std::unique_ptr<RenderTarget> m_rtBakePositions;
         std::unique_ptr<RenderTarget> m_rtBakeNormals;

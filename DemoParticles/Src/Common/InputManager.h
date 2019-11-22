@@ -14,6 +14,7 @@ namespace DemoParticles
         static bool isKeyDown(DirectX::Keyboard::Keys key);
         static DirectX::SimpleMath::Vector2 getMousePosition();
         static bool isLeftMouseButtonDown();
+        static bool isRightMouseButtonDown();
         static void update();
 
 

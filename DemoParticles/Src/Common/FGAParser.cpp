@@ -8,7 +8,7 @@ using namespace DirectX::SimpleMath;
 namespace DemoParticles
 {
 
-    Microsoft::WRL::ComPtr<ID3D11Texture3D> FGAParser::parse(const char* filename, const DX::DeviceResources* deviceResources)
+    void FGAParser::parse(const char* filename, FGAContent& content)
     {
         std::ifstream file;
         file.open(filename, std::ios::in);
@@ -18,8 +18,6 @@ namespace DemoParticles
         std::stringstream strStream;
         strStream << file.rdbuf();
         const std::string contentStr = strStream.str();
-
-        FGAContent content;
 
         char* currentParse = (char*)contentStr.c_str();
         currentParse = parseInt(currentParse, content.sizeX);
@@ -42,29 +40,6 @@ namespace DemoParticles
                 
         file.close();
 
-        D3D11_TEXTURE3D_DESC desc;
-        desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-        desc.CPUAccessFlags = 0;
-        desc.Width = content.sizeX;
-        desc.Height = content.sizeY;
-        desc.Depth = content.sizeZ;
-        desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-        desc.MipLevels = 1;
-        desc.Usage = D3D11_USAGE_DEFAULT;
-        desc.MiscFlags = 0;
-
-        D3D11_SUBRESOURCE_DATA data;
-        data.pSysMem = &content.forces[0];
-        data.SysMemPitch = content.sizeX;
-        data.SysMemSlicePitch = content.sizeY;
-
-        Microsoft::WRL::ComPtr<ID3D11Texture3D> texture;
-
-        DX::ThrowIfFailed(
-            deviceResources->GetD3DDevice()->CreateTexture3D(&desc, &data, &texture)
-        );
-
-        return texture;
     }
 
     char* FGAParser::parseFloat(char* buffer, float& outFloat)

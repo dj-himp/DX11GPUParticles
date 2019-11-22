@@ -18,6 +18,7 @@ struct PixelShaderInput
     float4 Normal : TEXCOORD2;
     float3 center : TEXCOORD3;
     float  radius : TEXCOORD4;
+    float2 uv : TEXCOORD5;
 };
 
 [maxvertexcount(4)]
@@ -70,7 +71,7 @@ void main(point GeometryShaderInput input[1], inout TriangleStream<PixelShaderIn
 
         //"rotate" the particle along it's direction
         up = normalize(cross(newNormal, direction));
-        right = normalize(cross(up, newNormal)) * max(1.0, length(input[0].velocity) * 20.0);
+        right = normalize(cross(up, newNormal)) * max(1.0, length(input[0].velocity) * 1.0);
         output.Normal = float4(newNormal, 0.0);
 
     }
@@ -86,21 +87,25 @@ void main(point GeometryShaderInput input[1], inout TriangleStream<PixelShaderIn
     // Upper left vertex
     output.oPosition = pos + particleSize * (-right + up);
     output.Position = mul(float4(output.oPosition, 1.0), viewProj);
+    output.uv = float2(0.0, 0.0);
     OutStream.Append(output);
 
     // Bottom left vertex
     output.oPosition = pos + particleSize * (-right - up);
     output.Position = mul(float4(output.oPosition, 1.0), viewProj);
+    output.uv = float2(0.0, 1.0);
     OutStream.Append(output);
 
     // Upper right vertex
     output.oPosition = pos + particleSize * (right + up);
     output.Position = mul(float4(output.oPosition, 1.0), viewProj);
+    output.uv = float2(1.0, 0.0);
     OutStream.Append(output);
 
     // Bottom right vertex
     output.oPosition = pos + particleSize * (right - up);
     output.Position = mul(float4(output.oPosition, 1.0), viewProj);
+    output.uv = float2(1.0, 1.0);
     OutStream.Append(output);
 
     OutStream.RestartStrip();

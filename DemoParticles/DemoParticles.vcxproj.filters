@@ -171,6 +171,12 @@
     <ClCompile Include="Src\Content\ParticleEmitterCube.cpp">
       <Filter>Src\Content</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Content\RenderForceField.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Content\ParticleEmitterPoint.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\DeviceResources.h">
@@ -326,6 +332,12 @@
     <ClInclude Include="Src\Content\ParticleEmitterCube.h">
       <Filter>Src\Content</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Content\RenderForceField.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\ParticleEmitterPoint.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -424,6 +436,18 @@
       <Filter>Data\Shaders\Particles</Filter>
     </FxCompile>
     <FxCompile Include="Data\Shaders\Particles\EmitParticlesSphere_CS.hlsl">
+      <Filter>Data\Shaders\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\RenderForceField_VS.hlsl">
+      <Filter>Data\Shaders\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\RenderForceField_GS.hlsl">
+      <Filter>Data\Shaders\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\RenderForceField_PS.hlsl">
+      <Filter>Data\Shaders\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\EmitParticlesPoint_CS.hlsl">
       <Filter>Data\Shaders\Particles</Filter>
     </FxCompile>
   </ItemGroup>
