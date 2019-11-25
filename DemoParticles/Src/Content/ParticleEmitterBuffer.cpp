@@ -8,7 +8,7 @@ namespace DemoParticles
     ParticleEmitterBuffer::ParticleEmitterBuffer(const DX::DeviceResources* deviceResources)
         : IParticleEmitter(deviceResources)
     {
-
+        m_emitterConstantBufferData.maxSpawn = 200000;
     }
 
     void ParticleEmitterBuffer::createDeviceDependentResources()
@@ -24,15 +24,24 @@ namespace DemoParticles
 
     void ParticleEmitterBuffer::update(DX::StepTimer const& timer)
     {
-        m_emitterConstantBufferData.maxSpawn = 2000000;
+        if (!m_enabled)
+        {
+            return;
+        }
+
     }
 
     void ParticleEmitterBuffer::emit()
     {
-        if (m_hasEmitted)
+        if (!m_enabled)
         {
             return;
         }
+
+        /*if (m_hasEmitted)
+        {
+            return;
+        }*/
 
         if (m_bufferUAV == nullptr)
         {
@@ -61,4 +70,17 @@ namespace DemoParticles
 
         m_hasEmitted = true;
     }
+
+    void ParticleEmitterBuffer::renderImGui()
+    {
+        if (ImGui::TreeNode("Buffer emitter"))
+        {
+            ImGui::Checkbox("Enabled", &m_enabled);
+            ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1);
+            //ImGui::DragFloat3("Position", m_imGuiEmitterPosition, 0.01f);
+
+            ImGui::TreePop();
+        }
+    }
+
 }

@@ -250,7 +250,7 @@ namespace DemoParticles
         //m_mengerRenderer->render();
 
         m_renderParticles->render();
-        //m_renderForceField->render();
+        m_renderForceField->render();
 
         //m_fullScreenQuad->setTexture(m_computePackParticle->getRenderTarget(0)->getShaderResourceView());
         //m_fullScreenQuad->setTexture(m_rtBakePositions->getShaderResourceView().Get());
@@ -258,4 +258,10 @@ namespace DemoParticles
 
 
     }
+
+    void SceneMenger::renderImGui()
+    {
+        m_renderParticles->renderImGui();
+    }
+
 }

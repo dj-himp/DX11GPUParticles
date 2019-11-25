@@ -127,7 +127,6 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             particleForce += normalize(direction) * (a.gravity * p.mass * a.mass) / (max(1.0, distance * distance));
         }
 
-        bool addForceField = false;
         if (addForceField)
         {
             float3 forceFieldUV = mul(float4(p.position.xyz, 1.0), forceFieldWorld2Volume).xyz;
@@ -137,7 +136,6 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
         }
 
         //TEST Aizawa attractor
-        bool addAizama = true;
         if(addAizama)
         {
             float a = 0.41;
@@ -154,28 +152,26 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             //p.velocity.z = c + a * p.position.z - (pow(p.position.z, 3) / 3.0) - (p.position.x * p.position.x + p.position.y * p.position.y) * (1.0 + e * p.position.z) + f * p.position.z * p.position.x * p.position.x * p.position.x;
         }
 
-        bool addCurlNoise = false;
         if (addCurlNoise)
         {
             //particleForce.xyz += curlNoise(p.velocity.xyz); // * 10.0;
-            //particleForce.xyz += curlNoise(p.position.xyz);// * 10.0;
-            particleForce.xyz += curlNoise(particleForce.xyz);// * 10.0;
+            particleForce.xyz += curlNoise(p.position.xyz);// * 10.0;
+            //particleForce.xyz += curlNoise(particleForce.xyz);// * 10.0;
         }
         
-    //Add drag
-        bool addDrag = false;
+        //Add drag
         if (addDrag)
         {
-            float dragCoefficient = 0.0001;
-            particleForce -= dragCoefficient * p.velocity;
+            float dragCoefficient = 0.001;
+            particleForce -= max(float4(0.0, 0.0, 0.0, 0.0), dragCoefficient * p.velocity);
         }
 
         float3 acceleration = particleForce.xyz / p.mass;
         p.velocity.xyz += acceleration * dt;
     
         //TEMP
-        float cap = 10.0;
-        p.velocity.xyz = clamp(p.velocity.xyz, float3(-cap, -cap, -cap), float3(cap, cap, cap));
+        //float cap = 1.0;
+        //p.velocity.xyz = clamp(p.velocity.xyz, float3(-cap, -cap, -cap), float3(cap, cap, cap));
 
         p.position.xyz += p.velocity.xyz * dt;
 

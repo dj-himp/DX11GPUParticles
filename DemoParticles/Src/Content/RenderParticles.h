@@ -25,6 +25,7 @@ namespace DemoParticles
 
         virtual void update(DX::StepTimer const& timer, Camera* camera = nullptr) override;
         virtual void render() override;
+        virtual void renderImGui() override;
 
         void setShaderResourceViews(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> positionView, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> normalView);
         void setBakedParticleUAV(Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> backedParticleUAV) { m_bakedParticlesUAV = backedParticleUAV; }

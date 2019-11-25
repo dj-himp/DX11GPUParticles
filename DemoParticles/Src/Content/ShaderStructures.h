@@ -81,7 +81,11 @@ namespace DemoParticles
     {
         DirectX::SimpleMath::Vector4 color;
         UINT particleOrientation;
-        
+        UINT addForceField;
+        UINT addAizama;
+        UINT addCurlNoise;
+        UINT addDrag;
+
         UINT padding[3];
     };
 

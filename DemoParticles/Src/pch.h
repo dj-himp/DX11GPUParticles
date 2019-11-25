@@ -71,6 +71,10 @@
 #include "GlobalSettings.h"
 #include "Common/DirectXHelper.h"
 
+#include "imgui/imgui.h"
+#include "Gui/imgui_impl_win32.h"
+#include "Gui/imgui_impl_dx11.h"
+
 #include <DDSTextureLoader.h>
 
 namespace DX

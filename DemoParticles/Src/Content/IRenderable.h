@@ -24,6 +24,7 @@ namespace DemoParticles
 
         virtual void update(DX::StepTimer const& timer, Camera* camera = nullptr) = 0;
         virtual void render() = 0;
+        virtual void renderImGui() {}
 
     protected:
 

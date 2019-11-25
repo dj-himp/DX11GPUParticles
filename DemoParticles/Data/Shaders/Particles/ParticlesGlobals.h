@@ -22,6 +22,10 @@ cbuffer renderParticlesGlobals : register(b1)
 {
     float4 color;
     uint orientation;
+    bool addForceField;
+    bool addAizama;
+    bool addCurlNoise;
+    bool addDrag;
 
     uint3 particlesGlobalPadding;
 }

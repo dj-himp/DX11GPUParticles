@@ -10,7 +10,7 @@ namespace DemoParticles
     ParticleEmitterPoint::ParticleEmitterPoint(const DX::DeviceResources* deviceResources)
         : IParticleEmitter(deviceResources)
     {
-        
+        m_emitterConstantBufferData.maxSpawn = 1000;
     }
 
     void ParticleEmitterPoint::createDeviceDependentResources()
@@ -26,6 +26,11 @@ namespace DemoParticles
 
     void ParticleEmitterPoint::update(DX::StepTimer const& timer)
     {
+        if (!m_enabled)
+        {
+            return;
+        }
+
         //false to reset if the previous render emit particles
         m_needEmit = false;
 
@@ -37,14 +42,13 @@ namespace DemoParticles
         }
 
         //m_emitterConstantBufferData.position = DX::toVector4(camera->getPosition() + camera->getForward() * 4.0f);
-        m_emitterConstantBufferData.position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
-        //m_emitterConstantBufferData.position = Vector4(cos(timer.GetTotalSeconds() * 0.5f) * 3.0f, 0.0f, sin(timer.GetTotalSeconds() * 0.5f) * 3.0f, 1.0f);       
-        m_emitterConstantBufferData.maxSpawn = 1000;
+        m_emitterConstantBufferData.position = Vector4(m_imGuiEmitterPosition[0], m_imGuiEmitterPosition[1], m_imGuiEmitterPosition[2], 1.0f);
+        //m_emitterConstantBufferData.position = Vector4(cos(timer.GetTotalSeconds() * 0.5f) * 3.0f, 0.0f, sin(timer.GetTotalSeconds() * 0.5f) * 3.0f, 1.0f);
     }
 
     void ParticleEmitterPoint::emit()
     {
-        if (!m_needEmit)
+        if (!m_enabled || !m_needEmit)
         {
             return;
         }
@@ -58,4 +62,17 @@ namespace DemoParticles
         m_emitParticles->start(DX::align(m_emitterConstantBufferData.maxSpawn, 1024) / 1024, 1, 1);
         m_emitParticles->end();
     }
+
+    void ParticleEmitterPoint::renderImGui()
+    {
+        if (ImGui::TreeNode("Point emitter"))
+        {
+            ImGui::Checkbox("Enabled", &m_enabled);
+            ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1);
+            ImGui::DragFloat3("Position", m_imGuiEmitterPosition, 0.01f);
+
+            ImGui::TreePop();
+        }
+    }
+
 }

@@ -11,6 +11,7 @@ namespace DemoParticles
         : IParticleEmitter(deviceResources)
     {
         m_emitDelay = 0.1f;
+        m_emitterConstantBufferData.maxSpawn = 200000;
     }
 
     void ParticleEmitterCube::createDeviceDependentResources()
@@ -26,6 +27,11 @@ namespace DemoParticles
 
     void ParticleEmitterCube::update(DX::StepTimer const& timer)
     {
+        if (!m_enabled)
+        {
+            return;
+        }
+
         //false to reset if the previous render emit particles
         m_needEmit = false;
 
@@ -41,12 +47,13 @@ namespace DemoParticles
         m_emitterConstantBufferData.world *= Matrix::CreateRotationY(0.0f);
         m_emitterConstantBufferData.world *= Matrix::CreateRotationZ(0.0f);
         m_emitterConstantBufferData.world *= Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
-        m_emitterConstantBufferData.maxSpawn = 200000;
+        m_emitterConstantBufferData.world = m_emitterConstantBufferData.world.Transpose();
+        
     }
 
     void ParticleEmitterCube::emit()
     {
-        if (!m_needEmit)
+        if (!m_enabled || !m_needEmit)
         {
             return;
         }
@@ -60,4 +67,17 @@ namespace DemoParticles
         m_emitParticles->start(DX::align(m_emitterConstantBufferData.maxSpawn, 1024) / 1024, 1, 1);
         m_emitParticles->end();
     }
+
+    void ParticleEmitterCube::renderImGui()
+    {
+        if (ImGui::TreeNode("Cube emitter"))
+        {
+            ImGui::Checkbox("Enabled", &m_enabled);
+            ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1);
+            //ImGui::DragFloat3("Position", m_imGuiEmitterPosition, 0.01f);
+
+            ImGui::TreePop();
+        }
+    }
+
 }

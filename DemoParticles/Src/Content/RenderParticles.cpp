@@ -372,6 +372,53 @@ namespace DemoParticles
         m_deviceResources->PIXEndEvent();
     }
 
+    void RenderParticles::renderImGui()
+    {
+        if (ImGui::CollapsingHeader("Emitters"))
+        {
+            for (auto&& emitter : m_particleEmitters)
+            {
+                emitter->renderImGui();
+            }
+        }
+
+        if (ImGui::CollapsingHeader("Simulation"))
+        {
+            if (ImGui::Button("Reset"))
+            {
+                resetParticles();
+            }
+
+            if (ImGui::TreeNode("ForceField"))
+            {
+                ImGui::Checkbox("Enabled", (bool*)&m_particlesGlobalSettingsBufferData.addForceField);
+
+                ImGui::TreePop();
+            }
+
+            if (ImGui::TreeNode("Aizama attractor"))
+            {
+                ImGui::Checkbox("Enabled", (bool*)&m_particlesGlobalSettingsBufferData.addAizama);
+
+                ImGui::TreePop();
+            }
+
+            if (ImGui::TreeNode("Curl noise"))
+            {
+                ImGui::Checkbox("Enabled", (bool*)&m_particlesGlobalSettingsBufferData.addCurlNoise);
+
+                ImGui::TreePop();
+            }
+
+            if (ImGui::TreeNode("Drag"))
+            {
+                ImGui::Checkbox("Enabled", (bool*)&m_particlesGlobalSettingsBufferData.addDrag);
+
+                ImGui::TreePop();
+            }
+        }
+    }
+
     void RenderParticles::setShaderResourceViews(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> positionView, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> normalView)
     {
         m_positionView = positionView;
@@ -489,30 +536,30 @@ namespace DemoParticles
 
     void RenderParticles::initEmitters()
     {
-        /*std::unique_ptr<ParticleEmitterSphere> sphereEmitter = std::make_unique<ParticleEmitterSphere>(m_deviceResources);
+        std::unique_ptr<ParticleEmitterSphere> sphereEmitter = std::make_unique<ParticleEmitterSphere>(m_deviceResources);
         sphereEmitter->createDeviceDependentResources();
 
         m_particleEmitters.push_back(std::move(sphereEmitter));
-        */
+        
 
         std::unique_ptr<ParticleEmitterPoint> pointEmitter = std::make_unique<ParticleEmitterPoint>(m_deviceResources);
         pointEmitter->createDeviceDependentResources();
 
         m_particleEmitters.push_back(std::move(pointEmitter));
         
-        /*std::unique_ptr<ParticleEmitterCube> cubeEmitter = std::make_unique<ParticleEmitterCube>(m_deviceResources);
+        std::unique_ptr<ParticleEmitterCube> cubeEmitter = std::make_unique<ParticleEmitterCube>(m_deviceResources);
         cubeEmitter->createDeviceDependentResources();
         cubeEmitter->setCubeSize(Vector3(m_content.sizeX, m_content.sizeY, m_content.sizeZ));
 
         m_particleEmitters.push_back(std::move(cubeEmitter));
-        */
+        
 
-        /*std::unique_ptr<ParticleEmitterBuffer> bufferEmitter = std::make_unique<ParticleEmitterBuffer>(m_deviceResources);
+        std::unique_ptr<ParticleEmitterBuffer> bufferEmitter = std::make_unique<ParticleEmitterBuffer>(m_deviceResources);
         bufferEmitter->createDeviceDependentResources();
         bufferEmitter->setBuffer(m_bakedParticlesUAV);
         bufferEmitter->setIndirectArgsBuffer(m_bakedIndirectArgsBuffer);
 
-        m_particleEmitters.push_back(std::move(bufferEmitter));*/
+        m_particleEmitters.push_back(std::move(bufferEmitter));
     }
 
 }

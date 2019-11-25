@@ -25,6 +25,7 @@ namespace DemoParticles
 
         virtual void update(DX::StepTimer const& timer, Camera* camera = nullptr) override;
         virtual void render() override;
+        virtual void renderImGui() override;
 
     private:
 

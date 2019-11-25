@@ -5,10 +5,6 @@
 #include "pch.h"
 #include "Game.h"
 
-#include "imgui/imgui.h"
-#include "Gui/imgui_impl_win32.h"
-#include "Gui/imgui_impl_dx11.h"
-
 //#include "Content/SampleFpsTextRenderer.h"
 #include "Camera/CameraControllerFPS.h"
 #include "Common/InputManager.h"
@@ -307,14 +303,19 @@ void Game::RenderImGui()
         ImGui::ShowDemoWindow(&show_demo_window);
     */
     ImGui::Begin("Particles globals");
-
-    ImGui::Checkbox("Disable culling", &ParticlesGlobals::g_cullNone);
-    const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
-    ImGui::Combo("Particles orientation", &ParticlesGlobals::g_particlesOrientation, orientationItems, 3);
-    const char* items[] = { "Opaque", "NonPremultiplied", "Additive" };
-    ImGui::Combo("Blend Mode", &ParticlesGlobals::g_blendMode, items, 3);
     
-    ImGui::ColorPicker4("Particles color", ParticlesGlobals::g_particlesColor);
+    if (ImGui::CollapsingHeader("Globals"))
+    {
+        ImGui::Checkbox("Disable culling", &ParticlesGlobals::g_cullNone);
+        const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
+        ImGui::Combo("Particles orientation", &ParticlesGlobals::g_particlesOrientation, orientationItems, 3);
+        const char* items[] = { "Opaque", "NonPremultiplied", "Additive" };
+        ImGui::Combo("Blend Mode", &ParticlesGlobals::g_blendMode, items, 3);
+
+        ImGui::ColorPicker4("Particles color", ParticlesGlobals::g_particlesColor);
+    }
+
+    m_sceneMenger->renderImGui();
 
     ImGui::End();
 

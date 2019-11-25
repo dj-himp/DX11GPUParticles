@@ -16,6 +16,7 @@ namespace DemoParticles
 
         virtual void update(DX::StepTimer const& timer) override;
         virtual void emit() override;
+        virtual void renderImGui() override;
 
         void setCubeSize(DirectX::SimpleMath::Vector3 cubeSize) { m_cubeSize = cubeSize; }
 
