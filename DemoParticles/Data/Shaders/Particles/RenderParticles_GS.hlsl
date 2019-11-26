@@ -8,6 +8,7 @@ struct GeometryShaderInput
     float4 Color : TEXCOORD1;
     float4 Normal : TEXCOORD2;
     float3 velocity : TEXCOORD3;
+    uint orientation : TEXCOORD4;
 };
 
 struct PixelShaderInput
@@ -45,19 +46,19 @@ void main(point GeometryShaderInput input[1], inout TriangleStream<PixelShaderIn
     float3 right;
     float3 up;
     
-    if (orientation == PARTICLE_ORIENTATION_BILLBOARD)
+    if (input[0].orientation == PARTICLE_ORIENTATION_BILLBOARD)
     {
         //Camera Plane
         right = view._m00_m10_m20;
         up = view._m01_m11_m21;
     }
-    else if(orientation == PARTICLE_ORIENTATION_BACKED_NORMAL)
+    else if (input[0].orientation == PARTICLE_ORIENTATION_BACKED_NORMAL)
     {
         //orient the particle to the normal;
         up = normalize(cross(input[0].Normal.xyz, float3(1.0, 0.0, 0.0)));
         right = normalize(cross(up, input[0].Normal.xyz));
     }
-    else if (orientation == PARTICLE_ORIENTATION_DIRECTION)
+    else if (input[0].orientation == PARTICLE_ORIENTATION_DIRECTION)
     {
         //orient the particle perpendicullar to move direction;
         float3 direction = normalize(input[0].velocity);

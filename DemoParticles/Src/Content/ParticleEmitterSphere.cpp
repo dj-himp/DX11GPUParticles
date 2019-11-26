@@ -11,6 +11,11 @@ namespace DemoParticles
         : IParticleEmitter(deviceResources)
     {
         m_emitterConstantBufferData.maxSpawn = 1000;
+        m_emitterConstantBufferData.particleOrientation = 0;
+        m_emitterConstantBufferData.particlesBaseSpeed = 1.0f;
+        m_emitterConstantBufferData.particlesLifeSpan = 3.0f;
+        m_emitterConstantBufferData.particlesMass = 1.0f;
+        m_emitterConstantBufferData.color = Color(0.5f, 0.2f, 0.2f, 1.0f);
     }
 
     void ParticleEmitterSphere::createDeviceDependentResources()
@@ -70,6 +75,12 @@ namespace DemoParticles
             ImGui::Checkbox("Enabled", &m_enabled);
             ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1);
             //ImGui::DragFloat3("Position", m_imGuiEmitterPosition, 0.01f);
+            const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
+            ImGui::Combo("Particles orientation", (int*)&m_emitterConstantBufferData.particleOrientation, orientationItems, 3);
+            ImGui::DragFloat("Base speed", &m_emitterConstantBufferData.particlesBaseSpeed, 0.1f, 0.0f, 100.0f);
+            ImGui::DragFloat("LifeSpan", &m_emitterConstantBufferData.particlesLifeSpan, 0.1f, -1.0f, 100.0f);
+            ImGui::DragFloat("Mass", &m_emitterConstantBufferData.particlesMass, 0.1f, 0.0f, 100.0f);
+            ImGui::ColorEdit4("Color", (float*)&m_emitterConstantBufferData.color);
 
             ImGui::TreePop();
         }

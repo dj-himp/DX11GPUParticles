@@ -236,6 +236,48 @@
     <ClInclude Include="Data\Shaders\Noises\SimplexNoise2D.h" />
     <ClInclude Include="Data\Shaders\Particles\ParticlesGlobals.h" />
     <ClInclude Include="Data\Shaders\Noises\SimplexNoise3D.h" />
+    <ClInclude Include="Extern\assimp\ai_assert.h" />
+    <ClInclude Include="Extern\assimp\anim.h" />
+    <ClInclude Include="Extern\assimp\camera.h" />
+    <ClInclude Include="Extern\assimp\cexport.h" />
+    <ClInclude Include="Extern\assimp\cfileio.h" />
+    <ClInclude Include="Extern\assimp\cimport.h" />
+    <ClInclude Include="Extern\assimp\color4.h" />
+    <ClInclude Include="Extern\assimp\Compiler\poppack1.h" />
+    <ClInclude Include="Extern\assimp\Compiler\pstdint.h" />
+    <ClInclude Include="Extern\assimp\Compiler\pushpack1.h" />
+    <ClInclude Include="Extern\assimp\config.h" />
+    <ClInclude Include="Extern\assimp\DefaultIOStream.h" />
+    <ClInclude Include="Extern\assimp\DefaultIOSystem.h" />
+    <ClInclude Include="Extern\assimp\DefaultLogger.hpp" />
+    <ClInclude Include="Extern\assimp\Defines.h" />
+    <ClInclude Include="Extern\assimp\defs.h" />
+    <ClInclude Include="Extern\assimp\Exporter.hpp" />
+    <ClInclude Include="Extern\assimp\Importer.hpp" />
+    <ClInclude Include="Extern\assimp\importerdesc.h" />
+    <ClInclude Include="Extern\assimp\IOStream.hpp" />
+    <ClInclude Include="Extern\assimp\IOSystem.hpp" />
+    <ClInclude Include="Extern\assimp\light.h" />
+    <ClInclude Include="Extern\assimp\Logger.hpp" />
+    <ClInclude Include="Extern\assimp\LogStream.hpp" />
+    <ClInclude Include="Extern\assimp\material.h" />
+    <ClInclude Include="Extern\assimp\matrix3x3.h" />
+    <ClInclude Include="Extern\assimp\matrix4x4.h" />
+    <ClInclude Include="Extern\assimp\mesh.h" />
+    <ClInclude Include="Extern\assimp\metadata.h" />
+    <ClInclude Include="Extern\assimp\NullLogger.hpp" />
+    <ClInclude Include="Extern\assimp\port\AndroidJNI\AndroidJNIIOSystem.h" />
+    <ClInclude Include="Extern\assimp\postprocess.h" />
+    <ClInclude Include="Extern\assimp\ProgressHandler.hpp" />
+    <ClInclude Include="Extern\assimp\quaternion.h" />
+    <ClInclude Include="Extern\assimp\scene.h" />
+    <ClInclude Include="Extern\assimp\SceneCombiner.h" />
+    <ClInclude Include="Extern\assimp\texture.h" />
+    <ClInclude Include="Extern\assimp\types.h" />
+    <ClInclude Include="Extern\assimp\vector2.h" />
+    <ClInclude Include="Extern\assimp\vector3.h" />
+    <ClInclude Include="Extern\assimp\version.h" />
+    <ClInclude Include="Extern\Json\json.hpp" />
     <ClInclude Include="Src\Content\ParticleEmitterPoint.h" />
     <ClInclude Include="Src\Content\RenderForceField.h" />
     <ClInclude Include="Src\Common\FGAParser.h" />
@@ -332,6 +374,15 @@
     <CopyFileToFolders Include="Data\ForceFields\VF_Wind.fga">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <None Include="Extern\assimp\.editorconfig" />
+    <None Include="Extern\assimp\color4.inl" />
+    <None Include="Extern\assimp\config.h.in" />
+    <None Include="Extern\assimp\material.inl" />
+    <None Include="Extern\assimp\matrix3x3.inl" />
+    <None Include="Extern\assimp\matrix4x4.inl" />
+    <None Include="Extern\assimp\quaternion.inl" />
+    <None Include="Extern\assimp\vector2.inl" />
+    <None Include="Extern\assimp\vector3.inl" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

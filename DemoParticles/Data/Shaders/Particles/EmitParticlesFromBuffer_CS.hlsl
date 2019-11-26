@@ -3,8 +3,14 @@
 
 cbuffer emitterConstantBuffer : register(b4)
 {
+    float4 color;
+    
     uint emitterMaxSpawn;
-
+    uint particleOrientation;
+    float particlesBaseSpeed;
+    float particlesLifeSpan;
+    float particlesMass;
+    
     uint3 emitterPadding;
 };
 
@@ -24,14 +30,18 @@ void main(uint3 id : SV_DispatchThreadID)
         p.position = bp.position;
 
         //p.velocity = bp.normal * 0.01f;
-        p.velocity = float4(0.0, 0.0, 0.0, 1.0);  
+        //useless at the moment
+        p.velocity = particlesBaseSpeed * float4(0.0, 0.0, 0.0, 1.0);
         
         p.normal = bp.normal;
 
-        p.lifeSpan = 2.0;//-1.0; //5.0;
-        p.age = 1.0;
-        p.mass = 0.1;
+        p.lifeSpan = particlesLifeSpan;
+        p.age = abs(p.lifeSpan); //abs() so if lifetime is infinite ( < 0.0) it's still has a life
+        p.mass = particlesMass;
 
+        p.orientation = particleOrientation;
+        p.color = color;
+        
         uint index = deadListBuffer.Consume();
         particleList[index] = p;
 

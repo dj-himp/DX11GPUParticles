@@ -6,8 +6,14 @@
 cbuffer emitterConstantBuffer : register(b4)
 {
     float4 emitterPosition;
+    float4 color;
+    
     uint emitterMaxSpawn;
-
+    uint particleOrientation;
+    float particlesBaseSpeed;
+    float particlesLifeSpan;
+    float particlesMass;
+    
     uint3 emitterPadding;
 };
 
@@ -31,15 +37,15 @@ void main(uint3 id : SV_DispatchThreadID)
         p.position.xyz += position;
         p.position.w = 1.0;
 
-        //p.velocity = emitterDirection;
-        //p.velocity = float4(0.0, 0.0, 0.0, 0.0);
-        p.velocity = float4(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, 0.0);
-        //p.velocity = p.velocity * 2.0 - 1.0;
+        p.velocity = particlesBaseSpeed * normalize(float4(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, 0.0));
         
-        p.lifeSpan = 10.0;// * rand_xorshift_normalized();
-        p.age = p.lifeSpan;
-        p.mass = 1.0;
+        p.lifeSpan = particlesLifeSpan * rand_xorshift_normalized();
+        p.age = abs(p.lifeSpan); //abs() so if lifetime is infinite ( < 0.0) it's still has a life
+        p.mass = particlesMass;
 
+        p.orientation = particleOrientation;
+        p.color = color;
+        
         uint index = deadListBuffer.Consume();
         particleList[index] = p;
 

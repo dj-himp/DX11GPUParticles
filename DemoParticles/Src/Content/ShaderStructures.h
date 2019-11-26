@@ -40,7 +40,28 @@ namespace DemoParticles
     struct EmitterSphereConstantBuffer
     {
         DirectX::SimpleMath::Vector4 position;
+        DirectX::SimpleMath::Color color;
+
         UINT maxSpawn;
+        UINT particleOrientation;
+        float particlesBaseSpeed;
+        float particlesLifeSpan;
+        float particlesMass;
+
+        UINT padding[3];
+
+    };
+
+    struct EmitterPointConstantBuffer
+    {
+        DirectX::SimpleMath::Vector4 position;
+        DirectX::SimpleMath::Color color;
+
+        UINT maxSpawn;
+        UINT particleOrientation;
+        float particlesBaseSpeed;
+        float particlesLifeSpan;
+        float particlesMass;
 
         UINT padding[3];
 
@@ -49,7 +70,13 @@ namespace DemoParticles
     struct EmitterCubeConstantBuffer
     {
         DirectX::SimpleMath::Matrix world;
+        DirectX::SimpleMath::Color color;
+
         UINT maxSpawn;
+        UINT particleOrientation;
+        float particlesBaseSpeed;
+        float particlesLifeSpan;
+        float particlesMass;
 
         UINT padding[3];
 
@@ -57,7 +84,13 @@ namespace DemoParticles
 
     struct EmitterFromBufferConstantBuffer
     {
+        DirectX::SimpleMath::Color color;
+
         UINT maxSpawn;
+        UINT particleOrientation;
+        float particlesBaseSpeed;
+        float particlesLifeSpan;
+        float particlesMass;
 
         UINT padding[3];
 
@@ -79,14 +112,9 @@ namespace DemoParticles
 
     struct ParticlesGlobalsConstantBuffer
     {
-        DirectX::SimpleMath::Vector4 color;
-        UINT particleOrientation;
-        UINT addForceField;
-        UINT addAizama;
-        UINT addCurlNoise;
-        UINT addDrag;
-
-        UINT padding[3];
+        //DirectX::SimpleMath::Vector4 color;
+        
+        UINT padding[4];
     };
 
     struct SimulateParticlesConstantBuffer
@@ -95,9 +123,24 @@ namespace DemoParticles
         DirectX::SimpleMath::Matrix forceFieldWorld2Volume;
         DirectX::SimpleMath::Matrix forceFieldVolume2World;
 
+        DirectX::SimpleMath::Vector4 aizamaParams1;
+        DirectX::SimpleMath::Vector2 aizamaParams2;
+        UINT p[2];
+        DirectX::SimpleMath::Vector3 lorenzParams1;
+        UINT p2[1];
+
+        float dragCoefficient;
+        float curlCoefficient;
+
         UINT nbWantedAttractors;
 
-        UINT padding[3];
+        UINT addForceField;
+        UINT addAizama;
+        UINT addLorenz;
+        UINT addCurlNoise;
+        UINT addDrag;
+
+        //UINT padding[3];
     };
 
     struct RenderForceFieldConstantBuffer
@@ -105,6 +148,25 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector3 size;
 
         UINT padding[1];
+    };
+
+    struct Particle
+    {
+        DirectX::SimpleMath::Vector4 position;
+        DirectX::SimpleMath::Vector4 normal;
+        DirectX::SimpleMath::Vector4 velocity;
+        DirectX::SimpleMath::Color color;
+
+        float lifeSpan;
+        float age;
+        float mass;
+        UINT  orientation;
+    };
+
+    struct ParticleIndexElement
+    {
+        float distance; //squared distance from camera
+        float index; //index in the particle buffer
     };
 
 #define MAX_ATTRACTORS 4 //also change it in the shader

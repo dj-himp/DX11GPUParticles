@@ -17,6 +17,7 @@ namespace DemoParticles
         virtual void update(DX::StepTimer const& timer) override;
         virtual void emit() override;
         virtual void renderImGui() override;
+        virtual void reset() override;
 
         void setBuffer(Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> bufferUAV) { m_bufferUAV = bufferUAV; }
 

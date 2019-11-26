@@ -21,6 +21,11 @@ namespace DemoParticles
     RenderParticles::RenderParticles(const DX::DeviceResources* deviceResources)
         : IRenderable(deviceResources)
     {
+        m_simulateParticlesBufferData.aizamaParams1 = Vector4(0.41f, 0.45f, 0.27f, 6.5f);
+        m_simulateParticlesBufferData.aizamaParams2 = Vector2(0.75f, 3.0f);
+        m_simulateParticlesBufferData.lorenzParams1 = Vector3(10.0f, 8.0f/3.0f, 10.0f);
+        m_simulateParticlesBufferData.dragCoefficient = 0.001f;
+        m_simulateParticlesBufferData.curlCoefficient = 1.0f;
     }
 
     void RenderParticles::init()
@@ -272,9 +277,6 @@ namespace DemoParticles
         if (!camera)
             assert(0);
 
-        m_particlesGlobalSettingsBufferData.particleOrientation = ParticlesGlobals::g_particlesOrientation;
-        m_particlesGlobalSettingsBufferData.color = Vector4(ParticlesGlobals::g_particlesColor);
-
         Vector3 volumeOffset = m_content.boundMin;
         Vector3 volumeScale = m_content.boundMax - m_content.boundMin;
         Matrix volume2World = Matrix::CreateScale(volumeScale * 0.01f) * Matrix::CreateTranslation(volumeOffset * 0.01f);
@@ -391,28 +393,42 @@ namespace DemoParticles
 
             if (ImGui::TreeNode("ForceField"))
             {
-                ImGui::Checkbox("Enabled", (bool*)&m_particlesGlobalSettingsBufferData.addForceField);
+                ImGui::Checkbox("Enabled", (bool*)&m_simulateParticlesBufferData.addForceField);
 
                 ImGui::TreePop();
             }
 
             if (ImGui::TreeNode("Aizama attractor"))
             {
-                ImGui::Checkbox("Enabled", (bool*)&m_particlesGlobalSettingsBufferData.addAizama);
+                ImGui::Checkbox("Enabled", (bool*)&m_simulateParticlesBufferData.addAizama);
+
+                ImGui::DragFloat4("abcd", (float*)&m_simulateParticlesBufferData.aizamaParams1, 0.1f);
+                ImGui::DragFloat2("ef", (float*)&m_simulateParticlesBufferData.aizamaParams2, 0.1f);
+
+                ImGui::TreePop();
+            }
+
+            if (ImGui::TreeNode("Lorenz attractor"))
+            {
+                ImGui::Checkbox("Enabled", (bool*)&m_simulateParticlesBufferData.addLorenz);
+
+                ImGui::DragFloat3("abc", (float*)&m_simulateParticlesBufferData.lorenzParams1, 0.1f);
 
                 ImGui::TreePop();
             }
 
             if (ImGui::TreeNode("Curl noise"))
             {
-                ImGui::Checkbox("Enabled", (bool*)&m_particlesGlobalSettingsBufferData.addCurlNoise);
+                ImGui::Checkbox("Enabled", (bool*)&m_simulateParticlesBufferData.addCurlNoise);
+                ImGui::DragFloat("Coefficient", &m_simulateParticlesBufferData.curlCoefficient, 0.1f);
 
                 ImGui::TreePop();
             }
 
             if (ImGui::TreeNode("Drag"))
             {
-                ImGui::Checkbox("Enabled", (bool*)&m_particlesGlobalSettingsBufferData.addDrag);
+                ImGui::Checkbox("Enabled", (bool*)&m_simulateParticlesBufferData.addDrag);
+                ImGui::DragFloat("Coefficient", &m_simulateParticlesBufferData.dragCoefficient, 0.001f, 0.0f);
 
                 ImGui::TreePop();
             }
@@ -427,6 +443,11 @@ namespace DemoParticles
 
     void RenderParticles::resetParticles()
     {
+        for (auto&& emitter : m_particleEmitters)
+        {
+            emitter->reset();
+        }
+
         auto context = m_deviceResources->GetD3DDeviceContext();
 
         UINT initialCount[] = { 0 };

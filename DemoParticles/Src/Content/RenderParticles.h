@@ -39,23 +39,6 @@ namespace DemoParticles
         void initAttractors();
         void initEmitters();
 
-        struct Particle
-        {
-            DirectX::SimpleMath::Vector4 position;
-            DirectX::SimpleMath::Vector4 normal;
-            DirectX::SimpleMath::Vector4 velocity;
-            
-            float lifeSpan;
-            float age;
-            float mass;
-        };
-
-        struct ParticleIndexElement
-        {
-            float distance; //squared distance from camera
-            float index; //index in the particle buffer
-        };
-
         std::unique_ptr<Shader>     m_moveShader;
 
         Microsoft::WRL::ComPtr<ID3D11Buffer>    m_vertexBuffer;

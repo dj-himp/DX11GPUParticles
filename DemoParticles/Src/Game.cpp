@@ -20,12 +20,15 @@
 #include "Scene/SceneMenger.h"
 #include "Common/RenderStatesHelper.h"
 
+#include <iomanip>
+
 extern void ExitGame();
 
 using namespace DirectX;
 using namespace DemoParticles;
 
 using Microsoft::WRL::ComPtr;
+using json = nlohmann::json;
 
 Game::Game() noexcept(false)
 {
@@ -304,15 +307,22 @@ void Game::RenderImGui()
     */
     ImGui::Begin("Particles globals");
     
+    if (ImGui::Button("Save"))
+    {
+        json saveFile;
+        saveFile["Global"]["Disable culling"] = ParticlesGlobals::g_cullNone;
+        saveFile["Global"]["Blend Mode"] = ParticlesGlobals::g_blendMode;
+
+        std::ofstream file("save.json");
+        file << std::setw(4) << saveFile;
+        file.close();
+    }
+
     if (ImGui::CollapsingHeader("Globals"))
     {
         ImGui::Checkbox("Disable culling", &ParticlesGlobals::g_cullNone);
-        const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
-        ImGui::Combo("Particles orientation", &ParticlesGlobals::g_particlesOrientation, orientationItems, 3);
         const char* items[] = { "Opaque", "NonPremultiplied", "Additive" };
         ImGui::Combo("Blend Mode", &ParticlesGlobals::g_blendMode, items, 3);
-
-        ImGui::ColorPicker4("Particles color", ParticlesGlobals::g_particlesColor);
     }
 
     m_sceneMenger->renderImGui();

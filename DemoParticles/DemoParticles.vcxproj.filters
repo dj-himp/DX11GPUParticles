@@ -52,6 +52,12 @@
     <Filter Include="Data\ForceFields">
       <UniqueIdentifier>{6a0d1e82-d463-43ea-ac80-541380a1cea0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Extern\assimp">
+      <UniqueIdentifier>{befc79af-c0cb-4cd5-94bd-e6d0b02717f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Extern\Json">
+      <UniqueIdentifier>{91bf0f00-04fc-4889-9ebd-7e2cc285214f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\App.cpp">
@@ -338,9 +344,162 @@
     <ClInclude Include="Src\Content\ParticleEmitterPoint.h">
       <Filter>Src\Content</Filter>
     </ClInclude>
+    <ClInclude Include="Extern\assimp\Compiler\poppack1.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\Compiler\pstdint.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\Compiler\pushpack1.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\port\AndroidJNI\AndroidJNIIOSystem.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\ai_assert.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\anim.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\camera.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\cexport.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\cfileio.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\cimport.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\color4.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\config.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\DefaultIOStream.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\DefaultIOSystem.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\DefaultLogger.hpp">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\Defines.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\defs.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\Exporter.hpp">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\Importer.hpp">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\importerdesc.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\IOStream.hpp">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\IOSystem.hpp">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\light.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\Logger.hpp">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\LogStream.hpp">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\material.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\matrix3x3.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\matrix4x4.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\mesh.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\metadata.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\NullLogger.hpp">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\postprocess.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\ProgressHandler.hpp">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\quaternion.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\scene.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\SceneCombiner.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\texture.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\types.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\vector2.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\vector3.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\assimp\version.h">
+      <Filter>Extern\assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\Json\json.hpp">
+      <Filter>Extern\Json</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Extern\assimp\.editorconfig">
+      <Filter>Extern\assimp</Filter>
+    </None>
+    <None Include="Extern\assimp\color4.inl">
+      <Filter>Extern\assimp</Filter>
+    </None>
+    <None Include="Extern\assimp\config.h.in">
+      <Filter>Extern\assimp</Filter>
+    </None>
+    <None Include="Extern\assimp\material.inl">
+      <Filter>Extern\assimp</Filter>
+    </None>
+    <None Include="Extern\assimp\matrix3x3.inl">
+      <Filter>Extern\assimp</Filter>
+    </None>
+    <None Include="Extern\assimp\matrix4x4.inl">
+      <Filter>Extern\assimp</Filter>
+    </None>
+    <None Include="Extern\assimp\quaternion.inl">
+      <Filter>Extern\assimp</Filter>
+    </None>
+    <None Include="Extern\assimp\vector2.inl">
+      <Filter>Extern\assimp</Filter>
+    </None>
+    <None Include="Extern\assimp\vector3.inl">
+      <Filter>Extern\assimp</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Data\Textures\CatMac__C.png">

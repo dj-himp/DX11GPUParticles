@@ -6,8 +6,14 @@
 cbuffer emitterCubeConstantBuffer : register(b4)
 {
     float4x4 world;
+    float4 color;
+    
     uint emitterMaxSpawn;
-
+    uint particleOrientation;
+    float particlesBaseSpeed;
+    float particlesLifeSpan;
+    float particlesMass;
+    
     uint3 emitterCubePadding;
 };
 
@@ -27,13 +33,17 @@ void main(uint3 id : SV_DispatchThreadID)
         p.position = float4(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, 1.0);
         p.position = mul(p.position, world);
 
-        p.velocity = float4(0.0, 0.0, 0.0, 0.0);
+        //useless for the moment
+        p.velocity = particlesBaseSpeed * float4(0.0, 0.0, 0.0, 0.0);
         //p.velocity = float4(rand_xorshift_normalized(), rand_xorshift_normalized(), rand_xorshift_normalized(), 0.0);
         
-        p.lifeSpan = 10.0 * rand_xorshift_normalized();
-        p.age = p.lifeSpan;
-        p.mass = 1.0;
+        p.lifeSpan = particlesLifeSpan * rand_xorshift_normalized();
+        p.age = abs(p.lifeSpan); //abs() so if lifetime is infinite ( < 0.0) it's still has a life
+        p.mass = particlesMass;
 
+        p.orientation = particleOrientation;
+        p.color = color;
+        
         uint index = deadListBuffer.Consume();
         particleList[index] = p;
 

@@ -9,7 +9,22 @@ cbuffer simulateParticlesConstantBuffer : register(b4)
     float4x4 forceFieldWorld2Volume;
     float4x4 forceFieldVolume2World;
 
+    float4 aizamaParams1;
+    float2 aizamaParams2;
+    uint2 p;
+    float3 lorenzParams1;
+    uint p2;
+    
+    float dragCoefficient;
+    float curlCoefficient;
+    
     uint nbWantedAttractors;
+    
+    bool addForceField;
+    bool addAizama;
+    bool addLorenz;
+    bool addCurlNoise;
+    bool addDrag;
 
     uint3 simulatePadding;
 }
@@ -135,15 +150,14 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             particleForce.xyz += force; // * 0.1;
         }
 
-        //TEST Aizawa attractor
         if(addAizama)
         {
-            float a = 0.41;
-            float b = 0.45;
-            float c = 0.27;
-            float d = 6.5;
-            float e = 0.75;
-            float f = 3.0;
+            float a = aizamaParams1.x;
+            float b = aizamaParams1.y;
+            float c = aizamaParams1.z;
+            float d = aizamaParams1.w;
+            float e = aizamaParams2.x;
+            float f = aizamaParams2.y;
             particleForce.x = (p.position.z - b) * p.position.x - d * p.position.y;
             particleForce.y = 1.5 * p.position.x + (p.position.z - 0.8) * p.position.y;
             particleForce.z = c + a * p.position.z - (pow(p.position.z, 3) / 3.0) - (p.position.x * p.position.x + p.position.y * p.position.y) * (1.0 + e * p.position.z) + f * p.position.z * p.position.x * p.position.x * p.position.x;
@@ -152,18 +166,27 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             //p.velocity.z = c + a * p.position.z - (pow(p.position.z, 3) / 3.0) - (p.position.x * p.position.x + p.position.y * p.position.y) * (1.0 + e * p.position.z) + f * p.position.z * p.position.x * p.position.x * p.position.x;
         }
 
+        if (addLorenz)
+        {
+            float a = lorenzParams1.x;
+            float b = lorenzParams1.y;
+            float c = lorenzParams1.z;
+            particleForce.x = a * (p.position.y - p.position.x);
+            particleForce.y = b * p.position.x - p.position.y - p.position.x * p.position.z;
+            particleForce.z = p.position.x * p.position.y - c * p.position.z;
+        }
+        
         if (addCurlNoise)
         {
             //particleForce.xyz += curlNoise(p.velocity.xyz); // * 10.0;
-            particleForce.xyz += curlNoise(p.position.xyz);// * 10.0;
+            particleForce.xyz += curlCoefficient * curlNoise(p.position.xyz);
             //particleForce.xyz += curlNoise(particleForce.xyz);// * 10.0;
         }
         
         //Add drag
         if (addDrag)
         {
-            float dragCoefficient = 0.001;
-            particleForce -= max(float4(0.0, 0.0, 0.0, 0.0), dragCoefficient * p.velocity);
+            particleForce -= dragCoefficient * p.velocity;
         }
 
         float3 acceleration = particleForce.xyz / p.mass;
@@ -175,7 +198,7 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
 
         p.position.xyz += p.velocity.xyz * dt;
 
-    //kill particles inside attractors killzone (if killZoneRadius >= 0.0)
+        //kill particles inside attractors killzone (if killZoneRadius >= 0.0)
         for (uint i = 0; i < nbAttractors; ++i)
         {
             Attractor a = attractorList[i];

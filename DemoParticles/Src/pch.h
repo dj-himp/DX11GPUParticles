@@ -75,6 +75,8 @@
 #include "Gui/imgui_impl_win32.h"
 #include "Gui/imgui_impl_dx11.h"
 
+#include "Extern/Json/json.hpp"
+
 #include <DDSTextureLoader.h>
 
 namespace DX

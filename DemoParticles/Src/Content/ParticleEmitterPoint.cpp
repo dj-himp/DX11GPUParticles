@@ -11,6 +11,11 @@ namespace DemoParticles
         : IParticleEmitter(deviceResources)
     {
         m_emitterConstantBufferData.maxSpawn = 1000;
+        m_emitterConstantBufferData.particleOrientation = 0;
+        m_emitterConstantBufferData.particlesBaseSpeed = 1.0f;
+        m_emitterConstantBufferData.particlesLifeSpan = 3.0f;
+        m_emitterConstantBufferData.particlesMass = 1.0f;
+        m_emitterConstantBufferData.color = Color(0.5f, 0.2f, 0.2f, 1.0f);
     }
 
     void ParticleEmitterPoint::createDeviceDependentResources()
@@ -18,7 +23,7 @@ namespace DemoParticles
         m_emitParticles = std::make_unique<ComputeShader>(m_deviceResources);
         m_emitParticles->load(L"EmitParticlesPoint_CS.cso");
 
-        CD3D11_BUFFER_DESC emitterConstantBufferDesc(sizeof(EmitterSphereConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
+        CD3D11_BUFFER_DESC emitterConstantBufferDesc(sizeof(EmitterPointConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateBuffer(&emitterConstantBufferDesc, nullptr, &m_emitterConstantBuffer)
         );
@@ -42,8 +47,9 @@ namespace DemoParticles
         }
 
         //m_emitterConstantBufferData.position = DX::toVector4(camera->getPosition() + camera->getForward() * 4.0f);
-        m_emitterConstantBufferData.position = Vector4(m_imGuiEmitterPosition[0], m_imGuiEmitterPosition[1], m_imGuiEmitterPosition[2], 1.0f);
         //m_emitterConstantBufferData.position = Vector4(cos(timer.GetTotalSeconds() * 0.5f) * 3.0f, 0.0f, sin(timer.GetTotalSeconds() * 0.5f) * 3.0f, 1.0f);
+        m_emitterConstantBufferData.position = Vector4(m_imGuiEmitterPosition[0], m_imGuiEmitterPosition[1], m_imGuiEmitterPosition[2], 1.0f);
+        
     }
 
     void ParticleEmitterPoint::emit()
@@ -70,7 +76,14 @@ namespace DemoParticles
             ImGui::Checkbox("Enabled", &m_enabled);
             ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1);
             ImGui::DragFloat3("Position", m_imGuiEmitterPosition, 0.01f);
+            const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
+            ImGui::Combo("Particles orientation", (int*)&m_emitterConstantBufferData.particleOrientation, orientationItems, 3);
+            ImGui::DragFloat("Base speed", &m_emitterConstantBufferData.particlesBaseSpeed, 0.1f, 0.0f, 100.0f);
+            ImGui::DragFloat("LifeSpan", &m_emitterConstantBufferData.particlesLifeSpan, 0.1f, -1.0f, 100.0f);
+            ImGui::DragFloat("Mass", &m_emitterConstantBufferData.particlesMass, 0.1f, 0.0f, 100.0f);
 
+            ImGui::ColorEdit4("Color", (float*)&m_emitterConstantBufferData.color);
+            
             ImGui::TreePop();
         }
     }

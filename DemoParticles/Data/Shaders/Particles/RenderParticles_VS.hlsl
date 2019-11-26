@@ -11,6 +11,7 @@ struct GeometryShaderInput
     float4 Color : TEXCOORD1;
     float4 Normal : TEXCOORD2;
     float3 velocity : TEXCOORD3;
+    uint   orientation : TEXCOORD4;
 };
 
 GeometryShaderInput main(uint vertexId : SV_VertexID)
@@ -27,9 +28,12 @@ GeometryShaderInput main(uint vertexId : SV_VertexID)
 
     //float alpha = p.lifeSpan >= 0.0 ? saturate(p.age / p.lifeSpan) : 0.1;
     //float alpha = smoothstep(0.0, p.lifeSpan, p.age);
-    float alpha = 1.0;//smoothstep(0.0, p.lifeSpan, p.age);
-    output.Color = color;// float4(1.0, alpha, 0.0, alpha);
+    float alpha = smoothstep(0.0, abs(p.lifeSpan), p.age);
+    output.Color = p.color;
+    output.Color.a *= alpha;
     output.Normal = p.normal;
 
+    output.orientation = p.orientation;
+    
     return output;
 }

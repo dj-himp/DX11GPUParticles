@@ -12,6 +12,7 @@ namespace DemoParticles
         virtual void update(DX::StepTimer const& timer) = 0;
         virtual void emit() = 0;
         virtual void renderImGui() {}
+        virtual void reset() {}
 
     protected:
         const DX::DeviceResources* m_deviceResources;

@@ -4,11 +4,12 @@ struct Particle
     float4 position;
     float4 normal;
     float4 velocity;
-
+    float4 color;
 
     float lifeSpan;
     float age;
     float mass;
+    uint orientation;
 
 };
 
@@ -20,14 +21,9 @@ struct ParticleIndexElement
 
 cbuffer renderParticlesGlobals : register(b1)
 {
-    float4 color;
-    uint orientation;
-    bool addForceField;
-    bool addAizama;
-    bool addCurlNoise;
-    bool addDrag;
+    //float4 color;
 
-    uint3 particlesGlobalPadding;
+    uint4 particlesGlobalPadding;
 }
 
 cbuffer deadListCountConstantBuffer : register(b2)

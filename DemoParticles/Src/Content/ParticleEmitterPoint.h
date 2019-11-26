@@ -22,7 +22,7 @@ namespace DemoParticles
         
         std::unique_ptr<ComputeShader>                      m_emitParticles;
 
-        EmitterSphereConstantBuffer                         m_emitterConstantBufferData;
+        EmitterPointConstantBuffer                         m_emitterConstantBufferData;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_emitterConstantBuffer;
 
         float m_emitDelay = 0.0f;
