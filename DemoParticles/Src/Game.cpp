@@ -107,6 +107,8 @@ void Game::Initialize(HWND window, int width, int height)
     ImGui_ImplWin32_Init(window);
     ImGui_ImplDX11_Init(m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext());
 
+    load();
+
     // TODO: Change the timer settings if you want something other than the default variable timestep mode.
     // e.g. for 60 FPS fixed timestep update logic, call:
     /*
@@ -309,13 +311,7 @@ void Game::RenderImGui()
     
     if (ImGui::Button("Save"))
     {
-        json saveFile;
-        saveFile["Global"]["Disable culling"] = ParticlesGlobals::g_cullNone;
-        saveFile["Global"]["Blend Mode"] = ParticlesGlobals::g_blendMode;
-
-        std::ofstream file("save.json");
-        file << std::setw(4) << saveFile;
-        file.close();
+        save();
     }
 
     if (ImGui::CollapsingHeader("Globals"))
@@ -336,6 +332,37 @@ void Game::RenderImGui()
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
     m_deviceResources->PIXEndEvent();
+}
+
+void Game::save()
+{
+    json saveFile;
+    saveFile["Global"]["Disable culling"] = ParticlesGlobals::g_cullNone;
+    saveFile["Global"]["Blend Mode"] = ParticlesGlobals::g_blendMode;
+
+    m_sceneMenger->save(saveFile);
+
+    std::ofstream file("save.json");
+    file << std::setw(4) << saveFile;
+    file.close();
+}
+
+void Game::load()
+{
+    json saveFile;
+
+    std::ifstream file("save.json");
+    if (!file)
+    {
+        return;
+    }
+    file >> saveFile;
+    file.close();
+
+    ParticlesGlobals::g_cullNone = saveFile["Global"]["Disable culling"];
+    ParticlesGlobals::g_blendMode = saveFile["Global"]["Blend Mode"];
+
+    m_sceneMenger->load(saveFile);
 }
 
 #pragma endregion

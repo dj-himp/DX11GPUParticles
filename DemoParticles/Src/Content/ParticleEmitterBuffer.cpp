@@ -86,7 +86,7 @@ namespace DemoParticles
         {
             ImGui::Checkbox("Enabled", &m_enabled);
             ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1);
-            //ImGui::DragFloat3("Position", m_imGuiEmitterPosition, 0.01f);
+            //ImGui::DragFloat3("Position", (float*)&m_emitterConstantBufferData.position, 0.01f);
             const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
             ImGui::Combo("Particles orientation", (int*)&m_emitterConstantBufferData.particleOrientation, orientationItems, 3);
             ImGui::DragFloat("Base speed", &m_emitterConstantBufferData.particlesBaseSpeed, 0.1f, 0.0f, 100.0f);
@@ -101,6 +101,32 @@ namespace DemoParticles
     void ParticleEmitterBuffer::reset()
     {
         m_hasEmitted = false;
+    }
+
+    void ParticleEmitterBuffer::save(json& file)
+    {
+        file["Emitters"]["Buffer"]["Enabled"] = m_enabled;
+        file["Emitters"]["Buffer"]["Max Spawn"] = m_emitterConstantBufferData.maxSpawn;
+        //file["Emitters"]["Buffer"]["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
+        file["Emitters"]["Buffer"]["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
+        file["Emitters"]["Buffer"]["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
+        file["Emitters"]["Buffer"]["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
+        file["Emitters"]["Buffer"]["Mass"] = m_emitterConstantBufferData.particlesMass;
+        file["Emitters"]["Buffer"]["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
+    }
+
+    void ParticleEmitterBuffer::load(json& file)
+    {
+        m_enabled = file["Emitters"]["Buffer"]["Enabled"];
+        m_emitterConstantBufferData.maxSpawn = file["Emitters"]["Buffer"]["Max Spawn"];
+        //std::vector<float> position = file["Emitters"]["Buffer"]["Position"];
+        //m_emitterConstantBufferData.position = Vector4(&position[0]);
+        m_emitterConstantBufferData.particleOrientation = file["Emitters"]["Buffer"]["Particles orientation"];
+        m_emitterConstantBufferData.particlesBaseSpeed = file["Emitters"]["Buffer"]["Base speed"];
+        m_emitterConstantBufferData.particlesLifeSpan = file["Emitters"]["Buffer"]["LifeSpan"];
+        m_emitterConstantBufferData.particlesMass = file["Emitters"]["Buffer"]["Mass"];
+        std::vector<float> color = file["Emitters"]["Buffer"]["Color"];
+        m_emitterConstantBufferData.color = Vector4(&color[0]);
     }
 
 }

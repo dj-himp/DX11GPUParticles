@@ -264,4 +264,14 @@ namespace DemoParticles
         m_renderParticles->renderImGui();
     }
 
+    void SceneMenger::save(json& file)
+    {
+        m_renderParticles->save(file);
+    }
+
+    void SceneMenger::load(json& file)
+    {
+        m_renderParticles->load(file);
+    }
+
 }

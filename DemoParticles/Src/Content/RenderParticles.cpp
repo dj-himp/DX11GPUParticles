@@ -22,8 +22,8 @@ namespace DemoParticles
         : IRenderable(deviceResources)
     {
         m_simulateParticlesBufferData.aizamaParams1 = Vector4(0.41f, 0.45f, 0.27f, 6.5f);
-        m_simulateParticlesBufferData.aizamaParams2 = Vector2(0.75f, 3.0f);
-        m_simulateParticlesBufferData.lorenzParams1 = Vector3(10.0f, 8.0f/3.0f, 10.0f);
+        m_simulateParticlesBufferData.aizamaParams2 = Vector4(0.75f, 3.0f, 0.0f, 0.0f);
+        m_simulateParticlesBufferData.lorenzParams1 = Vector4(10.0f, 8.0f/3.0f, 10.0f, 0.0f);
         m_simulateParticlesBufferData.dragCoefficient = 0.001f;
         m_simulateParticlesBufferData.curlCoefficient = 1.0f;
     }
@@ -441,6 +441,31 @@ namespace DemoParticles
         m_normalView = normalView;
     }
 
+    void RenderParticles::save(json& file)
+    {
+        for (auto&& emitter : m_particleEmitters)
+        {
+            emitter->save(file);
+        }
+
+        file["Simulation"]["Aizama"]["Enabled"] = m_simulateParticlesBufferData.addAizama;
+        file["Simulation"]["Aizama"]["AizamaParams1"] = { m_simulateParticlesBufferData.aizamaParams1.x, m_simulateParticlesBufferData.aizamaParams1.y, m_simulateParticlesBufferData.aizamaParams1.z, m_simulateParticlesBufferData.aizamaParams1.w };
+        file["Simulation"]["Aizama"]["AizamaParams2"] = { m_simulateParticlesBufferData.aizamaParams2.x, m_simulateParticlesBufferData.aizamaParams2.y, m_simulateParticlesBufferData.aizamaParams2.z, m_simulateParticlesBufferData.aizamaParams2.w };
+
+        file["Simulation"]["Lorenz"]["Enabled"] = m_simulateParticlesBufferData.addLorenz;
+        file["Simulation"]["Lorenz"]["lorenzParams1"] = { m_simulateParticlesBufferData.lorenzParams1.x, m_simulateParticlesBufferData.lorenzParams1.y, m_simulateParticlesBufferData.lorenzParams1.z, m_simulateParticlesBufferData.lorenzParams1.w };
+
+        file["Simulation"]["Lorenz"]["Enabled"] = m_simulateParticlesBufferData.addLorenz;
+
+        file["Simulation"]["ForceField"]["Enabled"] = m_simulateParticlesBufferData.addForceField;
+
+        file["Simulation"]["CurlNoise"]["Enabled"] = m_simulateParticlesBufferData.addCurlNoise;
+        file["Simulation"]["CurlNoise"]["Curl Coefficient"] = m_simulateParticlesBufferData.curlCoefficient;
+
+        file["Simulation"]["Drag"]["Enabled"] = m_simulateParticlesBufferData.addDrag;
+        file["Simulation"]["Drag"]["Drag Coefficient"] = m_simulateParticlesBufferData.dragCoefficient;
+    }
+
     void RenderParticles::resetParticles()
     {
         for (auto&& emitter : m_particleEmitters)
@@ -581,6 +606,34 @@ namespace DemoParticles
         bufferEmitter->setIndirectArgsBuffer(m_bakedIndirectArgsBuffer);
 
         m_particleEmitters.push_back(std::move(bufferEmitter));
+    }
+
+    void RenderParticles::load(json& file)
+    {
+        for (auto&& emitter : m_particleEmitters)
+        {
+            emitter->load(file);
+        }
+
+        m_simulateParticlesBufferData.addAizama = file["Simulation"]["Aizama"]["Enabled"];
+        std::vector<float> aizamaParams1 = file["Simulation"]["Aizama"]["AizamaParams1"];
+        m_simulateParticlesBufferData.aizamaParams1 = Vector4(&aizamaParams1[0]);
+        std::vector<float> aizamaParams2 = file["Simulation"]["Aizama"]["AizamaParams2"];
+        m_simulateParticlesBufferData.aizamaParams2 = Vector4(&aizamaParams2[0]);
+
+        m_simulateParticlesBufferData.addLorenz = file["Simulation"]["Lorenz"]["Enabled"];
+        std::vector<float> LorenzParams1 = file["Simulation"]["Lorenz"]["lorenzParams1"];
+        m_simulateParticlesBufferData.lorenzParams1 = Vector4(&LorenzParams1[0]);
+
+        m_simulateParticlesBufferData.addLorenz = file["Simulation"]["Lorenz"]["Enabled"];
+
+        m_simulateParticlesBufferData.addForceField = file["Simulation"]["ForceField"]["Enabled"];
+
+        m_simulateParticlesBufferData.addCurlNoise = file["Simulation"]["CurlNoise"]["Enabled"];
+        m_simulateParticlesBufferData.curlCoefficient = file["Simulation"]["CurlNoise"]["Curl Coefficient"];
+
+        m_simulateParticlesBufferData.addDrag = file["Simulation"]["Drag"]["Enabled"];
+        m_simulateParticlesBufferData.dragCoefficient = file["Simulation"]["Drag"]["Drag Coefficient"];
     }
 
 }

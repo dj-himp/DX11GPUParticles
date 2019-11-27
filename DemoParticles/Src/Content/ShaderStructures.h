@@ -124,10 +124,8 @@ namespace DemoParticles
         DirectX::SimpleMath::Matrix forceFieldVolume2World;
 
         DirectX::SimpleMath::Vector4 aizamaParams1;
-        DirectX::SimpleMath::Vector2 aizamaParams2;
-        UINT p[2];
-        DirectX::SimpleMath::Vector3 lorenzParams1;
-        UINT p2[1];
+        DirectX::SimpleMath::Vector4 aizamaParams2;
+        DirectX::SimpleMath::Vector4 lorenzParams1;
 
         float dragCoefficient;
         float curlCoefficient;

@@ -45,10 +45,6 @@ namespace DemoParticles
             m_lastEmitTime = m_emitDelay;
             m_needEmit = true;
         }
-
-        //m_emitterConstantBufferData.position = DX::toVector4(camera->getPosition() + camera->getForward() * 4.0f);
-        //m_emitterConstantBufferData.position = Vector4(cos(timer.GetTotalSeconds() * 0.5f) * 3.0f, 0.0f, sin(timer.GetTotalSeconds() * 0.5f) * 3.0f, 1.0f);
-        m_emitterConstantBufferData.position = Vector4(m_imGuiEmitterPosition[0], m_imGuiEmitterPosition[1], m_imGuiEmitterPosition[2], 1.0f);
         
     }
 
@@ -75,7 +71,7 @@ namespace DemoParticles
         {
             ImGui::Checkbox("Enabled", &m_enabled);
             ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1);
-            ImGui::DragFloat3("Position", m_imGuiEmitterPosition, 0.01f);
+            ImGui::DragFloat3("Position", (float*)&m_emitterConstantBufferData.position, 0.01f);
             const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
             ImGui::Combo("Particles orientation", (int*)&m_emitterConstantBufferData.particleOrientation, orientationItems, 3);
             ImGui::DragFloat("Base speed", &m_emitterConstantBufferData.particlesBaseSpeed, 0.1f, 0.0f, 100.0f);
@@ -86,6 +82,32 @@ namespace DemoParticles
             
             ImGui::TreePop();
         }
+    }
+
+    void ParticleEmitterPoint::save(json& file)
+    {
+        file["Emitters"]["Point"]["Enabled"] = m_enabled;
+        file["Emitters"]["Point"]["Max Spawn"] = m_emitterConstantBufferData.maxSpawn;
+        file["Emitters"]["Point"]["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
+        file["Emitters"]["Point"]["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
+        file["Emitters"]["Point"]["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
+        file["Emitters"]["Point"]["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
+        file["Emitters"]["Point"]["Mass"] = m_emitterConstantBufferData.particlesMass;
+        file["Emitters"]["Point"]["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
+    }
+
+    void ParticleEmitterPoint::load(json& file)
+    {
+        m_enabled = file["Emitters"]["Point"]["Enabled"];
+        m_emitterConstantBufferData.maxSpawn = file["Emitters"]["Point"]["Max Spawn"];
+        std::vector<float> position = file["Emitters"]["Point"]["Position"];
+        m_emitterConstantBufferData.position = Vector4(&position[0]);
+        m_emitterConstantBufferData.particleOrientation = file["Emitters"]["Point"]["Particles orientation"];
+        m_emitterConstantBufferData.particlesBaseSpeed = file["Emitters"]["Point"]["Base speed"];
+        m_emitterConstantBufferData.particlesLifeSpan = file["Emitters"]["Point"]["LifeSpan"];
+        m_emitterConstantBufferData.particlesMass = file["Emitters"]["Point"]["Mass"];
+        std::vector<float> color = file["Emitters"]["Point"]["Color"];
+        m_emitterConstantBufferData.color = Vector4(&color[0]);
     }
 
 }

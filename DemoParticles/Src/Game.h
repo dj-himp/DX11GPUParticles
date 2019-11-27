@@ -58,6 +58,8 @@ private:
 
 
     void RenderImGui();
+    void save();
+    void load();
 
     // Device resources.
     std::unique_ptr<DX::DeviceResources>    m_deviceResources;

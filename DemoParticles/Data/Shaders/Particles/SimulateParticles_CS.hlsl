@@ -10,10 +10,8 @@ cbuffer simulateParticlesConstantBuffer : register(b4)
     float4x4 forceFieldVolume2World;
 
     float4 aizamaParams1;
-    float2 aizamaParams2;
-    uint2 p;
-    float3 lorenzParams1;
-    uint p2;
+    float4 aizamaParams2;
+    float4 lorenzParams1;
     
     float dragCoefficient;
     float curlCoefficient;

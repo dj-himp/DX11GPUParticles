@@ -1,5 +1,7 @@
 #pragma once
 
+using json = nlohmann::json;
+
 namespace DemoParticles
 {
     class IParticleEmitter
@@ -13,6 +15,8 @@ namespace DemoParticles
         virtual void emit() = 0;
         virtual void renderImGui() {}
         virtual void reset() {}
+        virtual void save(json& file) {}
+        virtual void load(json& file) {}
 
     protected:
         const DX::DeviceResources* m_deviceResources;

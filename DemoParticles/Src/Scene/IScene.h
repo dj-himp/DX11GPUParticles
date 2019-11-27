@@ -2,6 +2,8 @@
 
 #include "Common\StepTimer.h"
 
+using json = nlohmann::json;
+
 namespace DemoParticles
 {
     class Camera;
@@ -24,6 +26,8 @@ namespace DemoParticles
         virtual void render() = 0;
 
         virtual void renderImGui() {}
+        virtual void save(json& file) {}
+        virtual void load(json& file) {}
 
     protected:
 
