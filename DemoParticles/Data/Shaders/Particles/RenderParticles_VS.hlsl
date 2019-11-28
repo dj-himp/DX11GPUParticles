@@ -12,6 +12,7 @@ struct GeometryShaderInput
     float4 Normal : TEXCOORD2;
     float3 velocity : TEXCOORD3;
     uint   orientation : TEXCOORD4;
+    float  size : TEXCOORD5;
 };
 
 GeometryShaderInput main(uint vertexId : SV_VertexID)
@@ -34,6 +35,7 @@ GeometryShaderInput main(uint vertexId : SV_VertexID)
     output.Normal = p.normal;
 
     output.orientation = p.orientation;
+    output.size = p.sizeStart + alpha * (p.sizeEnd - p.sizeStart);
     
     return output;
 }

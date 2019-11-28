@@ -10,6 +10,8 @@ struct Particle
     float age;
     float mass;
     uint orientation;
+    float sizeStart;
+    float sizeEnd;
 
 };
 

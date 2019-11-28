@@ -9,6 +9,7 @@ struct GeometryShaderInput
     float4 Normal : TEXCOORD2;
     float3 velocity : TEXCOORD3;
     uint orientation : TEXCOORD4;
+    float size : TEXCOORD5;
 };
 
 struct PixelShaderInput
@@ -34,11 +35,7 @@ void main(point GeometryShaderInput input[1], inout TriangleStream<PixelShaderIn
     output.Normal = input[0].Normal;
 
     float3 pos = input[0].oPosition;
-
-    //TO DO : reduire particleSize plus la particule est proche de la cam
-
-    //float particleSize = 0.0002f;
-    float particleSize = 0.03;
+    float particleSize = input[0].size;
 
     output.center = input[0].oPosition;
     output.radius = particleSize;

@@ -13,8 +13,10 @@ cbuffer emitterCubeConstantBuffer : register(b4)
     float particlesBaseSpeed;
     float particlesLifeSpan;
     float particlesMass;
+    float particleSizeStart;
+    float particleSizeEnd;
     
-    uint3 emitterCubePadding;
+    uint emitterCubePadding;
 };
 
 ConsumeStructuredBuffer<uint> deadListBuffer : register(u0);
@@ -43,6 +45,8 @@ void main(uint3 id : SV_DispatchThreadID)
 
         p.orientation = particleOrientation;
         p.color = color;
+        p.sizeStart = particleSizeStart;
+        p.sizeEnd = particleSizeEnd;
         
         uint index = deadListBuffer.Consume();
         particleList[index] = p;

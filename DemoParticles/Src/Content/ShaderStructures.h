@@ -47,21 +47,28 @@ namespace DemoParticles
         float particlesBaseSpeed;
         float particlesLifeSpan;
         float particlesMass;
+        float particleSizeStart;
+        float particleSizeEnd;
 
-        UINT padding[3];
+        UINT padding[1];
 
     };
 
     struct EmitterPointConstantBuffer
     {
         DirectX::SimpleMath::Vector4 position;
+        DirectX::SimpleMath::Vector4 direction;
         DirectX::SimpleMath::Color color;
 
         UINT maxSpawn;
+        float coneYaw;
+        float conePitch;
         UINT particleOrientation;
         float particlesBaseSpeed;
         float particlesLifeSpan;
         float particlesMass;
+        float particleSizeStart;
+        float particleSizeEnd;
 
         UINT padding[3];
 
@@ -77,8 +84,10 @@ namespace DemoParticles
         float particlesBaseSpeed;
         float particlesLifeSpan;
         float particlesMass;
+        float particleSizeStart;
+        float particleSizeEnd;
 
-        UINT padding[3];
+        UINT padding[1];
 
     };
 
@@ -91,8 +100,10 @@ namespace DemoParticles
         float particlesBaseSpeed;
         float particlesLifeSpan;
         float particlesMass;
+        float particleSizeStart;
+        float particleSizeEnd;
 
-        UINT padding[3];
+        UINT padding[1];
 
     };
 
@@ -159,6 +170,8 @@ namespace DemoParticles
         float age;
         float mass;
         UINT  orientation;
+        float sizeStart;
+        float sizeEnd;
     };
 
     struct ParticleIndexElement

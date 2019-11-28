@@ -10,12 +10,18 @@ namespace DemoParticles
     ParticleEmitterPoint::ParticleEmitterPoint(const DX::DeviceResources* deviceResources)
         : IParticleEmitter(deviceResources)
     {
+        m_emitterConstantBufferData.position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+        m_emitterConstantBufferData.direction = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
         m_emitterConstantBufferData.maxSpawn = 1000;
         m_emitterConstantBufferData.particleOrientation = 0;
         m_emitterConstantBufferData.particlesBaseSpeed = 1.0f;
         m_emitterConstantBufferData.particlesLifeSpan = 3.0f;
         m_emitterConstantBufferData.particlesMass = 1.0f;
         m_emitterConstantBufferData.color = Color(0.5f, 0.2f, 0.2f, 1.0f);
+        m_emitterConstantBufferData.particleSizeStart = 0.01f;
+        m_emitterConstantBufferData.particleSizeEnd = 0.01f;
+        m_emitterConstantBufferData.coneYaw = DirectX::XM_2PI;
+        m_emitterConstantBufferData.conePitch = DirectX::XM_2PI;
     }
 
     void ParticleEmitterPoint::createDeviceDependentResources()
@@ -70,16 +76,19 @@ namespace DemoParticles
         if (ImGui::TreeNode("Point emitter"))
         {
             ImGui::Checkbox("Enabled", &m_enabled);
-            ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1);
+            ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1, 0, 10000000);
             ImGui::DragFloat3("Position", (float*)&m_emitterConstantBufferData.position, 0.01f);
             const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
             ImGui::Combo("Particles orientation", (int*)&m_emitterConstantBufferData.particleOrientation, orientationItems, 3);
             ImGui::DragFloat("Base speed", &m_emitterConstantBufferData.particlesBaseSpeed, 0.1f, 0.0f, 100.0f);
             ImGui::DragFloat("LifeSpan", &m_emitterConstantBufferData.particlesLifeSpan, 0.1f, -1.0f, 100.0f);
             ImGui::DragFloat("Mass", &m_emitterConstantBufferData.particlesMass, 0.1f, 0.0f, 100.0f);
-
             ImGui::ColorEdit4("Color", (float*)&m_emitterConstantBufferData.color);
-            
+            ImGui::DragFloat("Size Start", &m_emitterConstantBufferData.particleSizeStart, 0.01f, 0.0f, 10.0f);
+            ImGui::DragFloat("Size End", &m_emitterConstantBufferData.particleSizeEnd, 0.01f, 0.0f, 10.0f);
+            ImGui::SliderAngle("Cone Yaw", &m_emitterConstantBufferData.coneYaw, 0.0f, 360.0f);
+            ImGui::SliderAngle("Cone Pitch", &m_emitterConstantBufferData.conePitch, 0.0f, 360.0f);
+
             ImGui::TreePop();
         }
     }
@@ -94,6 +103,10 @@ namespace DemoParticles
         file["Emitters"]["Point"]["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
         file["Emitters"]["Point"]["Mass"] = m_emitterConstantBufferData.particlesMass;
         file["Emitters"]["Point"]["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
+        file["Emitters"]["Point"]["Size start"] = m_emitterConstantBufferData.particleSizeStart;
+        file["Emitters"]["Point"]["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
+        file["Emitters"]["Point"]["Cone Yaw"] = m_emitterConstantBufferData.coneYaw;
+        file["Emitters"]["Point"]["Cone Pitch"] = m_emitterConstantBufferData.conePitch;
     }
 
     void ParticleEmitterPoint::load(json& file)
@@ -108,6 +121,10 @@ namespace DemoParticles
         m_emitterConstantBufferData.particlesMass = file["Emitters"]["Point"]["Mass"];
         std::vector<float> color = file["Emitters"]["Point"]["Color"];
         m_emitterConstantBufferData.color = Vector4(&color[0]);
+        m_emitterConstantBufferData.particleSizeStart = file["Emitters"]["Point"]["Size start"];
+        m_emitterConstantBufferData.particleSizeEnd = file["Emitters"]["Point"]["Size end"];
+        m_emitterConstantBufferData.coneYaw = file["Emitters"]["Point"]["Cone Yaw"];
+        m_emitterConstantBufferData.conePitch = file["Emitters"]["Point"]["Cone Pitch"];
     }
 
 }

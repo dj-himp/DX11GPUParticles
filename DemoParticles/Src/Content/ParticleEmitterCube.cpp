@@ -17,6 +17,8 @@ namespace DemoParticles
         m_emitterConstantBufferData.particlesLifeSpan = 3.0f;
         m_emitterConstantBufferData.particlesMass = 1.0f;
         m_emitterConstantBufferData.color = Color(0.5f, 0.2f, 0.2f, 1.0f);
+        m_emitterConstantBufferData.particleSizeStart = 0.01f;
+        m_emitterConstantBufferData.particleSizeEnd = 0.01f;
     }
 
     void ParticleEmitterCube::createDeviceDependentResources()
@@ -78,7 +80,7 @@ namespace DemoParticles
         if (ImGui::TreeNode("Cube emitter"))
         {
             ImGui::Checkbox("Enabled", &m_enabled);
-            ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1);
+            ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1, 0, 10000000);
             //ImGui::DragFloat3("Position", (float*)&m_emitterConstantBufferData.position, 0.01f);
             const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
             ImGui::Combo("Particles orientation", (int*)&m_emitterConstantBufferData.particleOrientation, orientationItems, 3);
@@ -86,6 +88,8 @@ namespace DemoParticles
             ImGui::DragFloat("LifeSpan", &m_emitterConstantBufferData.particlesLifeSpan, 0.1f, -1.0f, 100.0f);
             ImGui::DragFloat("Mass", &m_emitterConstantBufferData.particlesMass, 0.1f, 0.0f, 100.0f);
             ImGui::ColorEdit4("Color", (float*)&m_emitterConstantBufferData.color);
+            ImGui::DragFloat("Size Start", &m_emitterConstantBufferData.particleSizeStart, 0.01f, 0.0f, 10.0f);
+            ImGui::DragFloat("Size End", &m_emitterConstantBufferData.particleSizeEnd, 0.01f, 0.0f, 10.0f);
 
             ImGui::TreePop();
         }
@@ -101,6 +105,8 @@ namespace DemoParticles
         file["Emitters"]["Cube"]["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
         file["Emitters"]["Cube"]["Mass"] = m_emitterConstantBufferData.particlesMass;
         file["Emitters"]["Cube"]["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
+        file["Emitters"]["Cube"]["Size start"] = m_emitterConstantBufferData.particleSizeStart;
+        file["Emitters"]["Cube"]["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
     }
 
     void ParticleEmitterCube::load(json& file)
@@ -115,6 +121,8 @@ namespace DemoParticles
         m_emitterConstantBufferData.particlesMass = file["Emitters"]["Cube"]["Mass"];
         std::vector<float> color = file["Emitters"]["Cube"]["Color"];
         m_emitterConstantBufferData.color = Vector4(&color[0]);
+        m_emitterConstantBufferData.particleSizeStart = file["Emitters"]["Cube"]["Size start"];
+        m_emitterConstantBufferData.particleSizeEnd = file["Emitters"]["Cube"]["Size end"];
     }
 
 }
