@@ -16,7 +16,7 @@ namespace DemoParticles
 
         virtual void update(DX::StepTimer const& timer) override;
         virtual void emit() override;
-        virtual void renderImGui() override;
+        virtual void RenderImGui(Camera* camera) override;
         virtual void reset() override;
         virtual void save(json& file) override;
         virtual void load(json& file) override;

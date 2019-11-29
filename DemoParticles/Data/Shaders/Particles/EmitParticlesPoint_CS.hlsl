@@ -38,11 +38,14 @@ void main(uint3 id : SV_DispatchThreadID)
         p.position = emitterPosition;
         p.position.w = 1.0;
 
-        float4 direction = float4(0.0, 1.0, 0.0, 1.0);
+        float4 direction = emitterDirection;
         //p.velocity = particlesBaseSpeed * normalize(float4(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, 0.0)) * rand_xorshift_normalized();
-        float yaw = rand_xorshift_normalized() * emitterConeYaw;
-        float pitch = rand_xorshift_normalized() * emitterConePitch;
-        p.velocity = particlesBaseSpeed * normalize(float4(-sin(yaw) * cos(pitch), sin(pitch), cos(pitch) * cos(yaw), 0.0)) * rand_xorshift_normalized();
+        float yaw = (0.5 - rand_xorshift_normalized()) * emitterConeYaw;
+        float pitch = (0.5 - rand_xorshift_normalized()) * emitterConePitch;
+        //p.velocity = particlesBaseSpeed * normalize(float4(-sin(yaw) * cos(pitch), sin(pitch), cos(pitch) * cos(yaw), 0.0)) * rand_xorshift_normalized();
+        p.velocity.x = direction.x * cos(yaw) + direction.y * sin(pitch) * sin(yaw) + direction.z * -sin(yaw) * cos(pitch);
+        p.velocity.y = direction.y * cos(pitch) + direction.z * sin(pitch);
+        p.velocity.z = direction.x * sin(yaw) + direction.y * -sin(pitch) * cos(yaw) + direction.z * cos(pitch) * cos(yaw);
         
         p.lifeSpan = particlesLifeSpan * rand_xorshift_normalized();
         p.age = abs(p.lifeSpan); //abs() so if lifetime is infinite ( < 0.0) it's still has a life

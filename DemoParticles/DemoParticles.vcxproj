@@ -157,6 +157,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Extern\imgui\ImCurveEdit.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Extern\imgui\ImGradient.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Extern\imgui\ImGuizmo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Extern\imgui\ImSequencer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Src\Content\ParticleEmitterPoint.cpp" />
     <ClCompile Include="Src\Content\RenderForceField.cpp" />
     <ClCompile Include="Src\Common\FGAParser.cpp" />
@@ -277,6 +289,10 @@
     <ClInclude Include="Extern\assimp\vector2.h" />
     <ClInclude Include="Extern\assimp\vector3.h" />
     <ClInclude Include="Extern\assimp\version.h" />
+    <ClInclude Include="Extern\imgui\ImCurveEdit.h" />
+    <ClInclude Include="Extern\imgui\ImGradient.h" />
+    <ClInclude Include="Extern\imgui\ImGuizmo.h" />
+    <ClInclude Include="Extern\imgui\ImSequencer.h" />
     <ClInclude Include="Extern\Json\json.hpp" />
     <ClInclude Include="Src\Content\ParticleEmitterPoint.h" />
     <ClInclude Include="Src\Content\RenderForceField.h" />

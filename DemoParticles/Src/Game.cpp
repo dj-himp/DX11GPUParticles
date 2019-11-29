@@ -301,6 +301,7 @@ void Game::RenderImGui()
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
+    ImGuizmo::BeginFrame();
 
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
     /*bool show_demo_window = true;
@@ -321,7 +322,7 @@ void Game::RenderImGui()
         ImGui::Combo("Blend Mode", &ParticlesGlobals::g_blendMode, items, 3);
     }
 
-    m_sceneMenger->renderImGui();
+    m_sceneMenger->RenderImGui(m_cameraControllerFPS->getCamera());
 
     ImGui::End();
 

@@ -259,9 +259,9 @@ namespace DemoParticles
 
     }
 
-    void SceneMenger::renderImGui()
+    void SceneMenger::RenderImGui(Camera* camera)
     {
-        m_renderParticles->renderImGui();
+        m_renderParticles->RenderImGui(camera);
     }
 
     void SceneMenger::save(json& file)

@@ -374,13 +374,13 @@ namespace DemoParticles
         m_deviceResources->PIXEndEvent();
     }
 
-    void RenderParticles::renderImGui()
+    void RenderParticles::RenderImGui(Camera* camera)
     {
         if (ImGui::CollapsingHeader("Emitters"))
         {
             for (auto&& emitter : m_particleEmitters)
             {
-                emitter->renderImGui();
+                emitter->RenderImGui(camera);
             }
         }
 

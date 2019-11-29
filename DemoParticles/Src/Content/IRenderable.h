@@ -26,7 +26,7 @@ namespace DemoParticles
 
         virtual void update(DX::StepTimer const& timer, Camera* camera = nullptr) = 0;
         virtual void render() = 0;
-        virtual void renderImGui() {}
+        virtual void RenderImGui(Camera* camera) {}
         virtual void save(json& file) {}
         virtual void load(json& file) {}
 

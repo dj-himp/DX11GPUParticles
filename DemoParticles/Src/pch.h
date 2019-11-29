@@ -74,6 +74,7 @@
 #include "imgui/imgui.h"
 #include "Gui/imgui_impl_win32.h"
 #include "Gui/imgui_impl_dx11.h"
+#include "imgui/ImGuizmo.h"
 
 #include "Extern/Json/json.hpp"
 

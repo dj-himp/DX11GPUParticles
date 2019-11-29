@@ -75,7 +75,7 @@ namespace DemoParticles
         m_emitParticles->end();
     }
 
-    void ParticleEmitterCube::renderImGui()
+    void ParticleEmitterCube::RenderImGui(Camera* camera)
     {
         if (ImGui::TreeNode("Cube emitter"))
         {

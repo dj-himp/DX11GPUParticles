@@ -82,7 +82,7 @@ namespace DemoParticles
         m_hasEmitted = true;
     }
 
-    void ParticleEmitterBuffer::renderImGui()
+    void ParticleEmitterBuffer::RenderImGui(Camera* camera)
     {
         if (ImGui::TreeNode("Buffer emitter"))
         {

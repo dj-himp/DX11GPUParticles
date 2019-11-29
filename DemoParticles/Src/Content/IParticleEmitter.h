@@ -4,6 +4,8 @@ using json = nlohmann::json;
 
 namespace DemoParticles
 {
+    class Camera;
+
     class IParticleEmitter
     {
     public:
@@ -13,7 +15,7 @@ namespace DemoParticles
 
         virtual void update(DX::StepTimer const& timer) = 0;
         virtual void emit() = 0;
-        virtual void renderImGui() {}
+        virtual void RenderImGui(Camera* camera) {}
         virtual void reset() {}
         virtual void save(json& file) {}
         virtual void load(json& file) {}

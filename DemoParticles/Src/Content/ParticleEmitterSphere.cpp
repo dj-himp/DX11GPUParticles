@@ -70,7 +70,7 @@ namespace DemoParticles
         m_emitParticles->end();
     }
 
-    void ParticleEmitterSphere::renderImGui()
+    void ParticleEmitterSphere::RenderImGui(Camera* camera)
     {
         if (ImGui::TreeNode("Sphere emitter"))
         {
@@ -88,6 +88,8 @@ namespace DemoParticles
 
             ImGui::TreePop();
         }
+
+        //ImGuizmo::
     }
 
     void ParticleEmitterSphere::save(json& file)

@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "ParticleEmitterPoint.h"
 
-#include "../Common/ComputeShader.h"
+#include "Common/ComputeShader.h"
+#include "Camera/Camera.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -20,8 +21,10 @@ namespace DemoParticles
         m_emitterConstantBufferData.color = Color(0.5f, 0.2f, 0.2f, 1.0f);
         m_emitterConstantBufferData.particleSizeStart = 0.01f;
         m_emitterConstantBufferData.particleSizeEnd = 0.01f;
-        m_emitterConstantBufferData.coneYaw = DirectX::XM_2PI;
-        m_emitterConstantBufferData.conePitch = DirectX::XM_2PI;
+        m_emitterOrientationYaw = 0.0f;// DirectX::XM_PIDIV4;
+        m_emitterOrientationPitch = 0.0f;// DirectX::XM_PIDIV4;
+        m_emitterConstantBufferData.coneYaw = DirectX::XM_1DIVPI;
+        m_emitterConstantBufferData.conePitch = DirectX::XM_1DIVPI;
     }
 
     void ParticleEmitterPoint::createDeviceDependentResources()
@@ -50,6 +53,9 @@ namespace DemoParticles
         {
             m_lastEmitTime = m_emitDelay;
             m_needEmit = true;
+
+            Matrix emitterRotation = Matrix::CreateFromYawPitchRoll(m_emitterOrientationYaw, m_emitterOrientationPitch, 0.0f);
+            m_emitterConstantBufferData.direction = Vector4::Transform(Vector4(0.0f, 0.0f, 1.0f, 0.0f), emitterRotation);
         }
         
     }
@@ -71,7 +77,7 @@ namespace DemoParticles
         m_emitParticles->end();
     }
 
-    void ParticleEmitterPoint::renderImGui()
+    void ParticleEmitterPoint::RenderImGui(Camera* camera)
     {
         if (ImGui::TreeNode("Point emitter"))
         {
@@ -86,11 +92,18 @@ namespace DemoParticles
             ImGui::ColorEdit4("Color", (float*)&m_emitterConstantBufferData.color);
             ImGui::DragFloat("Size Start", &m_emitterConstantBufferData.particleSizeStart, 0.01f, 0.0f, 10.0f);
             ImGui::DragFloat("Size End", &m_emitterConstantBufferData.particleSizeEnd, 0.01f, 0.0f, 10.0f);
+            ImGui::SliderAngle("Orientation Yaw", &m_emitterOrientationYaw, 0.0f, 360.0f);
+            ImGui::SliderAngle("Orientation Pitch", &m_emitterOrientationPitch, 0.0f, 360.0f);
             ImGui::SliderAngle("Cone Yaw", &m_emitterConstantBufferData.coneYaw, 0.0f, 360.0f);
             ImGui::SliderAngle("Cone Pitch", &m_emitterConstantBufferData.conePitch, 0.0f, 360.0f);
 
             ImGui::TreePop();
         }
+
+        Matrix world = Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        world = world.Transpose();
+        //ImGuizmo::Manipulate((float*)&camera->getView(), (float*)&camera->getProjection(), ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, (float*)&world);
+        ImGuizmo::DrawCube((float*)&camera->getView(), (float*)&camera->getProjection(), (float*)&world);
     }
 
     void ParticleEmitterPoint::save(json& file)
@@ -105,6 +118,8 @@ namespace DemoParticles
         file["Emitters"]["Point"]["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
         file["Emitters"]["Point"]["Size start"] = m_emitterConstantBufferData.particleSizeStart;
         file["Emitters"]["Point"]["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
+        file["Emitters"]["Point"]["Orientation Yaw"] = m_emitterOrientationYaw;
+        file["Emitters"]["Point"]["Orientation Pitch"] = m_emitterOrientationPitch;
         file["Emitters"]["Point"]["Cone Yaw"] = m_emitterConstantBufferData.coneYaw;
         file["Emitters"]["Point"]["Cone Pitch"] = m_emitterConstantBufferData.conePitch;
     }
@@ -123,6 +138,8 @@ namespace DemoParticles
         m_emitterConstantBufferData.color = Vector4(&color[0]);
         m_emitterConstantBufferData.particleSizeStart = file["Emitters"]["Point"]["Size start"];
         m_emitterConstantBufferData.particleSizeEnd = file["Emitters"]["Point"]["Size end"];
+        m_emitterOrientationYaw = file["Emitters"]["Point"]["Orientation Yaw"];
+        m_emitterOrientationPitch = file["Emitters"]["Point"]["Orientation Pitch"];
         m_emitterConstantBufferData.coneYaw = file["Emitters"]["Point"]["Cone Yaw"];
         m_emitterConstantBufferData.conePitch = file["Emitters"]["Point"]["Cone Pitch"];
     }

@@ -16,7 +16,7 @@ namespace DemoParticles
 
         virtual void update(DX::StepTimer const& timer) override;
         virtual void emit() override;
-        virtual void renderImGui() override;
+        virtual void RenderImGui(Camera* camera) override;
         virtual void save(json& file) override;
         virtual void load(json& file) override;
 
@@ -30,5 +30,8 @@ namespace DemoParticles
         float m_emitDelay = 0.0f;
         float m_lastEmitTime = 0.0f;
         bool m_needEmit = false;
+
+        float m_emitterOrientationYaw;
+        float m_emitterOrientationPitch;
     };
 }
