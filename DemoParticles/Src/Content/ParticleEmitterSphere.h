@@ -30,5 +30,18 @@ namespace DemoParticles
         float m_emitDelay = 0.0f;
         float m_lastEmitTime = 0.0f;
         bool m_needEmit = false;
+
+        float m_worldf[16] =
+        { 1.f, 0.f, 0.f, 0.f,
+          0.f, 1.f, 0.f, 0.f,
+          0.f, 0.f, 1.f, 0.f,
+          0.f, 0.f, 0.f, 1.f };
+
+        //Fake world matrix to add a scale gyzmo to the "partitioning" variable
+        float m_fakeWorldf[16] =
+        { 1.f, 0.f, 0.f, 0.f,
+          0.f, 1.f, 0.f, 0.f,
+          0.f, 0.f, 1.f, 0.f,
+          0.f, 0.f, 0.f, 1.f };
     };
 }

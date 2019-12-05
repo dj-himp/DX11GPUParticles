@@ -303,6 +303,9 @@ void Game::RenderImGui()
     ImGui::NewFrame();
     ImGuizmo::BeginFrame();
 
+    //ImGuiIO& io = ImGui::GetIO();
+    //ImGuizmo::SetRect(0.0f, 0.0f, io.DisplaySize.x, io.DisplaySize.y);
+
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
     /*bool show_demo_window = true;
     if (show_demo_window)
@@ -325,6 +328,7 @@ void Game::RenderImGui()
     m_sceneMenger->RenderImGui(m_cameraControllerFPS->getCamera());
 
     ImGui::End();
+
 
     // Rendering
     ImGui::Render();

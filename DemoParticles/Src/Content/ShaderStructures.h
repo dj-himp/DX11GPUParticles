@@ -40,6 +40,8 @@ namespace DemoParticles
     struct EmitterSphereConstantBuffer
     {
         DirectX::SimpleMath::Vector4 position;
+        DirectX::SimpleMath::Vector4 scale;
+        DirectX::SimpleMath::Vector4 partitioning;
         DirectX::SimpleMath::Color color;
 
         UINT maxSpawn;

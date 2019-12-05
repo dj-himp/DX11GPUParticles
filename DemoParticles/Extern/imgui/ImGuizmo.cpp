@@ -869,11 +869,14 @@ namespace ImGuizmo
    {
       gContext.mMode = mode;
       gContext.mViewMat = *(matrix_t*)view;
+      gContext.mViewMat.Transpose();
       gContext.mProjectionMat = *(matrix_t*)projection;
+      gContext.mProjectionMat.Transpose();
 
       if (mode == LOCAL)
       {
          gContext.mModel = *(matrix_t*)matrix;
+         gContext.mModel.Transpose();
          gContext.mModel.OrthoNormalize();
       }
       else
@@ -1943,6 +1946,51 @@ namespace ImGuizmo
       mat.v.up *= validScale[1];
       mat.v.dir *= validScale[2];
       mat.v.position.Set(translation[0], translation[1], translation[2], 1.f);
+   }
+
+   //Add by ME
+   void DecomposeMatrixToComponentsRadians(const float *matrix, float *translation, float *rotation, float *scale)
+   {
+       matrix_t mat = *(matrix_t*)matrix;
+
+       scale[0] = mat.v.right.Length();
+       scale[1] = mat.v.up.Length();
+       scale[2] = mat.v.dir.Length();
+
+       mat.OrthoNormalize();
+
+       rotation[0] = atan2f(mat.m[1][2], mat.m[2][2]);
+       rotation[1] = atan2f(-mat.m[0][2], sqrtf(mat.m[1][2] * mat.m[1][2] + mat.m[2][2] * mat.m[2][2]));
+       rotation[2] = atan2f(mat.m[0][1], mat.m[0][0]);
+
+       translation[0] = mat.v.position.x;
+       translation[1] = mat.v.position.y;
+       translation[2] = mat.v.position.z;
+   }
+
+   //Add by ME
+   void RecomposeMatrixFromComponentsRadians(const float *translation, const float *rotation, const float *scale, float *matrix)
+   {
+       matrix_t& mat = *(matrix_t*)matrix;
+
+       matrix_t rot[3];
+       for (int i = 0; i < 3; i++)
+           rot[i].RotationAxis(directionUnary[i], rotation[i]);
+
+       mat = rot[0] * rot[1] * rot[2];
+
+       float validScale[3];
+       for (int i = 0; i < 3; i++)
+       {
+           if (fabsf(scale[i]) < FLT_EPSILON)
+               validScale[i] = 0.001f;
+           else
+               validScale[i] = scale[i];
+       }
+       mat.v.right *= validScale[0];
+       mat.v.up *= validScale[1];
+       mat.v.dir *= validScale[2];
+       mat.v.position.Set(translation[0], translation[1], translation[2], 1.f);
    }
 
    void Manipulate(const float *view, const float *projection, OPERATION operation, MODE mode, float *matrix, float *deltaMatrix, float *snap, float *localBounds, float *boundsSnap)

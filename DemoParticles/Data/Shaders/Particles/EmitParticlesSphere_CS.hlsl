@@ -6,6 +6,8 @@
 cbuffer emitterConstantBuffer : register(b4)
 {
     float4 emitterPosition;
+    float4 emitterScale;
+    float4 emitterPartitioning; //don't know how to name that but influence repartition inside the volume (making cool effects)
     float4 color;
     
     uint emitterMaxSpawn;
@@ -34,8 +36,8 @@ void main(uint3 id : SV_DispatchThreadID)
         Particle p = (Particle) 0;
         
         p.position = emitterPosition;
-        float3 position = float3(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() -0.5);
-        position = normalize(position);// * max(0.5, sin(time) * 1.5);
+        float3 position = emitterPartitioning.xyz * float3(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5);
+        position = emitterScale.xyz * normalize(position);
         p.position.xyz += position;
         p.position.w = 1.0;
 

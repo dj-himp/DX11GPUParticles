@@ -2,6 +2,7 @@
 #include "ParticleEmitterSphere.h"
 
 #include "../Common/ComputeShader.h"
+#include "../Camera/Camera.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -11,13 +12,15 @@ namespace DemoParticles
         : IParticleEmitter(deviceResources)
     {
         m_emitterConstantBufferData.maxSpawn = 1000;
+        m_emitterConstantBufferData.position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+        m_emitterConstantBufferData.scale = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
         m_emitterConstantBufferData.particleOrientation = 0;
         m_emitterConstantBufferData.particlesBaseSpeed = 1.0f;
         m_emitterConstantBufferData.particlesLifeSpan = 3.0f;
         m_emitterConstantBufferData.particlesMass = 1.0f;
         m_emitterConstantBufferData.color = Color(0.5f, 0.2f, 0.2f, 1.0f);
         m_emitterConstantBufferData.particleSizeStart = 0.01f;
-        m_emitterConstantBufferData.particleSizeEnd = 0.01f;
+        m_emitterConstantBufferData.particleSizeEnd = 0.0f;
     }
 
     void ParticleEmitterSphere::createDeviceDependentResources()
@@ -47,10 +50,6 @@ namespace DemoParticles
             m_lastEmitTime = m_emitDelay;
             m_needEmit = true;
         }
-
-        //m_emitterConstantBufferData.position = DX::toVector4(camera->getPosition() + camera->getForward() * 4.0f);
-        m_emitterConstantBufferData.position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
-        //m_emitterConstantBufferData.position = Vector4(cos(timer.GetTotalSeconds() * 0.5f) * 3.0f, 0.0f, sin(timer.GetTotalSeconds() * 0.5f) * 3.0f, 1.0f);       
     }
 
     void ParticleEmitterSphere::emit()
@@ -76,7 +75,6 @@ namespace DemoParticles
         {
             ImGui::Checkbox("Enabled", &m_enabled);
             ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1, 0, 10000000);
-            //ImGui::DragFloat3("Position", (float*)&m_emitterConstantBufferData.position, 0.01f);
             const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
             ImGui::Combo("Particles orientation", (int*)&m_emitterConstantBufferData.particleOrientation, orientationItems, 3);
             ImGui::DragFloat("Base speed", &m_emitterConstantBufferData.particlesBaseSpeed, 0.1f, 0.0f, 100.0f);
@@ -85,6 +83,74 @@ namespace DemoParticles
             ImGui::ColorEdit4("Color", (float*)&m_emitterConstantBufferData.color);
             ImGui::DragFloat("Size Start", &m_emitterConstantBufferData.particleSizeStart, 0.01f, 0.0f, 10.0f);
             ImGui::DragFloat("Size End", &m_emitterConstantBufferData.particleSizeEnd, 0.01f, 0.0f, 10.0f);
+
+            float rotation[3];
+            ImGuizmo::DecomposeMatrixToComponents(m_worldf, (float*)&m_emitterConstantBufferData.position, (float*)&rotation, (float*)&m_emitterConstantBufferData.scale);
+            ImGui::DragFloat3("Position", (float*)&m_emitterConstantBufferData.position, 0.01f);
+            ImGui::DragFloat3("Scale", (float*)&m_emitterConstantBufferData.scale, 0.01f);
+            ImGuizmo::RecomposeMatrixFromComponents((float*)&m_emitterConstantBufferData.position, (float*)&rotation, (float*)&m_emitterConstantBufferData.scale, m_worldf);
+
+            float p[3];
+            float r[3];
+            ImGuizmo::DecomposeMatrixToComponents(m_fakeWorldf, p, r, (float*)&m_emitterConstantBufferData.partitioning);
+            ImGui::DragFloat3("Partitioning", (float*)&m_emitterConstantBufferData.partitioning, 0.01f);
+            ImGuizmo::RecomposeMatrixFromComponents((float*)&m_emitterConstantBufferData.position, (float*)&rotation, (float*)&m_emitterConstantBufferData.partitioning, m_fakeWorldf);
+
+            static bool guizmoHidden = true;
+            if (!m_enabled)
+            {
+                guizmoHidden = true;
+            }
+
+            static bool useScaleForPartitioning;
+
+            if (ImGui::RadioButton("None", guizmoHidden))
+            {
+                guizmoHidden = true;
+            }
+            ImGui::SameLine();
+
+            static float snap[3] = { 0.1f, 0.1f, 0.1f };
+            static ImGuizmo::OPERATION guizmoOperation = ImGuizmo::TRANSLATE;
+            static ImGuizmo::MODE guizmoMode = ImGuizmo::WORLD;
+            if (ImGui::RadioButton("Translate", guizmoOperation == ImGuizmo::TRANSLATE && useScaleForPartitioning == false && guizmoHidden == false))
+            {
+                guizmoOperation = ImGuizmo::TRANSLATE;
+                useScaleForPartitioning = false;
+                guizmoHidden = false;
+            }
+            ImGui::SameLine();
+            if (ImGui::RadioButton("Scale", guizmoOperation == ImGuizmo::SCALE && useScaleForPartitioning == false && guizmoHidden == false))
+            {
+                guizmoOperation = ImGuizmo::SCALE;
+                useScaleForPartitioning = false;
+                guizmoHidden = false;
+            }
+            
+            ImGui::SameLine();
+            if (ImGui::RadioButton("Partitioning", useScaleForPartitioning == true && guizmoHidden == false))
+            {
+                guizmoOperation = ImGuizmo::SCALE;
+                useScaleForPartitioning = true;
+                guizmoHidden = false;
+            }
+
+            if (guizmoHidden == false)
+            {
+                ImGuiIO& io = ImGui::GetIO();
+                ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+                if (!useScaleForPartitioning)
+                {
+                    ImGuizmo::Manipulate(&camera->getView().Transpose().m[0][0], &camera->getProjection().Transpose().m[0][0], guizmoOperation, guizmoMode, m_worldf, nullptr, /*snap*/nullptr);
+                    ImGuizmo::DecomposeMatrixToComponentsRadians(m_worldf, (float*)&m_emitterConstantBufferData.position, (float*)&rotation, (float*)&m_emitterConstantBufferData.scale);
+                }
+                else
+                {
+                    ImGuizmo::Manipulate(&camera->getView().Transpose().m[0][0], &camera->getProjection().Transpose().m[0][0], guizmoOperation, guizmoMode, m_fakeWorldf, nullptr, nullptr);
+                    ImGuizmo::DecomposeMatrixToComponentsRadians(m_fakeWorldf, p, r, (float*)&m_emitterConstantBufferData.partitioning);
+                }
+            }
 
             ImGui::TreePop();
         }
@@ -96,7 +162,9 @@ namespace DemoParticles
     {
         file["Emitters"]["Sphere"]["Enabled"] = m_enabled;
         file["Emitters"]["Sphere"]["Max Spawn"] = m_emitterConstantBufferData.maxSpawn;
-        //file["Emitters"]["Sphere"]["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
+        file["Emitters"]["Sphere"]["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
+        file["Emitters"]["Sphere"]["Scale"] = { m_emitterConstantBufferData.scale.x, m_emitterConstantBufferData.scale.y, m_emitterConstantBufferData.scale.z, m_emitterConstantBufferData.scale.w };
+        file["Emitters"]["Sphere"]["Partitioning"] = { m_emitterConstantBufferData.partitioning.x, m_emitterConstantBufferData.partitioning.y, m_emitterConstantBufferData.partitioning.z, m_emitterConstantBufferData.partitioning.w };
         file["Emitters"]["Sphere"]["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
         file["Emitters"]["Sphere"]["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
         file["Emitters"]["Sphere"]["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
@@ -110,8 +178,12 @@ namespace DemoParticles
     {
         m_enabled = file["Emitters"]["Sphere"]["Enabled"];
         m_emitterConstantBufferData.maxSpawn = file["Emitters"]["Sphere"]["Max Spawn"];
-        //std::vector<float> position = file["Emitters"]["Sphere"]["Position"];
-        //m_emitterConstantBufferData.position = Vector4(&position[0]);
+        std::vector<float> position = file["Emitters"]["Sphere"]["Position"];
+        m_emitterConstantBufferData.position = Vector4(&position[0]);
+        std::vector<float> scale = file["Emitters"]["Sphere"]["Scale"];
+        m_emitterConstantBufferData.scale = Vector4(&scale[0]);
+        std::vector<float> partitioning = file["Emitters"]["Sphere"]["Partitioning"];
+        m_emitterConstantBufferData.partitioning = Vector4(&partitioning[0]);
         m_emitterConstantBufferData.particleOrientation = file["Emitters"]["Sphere"]["Particles orientation"];
         m_emitterConstantBufferData.particlesBaseSpeed = file["Emitters"]["Sphere"]["Base speed"];
         m_emitterConstantBufferData.particlesLifeSpan = file["Emitters"]["Sphere"]["LifeSpan"];
