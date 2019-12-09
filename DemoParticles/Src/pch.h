@@ -75,8 +75,11 @@
 #include "Gui/imgui_impl_win32.h"
 #include "Gui/imgui_impl_dx11.h"
 #include "imgui/ImGuizmo.h"
+#include "imgui/ImSequencer.h"
+#include "imgui/ImCurveEdit.h"
+#include "Json/json.hpp"
 
-#include "Extern/Json/json.hpp"
+#include "Gui/Sequencer.h"
 
 #include <DDSTextureLoader.h>
 

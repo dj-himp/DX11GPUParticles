@@ -196,6 +196,7 @@
     <ClCompile Include="Src\Content\IParticleEmitter.cpp" />
     <ClCompile Include="Src\Content\RenderParticles.cpp" />
     <ClCompile Include="Src\Common\ComputeShader.cpp" />
+    <ClCompile Include="Src\Gui\Sequencer.cpp" />
     <ClCompile Include="Src\Scene\SceneMenger.cpp" />
     <ClCompile Include="Src\App.cpp" />
     <ClCompile Include="Src\Camera\Camera.cpp" />
@@ -292,6 +293,7 @@
     <ClInclude Include="Extern\imgui\ImCurveEdit.h" />
     <ClInclude Include="Extern\imgui\ImGradient.h" />
     <ClInclude Include="Extern\imgui\ImGuizmo.h" />
+    <ClInclude Include="Extern\imgui\imgui_user.h" />
     <ClInclude Include="Extern\imgui\ImSequencer.h" />
     <ClInclude Include="Extern\Json\json.hpp" />
     <ClInclude Include="Src\Content\ParticleEmitterPoint.h" />
@@ -312,6 +314,7 @@
     <ClInclude Include="Src\Content\RenderParticles.h" />
     <ClInclude Include="Src\Common\ComputeShader.h" />
     <ClInclude Include="Src\GlobalSettings.h" />
+    <ClInclude Include="Src\Gui\Sequencer.h" />
     <ClInclude Include="Src\Scene\SceneMenger.h" />
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\Camera\CameraControllerFPS.h" />
@@ -400,6 +403,7 @@
     <None Include="Extern\assimp\vector2.inl" />
     <None Include="Extern\assimp\vector3.inl" />
     <None Include="packages.config" />
+    <None Include="Extern\imgui\imgui_user.inl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Data\Textures\CatMac__C.png" />

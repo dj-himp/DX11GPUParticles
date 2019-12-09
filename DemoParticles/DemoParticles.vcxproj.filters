@@ -198,6 +198,9 @@
     <ClCompile Include="Extern\imgui\ImGradient.cpp">
       <Filter>Extern\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Gui\Sequencer.cpp">
+      <Filter>Src\Gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\DeviceResources.h">
@@ -497,6 +500,10 @@
     <ClInclude Include="Extern\imgui\ImGradient.h">
       <Filter>Extern\imgui</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Gui\Sequencer.h">
+      <Filter>Src\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\imgui\imgui_user.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -526,6 +533,9 @@
     </None>
     <None Include="Extern\assimp\vector3.inl">
       <Filter>Extern\assimp</Filter>
+    </None>
+    <None Include="Extern\imgui\imgui_user.inl">
+      <Filter>Extern\imgui</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
