@@ -192,6 +192,11 @@ namespace DemoParticles
         m_emitterConstantBufferData.color = Vector4(&color[0]);
         m_emitterConstantBufferData.particleSizeStart = file["Emitters"]["Sphere"]["Size start"];
         m_emitterConstantBufferData.particleSizeEnd = file["Emitters"]["Sphere"]["Size end"];
+
+        float rotation[3] = { 0.0f, 0.0f, 0.0f };
+        ImGuizmo::RecomposeMatrixFromComponents((float*)&m_emitterConstantBufferData.position, (float*)&rotation, (float*)&m_emitterConstantBufferData.scale, m_worldf);
+        
+        ImGuizmo::RecomposeMatrixFromComponents((float*)&m_emitterConstantBufferData.position, (float*)&rotation, (float*)&m_emitterConstantBufferData.partitioning, m_fakeWorldf);
     }
 
 }

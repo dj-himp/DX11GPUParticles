@@ -503,7 +503,9 @@
     <ClInclude Include="Src\Gui\Sequencer.h">
       <Filter>Src\Gui</Filter>
     </ClInclude>
-    <ClInclude Include="Extern\imgui\imgui_user.h" />
+    <ClInclude Include="Extern\imgui\imgui_user.h">
+      <Filter>Extern\imgui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -45,11 +45,6 @@ namespace DemoParticles
                 &m_constantBuffer
             )
         );
-
-        D3D11_BLEND_DESC blendDesc;
-        ZeroMemory(&blendDesc, sizeof(D3D11_BLEND_DESC));
-        blendDesc.RenderTarget[0].BlendEnable = FALSE;
-        //blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
     }
 
     void DebugRenderer::createWindowSizeDependentResources()
@@ -92,7 +87,7 @@ namespace DemoParticles
 
         for (int i = 0; i < debugModel.m_model->getMeshCount(); ++i)
         {
-            UINT stride = debugModel.m_model->getVertexStride(); //sizeof(VertexColorUV);
+            UINT stride = debugModel.m_model->getVertexStride();
             UINT offset = 0;
             context->IASetVertexBuffers(0, 1, debugModel.m_model->getMesh(i)->getVertexBuffer().GetAddressOf(), &stride, &offset);
             context->IASetIndexBuffer(debugModel.m_model->getMesh(i)->getIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);
@@ -103,6 +98,9 @@ namespace DemoParticles
             context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
             context->VSSetConstantBuffers(1, 1, m_constantBuffer.GetAddressOf());
 
+            const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
+            context->OMSetBlendState(RenderStatesHelper::Opaque().Get(), blendFactor, 0xffffffff);
+            context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
             context->RSSetState(RenderStatesHelper::CullNone().Get());
 
             context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);

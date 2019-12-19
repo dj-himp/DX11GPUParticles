@@ -194,6 +194,7 @@ namespace DemoParticles
         context->GSSetConstantBuffers(0, 1, m_sceneConstantBuffer.GetAddressOf());
         context->PSSetConstantBuffers(0, 1, m_sceneConstantBuffer.GetAddressOf());
 
+        //m_bakingDone = true;
         if (!m_bakingDone)
         {
             //save previously bound renderTargets
@@ -215,6 +216,20 @@ namespace DemoParticles
             context->RSSetViewports(1, &viewport);
 
             context->OMSetRenderTargets(nbRT, previousRenderTargets, previousDepthStencil);
+
+            //OMGetRenderTargets increment the COM refcount so need to release to decrement the count
+            //TODO find a better way to handle this
+            for (int i = 0; i < nbRT; ++i)
+            {
+                if (previousRenderTargets[i])
+                {
+                    previousRenderTargets[i]->Release();
+                }
+            }
+            if (previousDepthStencil)
+            {
+                previousDepthStencil->Release();
+            }
 
             m_computePackParticle->begin();
             m_computePackParticle->setSRV(0, m_rtBakePositions->getShaderResourceView());

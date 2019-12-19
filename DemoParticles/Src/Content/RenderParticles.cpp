@@ -320,8 +320,11 @@ namespace DemoParticles
         m_deviceResources->PIXSetMarker(L"Simulate");
         simulateParticles();
 
-        m_deviceResources->PIXSetMarker(L"Sort");
-        m_sortLib->run(m_maxParticles, m_aliveIndexUAV.Get(), m_aliveListCountConstantBuffer.Get());
+        if (m_sortParticles)
+        {
+            m_deviceResources->PIXSetMarker(L"Sort");
+            m_sortLib->run(m_maxParticles, m_aliveIndexUAV.Get(), m_aliveListCountConstantBuffer.Get());
+        }
 
         m_deviceResources->PIXSetMarker(L"Render");
         context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
@@ -390,6 +393,8 @@ namespace DemoParticles
             {
                 resetParticles();
             }
+
+            ImGui::Checkbox("Sorted", &m_sortParticles);
 
             if (ImGui::TreeNode("ForceField"))
             {

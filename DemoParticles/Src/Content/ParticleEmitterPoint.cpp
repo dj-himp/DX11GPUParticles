@@ -152,6 +152,8 @@ namespace DemoParticles
                 m_emitterConstantBufferData.direction = Vector4::Transform(Vector4(0.0f, 1.0f, 0.0f, 1.0f), matRotation);
             }
 
+            //ImGui::CurveEditor("curve", (float*)&m_emitterConstantBufferData.position, 3);
+
             ImGui::TreePop();
         }
         

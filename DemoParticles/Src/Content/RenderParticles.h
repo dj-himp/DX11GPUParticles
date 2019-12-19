@@ -108,5 +108,7 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_forceFieldTextureSRV;
         FGAParser::FGAContent                               m_content;
 
+        bool m_sortParticles = false;
+
     };
 }
