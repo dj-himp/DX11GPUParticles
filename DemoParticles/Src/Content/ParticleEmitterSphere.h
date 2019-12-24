@@ -43,5 +43,12 @@ namespace DemoParticles
           0.f, 1.f, 0.f, 0.f,
           0.f, 0.f, 1.f, 0.f,
           0.f, 0.f, 0.f, 1.f };
+
+        std::vector<float> m_rotation = { 0.0f, 0.0f, 0.0f };
+
+        //TEMP
+
+        choreograph::Timeline m_timeline;
+        choreograph::Output<DirectX::SimpleMath::Vector4> m_ChoreoPosition;
     };
 }

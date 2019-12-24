@@ -43,6 +43,7 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector4 scale;
         DirectX::SimpleMath::Vector4 partitioning;
         DirectX::SimpleMath::Color color;
+        DirectX::SimpleMath::Matrix rotation;
 
         UINT maxSpawn;
         UINT particleOrientation;

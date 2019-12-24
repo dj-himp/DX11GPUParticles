@@ -145,7 +145,7 @@ namespace DemoParticles
         std::unique_ptr<Model> model = std::make_unique<Model>(m_deviceResources);
         std::unique_ptr<ModelMesh>& mesh = model->AddMesh();
 
-        Color dummyColor = Color(0);
+        Color dummyColor = Color(0, 0, 0);
 
         static const VertexColorUV vertices[] =
         {

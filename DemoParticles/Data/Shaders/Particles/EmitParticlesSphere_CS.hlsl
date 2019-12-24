@@ -9,6 +9,7 @@ cbuffer emitterConstantBuffer : register(b4)
     float4 emitterScale;
     float4 emitterPartitioning; //don't know how to name that but influence repartition inside the volume (making cool effects)
     float4 color;
+    float4x4 emitterRotation;
     
     uint emitterMaxSpawn;
     uint particleOrientation;
@@ -37,10 +38,11 @@ void main(uint3 id : SV_DispatchThreadID)
         
         p.position = emitterPosition;
         float3 position = emitterPartitioning.xyz * float3(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5);
-        position = emitterScale.xyz * normalize(position);
+        position = mul(emitterScale.xyz * normalize(position), emitterRotation);
+        //p.position = mul(p.position, emitterRotation);
         p.position.xyz += position;
         p.position.w = 1.0;
-
+        
         p.velocity = particlesBaseSpeed * normalize(float4(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, 0.0));
         
         p.lifeSpan = particlesLifeSpan * rand_xorshift_normalized();
