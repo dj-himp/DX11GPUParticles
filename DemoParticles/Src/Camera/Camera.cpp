@@ -53,7 +53,7 @@ namespace DemoParticles
         updateProjection();
     }
 
-    void Camera::setaspectRatio(float aspectRatio)
+    void Camera::setAspectRatio(float aspectRatio)
     {
         m_aspectRatio = aspectRatio;
         updateProjection();

@@ -25,8 +25,6 @@ namespace DemoParticles
         m_fullScreenQuad = std::make_unique<RenderFullscreenQuad>(deviceResources);
         m_renderParticles = std::make_unique<RenderParticles>(deviceResources);
         m_renderForceField = std::make_unique<RenderForceField>(deviceResources);
-        createDeviceDependentResources();
-        createWindowSizeDependentResources();
     }
 
     SceneMenger::~SceneMenger()
@@ -35,12 +33,6 @@ namespace DemoParticles
 
     void SceneMenger::createDeviceDependentResources()
     {
-//         m_mengerRenderer->createDeviceDependentResources();
-//         m_renderParticles->createDeviceDependentResources();
-
-        //int width = m_deviceResources->GetOutputWidth();
-        //int height = m_deviceResources->GetOutputHeight();
-
         int width = 1024;
         int height = 720;
         m_bakingViewport = CD3D11_VIEWPORT(0.0f, 0.0f, width, height);
@@ -120,16 +112,27 @@ namespace DemoParticles
         m_renderParticles->setBakedParticleUAV(m_bakedUAV);
 
         m_mengerRenderer->createDeviceDependentResources();
+        m_bakeModelParticles->createDeviceDependentResources();
+        m_fullScreenQuad->createDeviceDependentResources();
         m_renderParticles->createDeviceDependentResources();
         m_renderForceField->createDeviceDependentResources();
     }
 
     void SceneMenger::createWindowSizeDependentResources()
     {
+        auto context = m_deviceResources->GetD3DDeviceContext();
+
+        D3D11_VIEWPORT viewport = m_deviceResources->GetScreenViewport();
+        context->RSSetViewports(1, &viewport);
+
         Matrix posScale = Matrix::CreateTranslation(0.0f, 0.0f, 0.0f) * Matrix::CreateScale(0.5f, 0.5f, 1.0f);
         m_fullScreenQuad->setPosScale(posScale);
 
         m_mengerRenderer->createWindowSizeDependentResources();
+        m_bakeModelParticles->createWindowSizeDependentResources();
+        m_fullScreenQuad->createWindowSizeDependentResources();
+        m_renderParticles->createWindowSizeDependentResources();
+        m_renderForceField->createWindowSizeDependentResources();
 
     }
 

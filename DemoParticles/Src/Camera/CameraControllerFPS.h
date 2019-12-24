@@ -12,6 +12,9 @@ namespace DemoParticles
         CameraControllerFPS(const DX::DeviceResources* deviceResources);
         ~CameraControllerFPS();
 
+        void init(DirectX::SimpleMath::Vector3 position, float yaw, float pitch, float roll, float aspectRatio, float fov = 60.0f, float nearPlane = 0.1f, float farPlane = 1000.0f);
+        void setAspectRatio(float aspectRatio);
+
         void update(DX::StepTimer const& timer);
 
         Camera* getCamera() { return m_camera.get();  }

@@ -63,10 +63,8 @@ void Game::Initialize(HWND window, int width, int height)
     m_deviceResources->SetWindow(window, width, height);
 
     m_deviceResources->CreateDeviceResources();
-    CreateDeviceDependentResources();
 
     m_deviceResources->CreateWindowSizeDependentResources();
-    CreateWindowSizeDependentResources();
 
     //m_fpsTextRenderer = std::make_unique<SampleFpsTextRenderer>(m_deviceResources);
 
@@ -91,6 +89,10 @@ void Game::Initialize(HWND window, int width, int height)
     m_cameraControllerFPS = std::make_unique<CameraControllerFPS>(m_deviceResources.get());
 
     m_sceneMenger = std::make_unique<DemoParticles::SceneMenger>(m_deviceResources.get());
+
+    CreateDeviceDependentResources();
+    CreateWindowSizeDependentResources();
+
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -274,12 +276,17 @@ void Game::CreateDeviceDependentResources()
 
     DebugRenderer::instance().setDeviceResources(m_deviceResources.get());
     DebugRenderer::instance().createDeviceDependentResources();
+
+    m_sceneMenger->createDeviceDependentResources();
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
 void Game::CreateWindowSizeDependentResources()
 {
+    m_cameraControllerFPS->setAspectRatio((float)m_deviceResources->GetOutputWidth() / m_deviceResources->GetOutputHeight());
+
     DebugRenderer::instance().createWindowSizeDependentResources();
+    m_sceneMenger->createWindowSizeDependentResources();
 }
 
 void Game::OnDeviceLost()

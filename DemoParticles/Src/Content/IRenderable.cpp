@@ -21,9 +21,7 @@ namespace DemoParticles
 
     void IRenderable::init()
     {
-        createDeviceDependentResources();
-        createWindowSizeDependentResources();
-
+        
     }
 
     void IRenderable::release()

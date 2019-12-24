@@ -21,8 +21,8 @@ namespace DemoParticles
         void setFov(float fov);
         float getFov() { return m_fov; }
 
-        void setaspectRatio(float aspectRatio);
-        float getaspectRatio() { return m_aspectRatio; }
+        void setAspectRatio(float aspectRatio);
+        float getAspectRatio() { return m_aspectRatio; }
 
         void setNearFarPlane(float nearPlane, float farPlane);
 
