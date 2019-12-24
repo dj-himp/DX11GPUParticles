@@ -17,7 +17,7 @@ namespace DemoParticles
         void Render();
 
     private:
-        const const DX::DeviceResources* m_deviceResources;
+        const DX::DeviceResources* m_deviceResources;
 
         std::unique_ptr<DirectX::CommonStates> m_states;
         std::unique_ptr<DirectX::IEffectFactory> m_fxFactory;

@@ -24,7 +24,7 @@ namespace DemoParticles
     DirectX::SimpleMath::Vector2 InputManager::getMousePosition()
     {
         auto mouseState = Mouse::Get().GetState();
-        return Vector2(mouseState.x, mouseState.y);
+        return Vector2((float)mouseState.x, (float)mouseState.y);
     }
 
     bool InputManager::isLeftMouseButtonDown()

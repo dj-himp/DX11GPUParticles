@@ -58,8 +58,8 @@
     <Filter Include="Extern\Json">
       <UniqueIdentifier>{91bf0f00-04fc-4889-9ebd-7e2cc285214f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Extern\imGuizmo">
-      <UniqueIdentifier>{95a2fbc5-a278-4ec6-acb4-700e0e3a2981}</UniqueIdentifier>
+    <Filter Include="Extern\choreograph">
+      <UniqueIdentifier>{f11edd2a-b11d-40ca-af30-46d5939dee96}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -200,6 +200,15 @@
     </ClCompile>
     <ClCompile Include="Src\Gui\Sequencer.cpp">
       <Filter>Src\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Extern\choreograph\Cue.cpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClCompile>
+    <ClCompile Include="Extern\choreograph\Timeline.cpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClCompile>
+    <ClCompile Include="Extern\choreograph\TimelineItem.cpp">
+      <Filter>Extern\choreograph</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -505,6 +514,66 @@
     </ClInclude>
     <ClInclude Include="Extern\imgui\imgui_user.h">
       <Filter>Extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\Choreograph.h">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\Cue.h">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\detail\MakeUnique.hpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\detail\VectorManipulation.hpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\Easing.h">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\Motion.hpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\Output.hpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\phrase\Combine.hpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\phrase\Hold.hpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\phrase\Procedural.hpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\phrase\Ramp.hpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\phrase\Retime.hpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\phrase\Sugar.hpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\Phrase.hpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\Sequence.hpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\specialization\CinderSpecialization.hpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\Timeline.h">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\TimelineItem.h">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\TimelineOptions.hpp">
+      <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\choreograph\TimeType.h">
+      <Filter>Extern\choreograph</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

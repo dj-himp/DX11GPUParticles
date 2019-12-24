@@ -20,7 +20,7 @@ namespace DemoParticles
         ID3D11GeometryShader* getGeometryShader() { return m_geometryShader.Get(); }
 
     private:
-        const const DX::DeviceResources* m_deviceResources;
+        const DX::DeviceResources* m_deviceResources;
 
         Microsoft::WRL::ComPtr<ID3D11InputLayout>           m_inputLayout;
         Microsoft::WRL::ComPtr<ID3D11VertexShader>          m_vertexShader;

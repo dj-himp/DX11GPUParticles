@@ -145,7 +145,7 @@ namespace DemoParticles
         std::unique_ptr<Model> model = std::make_unique<Model>(m_deviceResources);
         std::unique_ptr<ModelMesh>& mesh = model->AddMesh();
 
-        Color dummyColor = Color(0.0f);
+        Color dummyColor = Color(0);
 
         static const VertexColorUV vertices[] =
         {
@@ -249,7 +249,7 @@ namespace DemoParticles
             vertices.push_back({ DX::toVector4(corner), color, DummyUV });
         }
 
-        int vertexCount = vertices.size();
+        UINT vertexCount = (UINT)vertices.size();
 
         model->setInputElements(m_vertexElements);
         model->setVertexStride(sizeof(VertexColorUV));

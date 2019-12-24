@@ -24,7 +24,7 @@ Ray generateRay(PixelShaderInput input)
 {
     Ray r;
 
-    r.origin = camPosition;
+    r.origin = camPosition.xyz;
     r.direction = normalize(input.rayDir.xyz);
 
     return r;

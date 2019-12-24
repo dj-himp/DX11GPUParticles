@@ -2,7 +2,7 @@
 
 namespace DemoParticles
 {
-    static class DebugUtils
+    class DebugUtils
     {
     public:
         static void log(std::string str);

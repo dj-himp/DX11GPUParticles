@@ -33,7 +33,7 @@ namespace DemoParticles
         );
     }
 
-    void ParticleEmitterBuffer::update(DX::StepTimer const& timer)
+    void ParticleEmitterBuffer::update(DX::StepTimer const& /*timer*/)
     {
         if (!m_enabled)
         {
@@ -70,7 +70,6 @@ namespace DemoParticles
 
         context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
 
-        UINT initialCount[] = { -1 };
         m_emitFromBufferParticles->setConstantBuffer(4, m_emitterConstantBuffer);
         m_emitFromBufferParticles->setUAV(2, m_bufferUAV);
         m_emitFromBufferParticles->begin();
@@ -82,7 +81,7 @@ namespace DemoParticles
         m_hasEmitted = true;
     }
 
-    void ParticleEmitterBuffer::RenderImGui(Camera* camera)
+    void ParticleEmitterBuffer::RenderImGui(Camera* /*camera*/)
     {
         if (ImGui::TreeNode("Buffer emitter"))
         {

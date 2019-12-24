@@ -48,7 +48,7 @@ namespace DemoParticles
         m_constantBuffer.Reset();
     }
 
-    void DemoParticles::MengerRenderer::update(DX::StepTimer const& timer, Camera* camera /*= nullptr*/)
+    void DemoParticles::MengerRenderer::update(DX::StepTimer const& /*timer*/, Camera* /*camera*/ /*= nullptr*/)
     {
         
     }
@@ -58,7 +58,7 @@ namespace DemoParticles
         auto context = m_deviceResources->GetD3DDeviceContext();
 
         // Each vertex is one instance of the VertexPositionUV struct.
-        UINT stride = m_quad->getVertexStride();
+        UINT stride = (UINT)m_quad->getVertexStride();
         UINT offset = 0;
         context->IASetVertexBuffers(0, 1, m_quad->getMesh(0)->getVertexBuffer().GetAddressOf(), &stride, &offset);
 

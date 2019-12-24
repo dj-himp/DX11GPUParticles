@@ -67,7 +67,7 @@ namespace DemoParticles
        //TO DO
     }
 
-    void BakeModelParticles::update(DX::StepTimer const& timer, Camera* camera /*= nullptr*/)
+    void BakeModelParticles::update(DX::StepTimer const& /*timer*/, Camera* /*camera*/ /*= nullptr*/)
     {
         m_constantBufferData.world = m_world.Transpose();
     }
@@ -80,7 +80,7 @@ namespace DemoParticles
         
         for (int i = 0; i < m_model->getMeshCount(); ++i)
         {
-            UINT stride = m_model->getVertexStride();
+            UINT stride = (UINT)m_model->getVertexStride();
             UINT offset = 0;
             context->IASetVertexBuffers(0, 1, m_model->getMesh(i)->getVertexBuffer().GetAddressOf(), &stride, &offset);
             context->IASetIndexBuffer(m_model->getMesh(i)->getIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);

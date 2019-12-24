@@ -71,21 +71,8 @@ namespace DemoParticles
         cbDesc.ByteWidth = sizeof(int4);
         device->CreateBuffer(&cbDesc, nullptr, &m_pcbDispatchInfo);
 
-        ID3DBlob* pBlob;
-        ID3DBlob* pErrorBlob;
         // create shaders
-
-        // Step sort shader
-        /*HRESULT hr = D3DCompileFromFile( L"..\\src\\Shaders\\SortStepCS2.hlsl", nullptr, nullptr, "BitonicSortStep", "cs_5_0", 0, 0, &pBlob, &pErrorBlob );
-        if( FAILED(hr) )
-        {
-            if( pErrorBlob != nullptr )
-                OutputDebugStringA( (char*)pErrorBlob->GetBufferPointer() );
-            SAFE_RELEASE( pErrorBlob );
-            return hr;
-        }
-        SAFE_RELEASE( pErrorBlob );*/
-
+        ID3DBlob* pBlob;
         D3DReadFileToBlob(L"SortStepCS2.cso", &pBlob);
         DX::ThrowIfFailed(
             device->CreateComputeShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, &m_pCSSortStep)

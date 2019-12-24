@@ -39,7 +39,7 @@ namespace DemoParticles
             DX::ThrowIfFailed(
                 m_deviceResources->GetD3DDevice()->CreateInputLayout(
                     vertexDesc.data(),
-                    vertexDesc.size(),
+                    (UINT)vertexDesc.size(),
                     vs_blob->GetBufferPointer(),
                     vs_blob->GetBufferSize(),
                     &m_inputLayout

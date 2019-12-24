@@ -57,9 +57,9 @@ namespace DemoParticles
         
     }
 
-    void DebugRenderer::update(DX::StepTimer const& timer, Camera* camera /*= nullptr*/)
+    void DebugRenderer::update(DX::StepTimer const& /*timer*/, Camera* /*camera*/ /*= nullptr*/)
     {
-        assert(camera);
+        //assert(camera);
         
         //Matrix m_world = Matrix::Identity;
         //m_constantBufferData.world = m_world.Transpose();
@@ -87,7 +87,7 @@ namespace DemoParticles
 
         for (int i = 0; i < debugModel.m_model->getMeshCount(); ++i)
         {
-            UINT stride = debugModel.m_model->getVertexStride();
+            UINT stride = (UINT)debugModel.m_model->getVertexStride();
             UINT offset = 0;
             context->IASetVertexBuffers(0, 1, debugModel.m_model->getMesh(i)->getVertexBuffer().GetAddressOf(), &stride, &offset);
             context->IASetIndexBuffer(debugModel.m_model->getMesh(i)->getIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);

@@ -33,12 +33,12 @@ namespace DemoParticles
 
     void SceneMenger::createDeviceDependentResources()
     {
-        int width = 1024;
-        int height = 720;
+        float width = 1024.0f;
+        float height = 720.0f;
         m_bakingViewport = CD3D11_VIEWPORT(0.0f, 0.0f, width, height);
 
-        m_rtBakePositions = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, width, height);
-        m_rtBakeNormals = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, width, height);
+        m_rtBakePositions = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, (UINT)width, (UINT)height);
+        m_rtBakeNormals = std::make_unique<RenderTarget>(m_deviceResources, DXGI_FORMAT_R16G16B16A16_FLOAT, (UINT)width, (UINT)height);
 
         m_computePackParticle = std::make_unique<ComputeShader>(m_deviceResources);// , 2, true);
         m_computePackParticle->load(L"PackParticles_CS.cso");
@@ -50,7 +50,7 @@ namespace DemoParticles
 
         //baking
 
-        m_maxBakeBufferSize = width * height;
+        m_maxBakeBufferSize = (int)(width * height);
 
         D3D11_BUFFER_DESC bakeBufferDesc;
         bakeBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -164,7 +164,7 @@ namespace DemoParticles
         m_sceneConstantBufferData.sunSpecColor = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
         m_sceneConstantBufferData.sceneAmbientPower = 0.1f;
 
-        m_sceneConstantBufferData.time = timer.GetTotalSeconds();
+        m_sceneConstantBufferData.time = (float)timer.GetTotalSeconds();
         
         static bool started = true;
         if (InputManager::isKeyDown(Keyboard::B))
@@ -176,8 +176,8 @@ namespace DemoParticles
             started = false;
         }
 
-        m_sceneConstantBufferData.dt = started ? timer.GetElapsedSeconds() : 0.0f;
-        m_sceneConstantBufferData.rngSeed = std::rand();
+        m_sceneConstantBufferData.dt = started ? (float)timer.GetElapsedSeconds() : 0.0f;
+        m_sceneConstantBufferData.rngSeed = (float)std::rand();
 
 
         m_mengerRenderer->update(timer, camera);

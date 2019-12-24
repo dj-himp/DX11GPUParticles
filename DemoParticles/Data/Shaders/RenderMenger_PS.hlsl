@@ -51,7 +51,7 @@ float3 mod(float3 x, float3 y)
 void initScene()
 {
 
-    lig1.position = camPosition;// + float3(-0.2,0.2,-2); //point light
+    lig1.position = camPosition.xyz;// + float3(-0.2,0.2,-2); //point light
     //lig1.position = float3(0.0,0.0,1.0); //directionnal light
     lig1.color = float3(1, 1, 1);
 
@@ -73,7 +73,7 @@ Ray generateRay(PixelShaderInput input)
     Ray r;
 
     //camPosition += time * float3(0.0, 0.0, -1.0);
-    r.origin = camPosition;
+    r.origin = camPosition.xyz;
     r.direction = normalize(input.RayDir.xyz);
 
     return r;
@@ -87,23 +87,25 @@ float3 objRepeat(float3 pos, float3 c)
 }
 
 
-
 float2 MyMin(float2 a, float2 b)
 {
     if (a.x <= b.x)
         return a;
     return b;
 }
+
 float2 MyMax(float2 a, float2 b)
 {
     if (a.x >= b.x)
         return a;
     return b;
 }
+
 float maxcomp(in float3 p)
 {
     return max(p.x, max(p.y, p.z));
 }
+
 float rand(float2 coordinate) {
     return frac(sin(dot(coordinate.xy, float2(12.9898, 78.233))) * 43758.5453);
 }
@@ -192,13 +194,13 @@ float distanceMetaBallsOnly(float3 pos)
     float e = 0.01;
     float magicNumber = 0.04;
 
-    float3 sphPos1 = float3(0.175 * sin(time), 0.25 * cos(time), -1.0) + camPosition;
+    float3 sphPos1 = float3(0.175 * sin(time), 0.25 * cos(time), -1.0) + camPosition.xyz;
     float sph1Radius = 0.003;
 
-    float3 sphPos2 = float3(-0.1750 * cos(time) * sin(time), 0.25 * sin(time), -1.0) + camPosition;
+    float3 sphPos2 = float3(-0.1750 * cos(time) * sin(time), 0.25 * sin(time), -1.0) + camPosition.xyz;
     float sph2Radius = 0.004;
 
-    float3 sphPos3 = float3(0., 0.25 * sin(time) * cos(time), -1.0 + 0.175 * cos(time) * sin(time)) + camPosition;
+    float3 sphPos3 = float3(0., 0.25 * sin(time) * cos(time), -1.0 + 0.175 * cos(time) * sin(time)) + camPosition.xyz;
     float sph3Radius = 0.0003;
 
     float d1 = length(sphPos1 - pos) - sph1Radius;
@@ -216,13 +218,13 @@ float distanceMetaBalls(float3 pos, float distobj1)
     float e = 0.01;
     float magicNumber = 0.04;
 
-    float3 sphPos1 = float3(0.175 * sin(time), 0.25 * cos(time), -1.0) + camPosition;
+    float3 sphPos1 = float3(0.175 * sin(time), 0.25 * cos(time), -1.0) + camPosition.xyz;
     float sph1Radius = 0.003;
 
-    float3 sphPos2 = float3(-0.1750 * cos(time) * sin(time), 0.25 * sin(time), -1.0) + camPosition;
+    float3 sphPos2 = float3(-0.1750 * cos(time) * sin(time), 0.25 * sin(time), -1.0) + camPosition.xyz;
     float sph2Radius = 0.004;
 
-    float3 sphPos3 = float3(0., 0.25 * sin(time) * cos(time), -1.0 + 0.175 * cos(time) * sin(time)) + camPosition;
+    float3 sphPos3 = float3(0., 0.25 * sin(time) * cos(time), -1.0 + 0.175 * cos(time) * sin(time)) + camPosition.xyz;
     float sph3Radius = 0.0003;
 
     float d1 = length(sphPos1 - pos) - sph1Radius;
@@ -335,7 +337,7 @@ float3 lighting(float3 pos, float3 norm, float3 rayDir, out float specInt, out f
     sh = 1.0;//softShadow(pos, ldir, 0.006, 18.0, lig1.position);
 
     //atten = Attenuation(length(pos - lig1.position), 5.0, 1.0, 0.003, 0.001);
-    atten = pow(max(dot(-camDirection, ldir), 0), 32);
+    atten = pow(max(dot(-camDirection.xyz, ldir), 0), 32);
 
     return dif * atten * float3(sh, (sh + sh * sh)*0.5, sh*sh);
 }

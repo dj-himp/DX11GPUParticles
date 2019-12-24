@@ -44,7 +44,7 @@ namespace DemoParticles
 
     char* FGAParser::parseFloat(char* buffer, float& outFloat)
     {
-        outFloat = std::atof(buffer);
+        outFloat = (float)std::atof(buffer);
         return parseUntilDelimiter(buffer, ',');
     }
 

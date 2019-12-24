@@ -78,8 +78,8 @@
 #include "imgui/ImSequencer.h"
 #include "imgui/ImCurveEdit.h"
 #include "Json/json.hpp"
-
 #include "Gui/Sequencer.h"
+#include "choreograph/Choreograph.h"
 
 #include <DDSTextureLoader.h>
 

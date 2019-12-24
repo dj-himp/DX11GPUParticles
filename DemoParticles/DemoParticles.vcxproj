@@ -103,7 +103,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>EnableAllWarnings</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -163,6 +163,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Extern\choreograph\Cue.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Extern\choreograph\Timeline.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Extern\choreograph\TimelineItem.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Extern\imgui\ImCurveEdit.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -452,6 +461,26 @@
     <ClInclude Include="Extern\assimp\vector2.h" />
     <ClInclude Include="Extern\assimp\vector3.h" />
     <ClInclude Include="Extern\assimp\version.h" />
+    <ClInclude Include="Extern\choreograph\Choreograph.h" />
+    <ClInclude Include="Extern\choreograph\Cue.h" />
+    <ClInclude Include="Extern\choreograph\detail\MakeUnique.hpp" />
+    <ClInclude Include="Extern\choreograph\detail\VectorManipulation.hpp" />
+    <ClInclude Include="Extern\choreograph\Easing.h" />
+    <ClInclude Include="Extern\choreograph\Motion.hpp" />
+    <ClInclude Include="Extern\choreograph\Output.hpp" />
+    <ClInclude Include="Extern\choreograph\Phrase.hpp" />
+    <ClInclude Include="Extern\choreograph\phrase\Combine.hpp" />
+    <ClInclude Include="Extern\choreograph\phrase\Hold.hpp" />
+    <ClInclude Include="Extern\choreograph\phrase\Procedural.hpp" />
+    <ClInclude Include="Extern\choreograph\phrase\Ramp.hpp" />
+    <ClInclude Include="Extern\choreograph\phrase\Retime.hpp" />
+    <ClInclude Include="Extern\choreograph\phrase\Sugar.hpp" />
+    <ClInclude Include="Extern\choreograph\Sequence.hpp" />
+    <ClInclude Include="Extern\choreograph\specialization\CinderSpecialization.hpp" />
+    <ClInclude Include="Extern\choreograph\Timeline.h" />
+    <ClInclude Include="Extern\choreograph\TimelineItem.h" />
+    <ClInclude Include="Extern\choreograph\TimelineOptions.hpp" />
+    <ClInclude Include="Extern\choreograph\TimeType.h" />
     <ClInclude Include="Extern\imgui\ImCurveEdit.h" />
     <ClInclude Include="Extern\imgui\ImGradient.h" />
     <ClInclude Include="Extern\imgui\ImGuizmo.h" />

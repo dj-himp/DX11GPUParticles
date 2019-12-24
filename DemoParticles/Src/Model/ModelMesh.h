@@ -28,7 +28,7 @@ namespace DemoParticles
         int getIndexCount() { return m_indexCount; }
 
     private:
-        const const DX::DeviceResources* m_deviceResources;
+        const DX::DeviceResources* m_deviceResources;
 
         std::vector<D3D11_INPUT_ELEMENT_DESC> m_inputElements;
         int m_vertexSize;

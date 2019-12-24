@@ -52,7 +52,7 @@ namespace DemoParticles
         m_constantBuffer.Reset();
     }
 
-    void RenderFullscreenQuad::update(DX::StepTimer const& timer, Camera* camera /*= nullptr*/)
+    void RenderFullscreenQuad::update(DX::StepTimer const& /*timer*/, Camera* /*camera*/ /*= nullptr*/)
     {
         //TEST
         //m_posScale = Matrix::CreateTranslation(Vector3(0.0f, 0.0f, 0.0f)) * Matrix::CreateScale(1.0f);
@@ -66,7 +66,7 @@ namespace DemoParticles
 
         context->UpdateSubresource1(m_constantBuffer.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
 
-        UINT stride = m_quad->getVertexStride();
+        UINT stride = (UINT)m_quad->getVertexStride();
         UINT offset = 0;
         context->IASetVertexBuffers(0, 1, m_quad->getMesh(0)->getVertexBuffer().GetAddressOf(), &stride, &offset);
         context->IASetIndexBuffer(m_quad->getMesh(0)->getIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);

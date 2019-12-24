@@ -42,7 +42,7 @@ namespace DemoParticles
         //false to reset if the previous render emit particles
         m_needEmit = false;
 
-        m_lastEmitTime -= timer.GetElapsedSeconds();
+        m_lastEmitTime -= (float)timer.GetElapsedSeconds();
         if (m_lastEmitTime <= 0.0)
         {
             m_lastEmitTime = m_emitDelay;
@@ -75,7 +75,7 @@ namespace DemoParticles
         m_emitParticles->end();
     }
 
-    void ParticleEmitterCube::RenderImGui(Camera* camera)
+    void ParticleEmitterCube::RenderImGui(Camera* /*camera*/)
     {
         if (ImGui::TreeNode("Cube emitter"))
         {

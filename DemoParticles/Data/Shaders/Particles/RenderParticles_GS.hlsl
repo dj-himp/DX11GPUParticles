@@ -40,8 +40,8 @@ void main(point GeometryShaderInput input[1], inout TriangleStream<PixelShaderIn
     output.center = input[0].oPosition;
     output.radius = particleSize;
 
-    float3 right;
-    float3 up;
+    float3 right = float3(1.0, 0.0, 0.0);
+    float3 up = float3(0.0, 1.0, 0.0);
     
     if (input[0].orientation == PARTICLE_ORIENTATION_BILLBOARD)
     {

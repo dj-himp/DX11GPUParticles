@@ -46,32 +46,32 @@ namespace DemoParticles
         bool hasMoved = false;
         if (InputManager::isKeyDown(Keyboard::Z))
         {
-            movement.z += m_movementSpeed * timer.GetElapsedSeconds();
+            movement.z += m_movementSpeed * (float)timer.GetElapsedSeconds();
             hasMoved = true;
         }
         if (InputManager::isKeyDown(Keyboard::S))
         {
-            movement.z -= m_movementSpeed * timer.GetElapsedSeconds();
+            movement.z -= m_movementSpeed * (float)timer.GetElapsedSeconds();
             hasMoved = true;
         }
         if (InputManager::isKeyDown(Keyboard::D))
         {
-            movement.x += m_movementSpeed * timer.GetElapsedSeconds();
+            movement.x += m_movementSpeed * (float)timer.GetElapsedSeconds();
             hasMoved = true;
         }
         if (InputManager::isKeyDown(Keyboard::Q))
         {
-            movement.x -= m_movementSpeed * timer.GetElapsedSeconds();
+            movement.x -= m_movementSpeed * (float)timer.GetElapsedSeconds();
             hasMoved = true;
         }
         if (InputManager::isKeyDown(Keyboard::Space))
         {
-            movement.y += m_movementSpeed * timer.GetElapsedSeconds();
+            movement.y += m_movementSpeed * (float)timer.GetElapsedSeconds();
             hasMoved = true;
         }
         if (InputManager::isKeyDown(Keyboard::LeftControl))
         {
-            movement.y -= m_movementSpeed * timer.GetElapsedSeconds();
+            movement.y -= m_movementSpeed * (float)timer.GetElapsedSeconds();
             hasMoved = true;
         }
 

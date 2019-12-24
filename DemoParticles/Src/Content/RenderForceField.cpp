@@ -85,9 +85,9 @@ namespace DemoParticles
         
     }
 
-    void RenderForceField::update(DX::StepTimer const& timer, Camera* camera /*= nullptr*/)
+    void RenderForceField::update(DX::StepTimer const& /*timer*/, Camera* /*camera*/ /*= nullptr*/)
     {
-        m_constantBufferData.size = Vector3(m_content.sizeX, m_content.sizeY, m_content.sizeZ);
+        m_constantBufferData.size = Vector3((float)m_content.sizeX, (float)m_content.sizeY, (float)m_content.sizeZ);
     }
 
     void RenderForceField::render()
@@ -117,7 +117,7 @@ namespace DemoParticles
         context->RSSetState(RenderStatesHelper::CullNone().Get());
         context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
 
-        context->DrawInstanced(m_content.forces.size(), 1, 0, 0);
+        context->DrawInstanced((UINT)m_content.forces.size(), 1, 0, 0);
 
         //ZeroMemory(SRVs, ARRAYSIZE(SRVs));
         SRVs[0] = nullptr;

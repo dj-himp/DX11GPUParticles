@@ -30,11 +30,11 @@ namespace DemoParticles
         void setVertexStride(size_t stride) { m_vertexStride = stride; }
         size_t getVertexStride() { return m_vertexStride; }
 
-        const int getMeshCount() { return m_meshes.size(); }
+        const size_t getMeshCount() { return m_meshes.size(); }
         const std::unique_ptr<ModelMesh>& getMesh(int index) { return m_meshes[index]; }
 
     private:
-        const const DX::DeviceResources* m_deviceResources;
+        const DX::DeviceResources* m_deviceResources;
 
         std::vector<std::unique_ptr<ModelMesh>> m_meshes;
         

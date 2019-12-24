@@ -14,7 +14,7 @@ namespace DemoParticles
 
 	private:
 		// Cached pointer to device resources.
-		const const DX::DeviceResources* m_deviceResources;
+		const DX::DeviceResources* m_deviceResources;
 
 		// Resources related to text rendering.
 		std::wstring                                    m_text;

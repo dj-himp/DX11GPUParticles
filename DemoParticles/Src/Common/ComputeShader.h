@@ -31,7 +31,7 @@ namespace DemoParticles
         int readCounter(Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> uav);
 
     private:
-        const const DX::DeviceResources* m_deviceResources;
+        const DX::DeviceResources* m_deviceResources;
 
         Microsoft::WRL::ComPtr<ID3D11Buffer>                            m_counterStagingBuffer;
 

@@ -197,9 +197,9 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
         p.position.xyz += p.velocity.xyz * dt;
 
         //kill particles inside attractors killzone (if killZoneRadius >= 0.0)
-        for (uint i = 0; i < nbAttractors; ++i)
+        for (uint j = 0; j < nbAttractors; ++j)
         {
-            Attractor a = attractorList[i];
+            Attractor a = attractorList[j];
             float distance = length(a.position - p.position);
             if (distance < a.killZoneRadius)
             {

@@ -478,11 +478,9 @@ namespace DemoParticles
             emitter->reset();
         }
 
-        auto context = m_deviceResources->GetD3DDeviceContext();
-
         UINT initialCount[] = { 0 };
         m_initDeadListShader->setUAV(0, m_deadListUAV, initialCount);
-        initialCount[0] = -1;
+        initialCount[0] = (UINT)-1;
         m_initDeadListShader->setUAV(1, m_particleUAV, initialCount);
         m_initDeadListShader->begin();
         m_initDeadListShader->start(DX::align(m_maxParticles, 256) / 256, 1, 1);
@@ -503,7 +501,7 @@ namespace DemoParticles
         //global constant buffers
         context->CSSetConstantBuffers(2, 1, m_deadListCountConstantBuffer.GetAddressOf());
         
-        UINT initialCounts[] = { -1, -1 };
+        UINT initialCounts[] = { (UINT)-1, (UINT)-1 };
         ID3D11UnorderedAccessView* uavs[] = { m_deadListUAV.Get(), m_particleUAV.Get() };
         context->CSSetUnorderedAccessViews(0, ARRAYSIZE(uavs), uavs, initialCounts);
 
@@ -527,7 +525,7 @@ namespace DemoParticles
 
         context->CSSetConstantBuffers(4, 1, m_simulateParticlesBuffer.GetAddressOf());
 
-        UINT initialCount[] = { -1 };
+        UINT initialCount[] = { (UINT)-1 };
         m_simulateShader->setUAV(0, m_indirectDrawArgsUAV, initialCount);
         m_simulateShader->setUAV(2, m_deadListUAV, initialCount);
         m_simulateShader->setUAV(3, m_particleUAV, initialCount);
@@ -578,7 +576,7 @@ namespace DemoParticles
         m_attractorList[3].killZoneRadius = 0.5f;
         
         //debug render
-        for (int i = 0; i < m_simulateParticlesBufferData.nbWantedAttractors; ++i)
+        for (UINT i = 0; i < m_simulateParticlesBufferData.nbWantedAttractors; ++i)
         {
             Matrix world = Matrix::CreateTranslation(Vector3(m_attractorList[i].position.x, m_attractorList[i].position.y, m_attractorList[i].position.z));
             DebugRenderer::instance().pushBackModel(MeshFactory::getInstance().createAxis(), world);
@@ -600,7 +598,7 @@ namespace DemoParticles
         
         std::unique_ptr<ParticleEmitterCube> cubeEmitter = std::make_unique<ParticleEmitterCube>(m_deviceResources);
         cubeEmitter->createDeviceDependentResources();
-        cubeEmitter->setCubeSize(Vector3(m_content.sizeX, m_content.sizeY, m_content.sizeZ));
+        cubeEmitter->setCubeSize(Vector3((float)m_content.sizeX, (float)m_content.sizeY, (float)m_content.sizeZ));
 
         m_particleEmitters.push_back(std::move(cubeEmitter));
         

@@ -127,7 +127,7 @@ namespace DemoParticles
             aiVector3D* normals = mesh->mNormals;
             aiVector3D* tangents = mesh->mTangents;
             aiVector3D* biTangents = mesh->mBitangents;
-            aiColor4D* colours = mesh->mColors[0];
+            //aiColor4D* colors = mesh->mColors[0];
 
             //also determine primitive type
             switch (mesh->mPrimitiveTypes)

@@ -22,7 +22,7 @@ namespace DemoParticles
     private:
         MeshFactory();
 
-        const const DX::DeviceResources* m_deviceResources;
+        const DX::DeviceResources* m_deviceResources;
 
         std::vector<D3D11_INPUT_ELEMENT_DESC> m_vertexElements;
         UINT m_vertexSize = 0;

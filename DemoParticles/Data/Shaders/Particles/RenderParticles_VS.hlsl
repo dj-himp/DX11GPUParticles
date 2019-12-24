@@ -25,7 +25,7 @@ GeometryShaderInput main(uint vertexId : SV_VertexID)
 
     output.Position = p.position;
     output.oPosition = p.position.xyz;
-    output.velocity = p.velocity;
+    output.velocity = p.velocity.xyz;
 
     //float alpha = p.lifeSpan >= 0.0 ? saturate(p.age / p.lifeSpan) : 0.1;
     //float alpha = smoothstep(0.0, p.lifeSpan, p.age);

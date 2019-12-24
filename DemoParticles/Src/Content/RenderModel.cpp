@@ -63,9 +63,9 @@ namespace DemoParticles
        //TO DO
     }
 
-    void RenderModel::update(DX::StepTimer const& timer, Camera* camera /*= nullptr*/)
+    void RenderModel::update(DX::StepTimer const& /*timer*/, Camera* /*camera*/ /*= nullptr*/)
     {
-        assert(camera);
+        //assert(camera);
 
         XMStoreFloat4x4(&m_constantBufferData.world, m_world.Transpose());
     }
@@ -78,7 +78,7 @@ namespace DemoParticles
         
         for (int i = 0; i < m_model->getMeshCount(); ++i)
         {
-            UINT stride = m_model->getVertexStride();//sizeof(VertexObject);
+            UINT stride = (UINT)m_model->getVertexStride();//sizeof(VertexObject);
             UINT offset = 0;
             context->IASetVertexBuffers(0, 1, m_model->getMesh(i)->getVertexBuffer().GetAddressOf(), &stride, &offset);
             context->IASetIndexBuffer(m_model->getMesh(i)->getIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);

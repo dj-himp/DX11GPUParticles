@@ -11,7 +11,7 @@ namespace DemoParticles
 
     //ModelMesh::~ModelMesh() = default;
 
-    void ModelMesh::AddTextureDiffuse(const std::string& path)
+    void ModelMesh::AddTextureDiffuse(const std::string& /*path*/)
     {
         //m_diffuseTexture = TextureLoader.CreateTexture2DFromBitmap(device, TextureLoader.LoadBitmap(new SharpDX.WIC.ImagingFactory2(), path));
         //m_diffuseTextureView = new ShaderResourceView(device, m_diffuseTexture);

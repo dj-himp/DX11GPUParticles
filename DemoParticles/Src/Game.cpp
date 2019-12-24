@@ -148,9 +148,10 @@ void Game::Update(DX::StepTimer const& timer)
         renderable->update(m_timer, m_cameraControllerFPS->getCamera());
     }
 
-    DebugRenderer::instance().update(timer, m_cameraControllerFPS->getCamera());
+    
 
     m_sceneMenger->update(timer, m_cameraControllerFPS->getCamera());
+    DebugRenderer::instance().update(timer, m_cameraControllerFPS->getCamera());
 
     //m_fpsTextRenderer->Update(m_timer);
 
@@ -171,16 +172,14 @@ void Game::Render()
     Clear();
 
     m_deviceResources->PIXBeginEvent(L"Render");
-    auto context = m_deviceResources->GetD3DDeviceContext();
 
     for (auto& renderable : m_renderables)
     {
         renderable->render();
     }
 
-    DebugRenderer::instance().render();
-
     m_sceneMenger->render();
+    DebugRenderer::instance().render();
 
     //m_fpsTextRenderer->Render();
 
@@ -270,8 +269,6 @@ void Game::GetDefaultSize(int& width, int& height) const
 // These are the resources that depend on the device.
 void Game::CreateDeviceDependentResources()
 {
-    auto device = m_deviceResources->GetD3DDevice();
-
     RenderStatesHelper::instance().init(m_deviceResources.get());
 
     DebugRenderer::instance().setDeviceResources(m_deviceResources.get());

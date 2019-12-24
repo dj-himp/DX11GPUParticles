@@ -23,7 +23,7 @@ namespace DemoParticles
         void AddVertexData(std::unique_ptr<Model>& model, const aiScene* scene, const aiNode* node, DirectX::SimpleMath::Matrix& transform);
         int GetNoofInputElements(aiMesh* mesh);
 
-        const const DX::DeviceResources* m_deviceResources;
+        const DX::DeviceResources* m_deviceResources;
 
         Assimp::Importer m_importer;
 

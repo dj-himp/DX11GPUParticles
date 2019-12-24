@@ -2,7 +2,7 @@
 
 namespace DemoParticles
 {
-    static class ParticlesGlobals
+    class ParticlesGlobals
     {
     public:
         //inline for static variable only on C++17
