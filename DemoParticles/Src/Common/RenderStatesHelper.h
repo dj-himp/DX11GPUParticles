@@ -26,6 +26,7 @@ namespace DemoParticles
 
         static Microsoft::WRL::ComPtr<ID3D11SamplerState> PointWrap() { return instance().m_pointWrap; }
         static Microsoft::WRL::ComPtr<ID3D11SamplerState> PointClamp() { return instance().m_pointClamp; }
+        static Microsoft::WRL::ComPtr<ID3D11SamplerState> PointBorder() { return instance().m_pointBorder; }
         static Microsoft::WRL::ComPtr<ID3D11SamplerState> LinearWrap() { return instance().m_linearWrap; }
         static Microsoft::WRL::ComPtr<ID3D11SamplerState> LinearClamp() { return instance().m_linearClamp; }
         static Microsoft::WRL::ComPtr<ID3D11SamplerState> AnisotropicWrap() { return instance().m_anisotropicWrap; }
@@ -53,9 +54,11 @@ namespace DemoParticles
 
         Microsoft::WRL::ComPtr<ID3D11SamplerState> m_pointWrap;
         Microsoft::WRL::ComPtr<ID3D11SamplerState> m_pointClamp;
+        Microsoft::WRL::ComPtr<ID3D11SamplerState> m_pointBorder;
         Microsoft::WRL::ComPtr<ID3D11SamplerState> m_linearWrap;
         Microsoft::WRL::ComPtr<ID3D11SamplerState> m_linearClamp;
         Microsoft::WRL::ComPtr<ID3D11SamplerState> m_anisotropicWrap;
         Microsoft::WRL::ComPtr<ID3D11SamplerState> m_anisotropicClamp;
+        
     };
 }

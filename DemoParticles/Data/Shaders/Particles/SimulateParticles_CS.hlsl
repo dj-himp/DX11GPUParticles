@@ -51,7 +51,7 @@ StructuredBuffer<Attractor> attractorBuffer : register(t0);
 Texture2D<float4> noiseTexture : register(t1);
 Texture3D<float4> forceFieldTexture : register(t2);
 
-SamplerState LinearWrapSampler : register(s0);
+SamplerState pointClampSampler : register(s0);
 
 #define MAX_ATTRACTORS 4
 groupshared Attractor attractorList[MAX_ATTRACTORS];
@@ -143,9 +143,9 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
         if (addForceField)
         {
             float3 forceFieldUV = mul(float4(p.position.xyz, 1.0), forceFieldWorld2Volume).xyz;
-            float3 force = forceFieldTexture.SampleLevel(LinearWrapSampler, saturate(forceFieldUV), 0).xyz;
+            float3 force = forceFieldTexture.SampleLevel(pointClampSampler, forceFieldUV, 0).xyz;
             //force = mul(float4(force, 0.0), forceFieldVolume2World).xyz;
-            particleForce.xyz += force; // * 0.1;
+            particleForce.xyz += force * 0.1;
         }
 
         if(addAizama)
@@ -189,6 +189,7 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
 
         float3 acceleration = particleForce.xyz / p.mass;
         p.velocity.xyz += acceleration * dt;
+        //p.velocity.xyz = particleForce.xyz;
     
         //TEMP
         //float cap = 1.0;

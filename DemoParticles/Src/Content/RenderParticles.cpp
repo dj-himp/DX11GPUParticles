@@ -43,11 +43,16 @@ namespace DemoParticles
 
         FGAParser parser;
         //parser.parse("forceFieldTest.fga", m_content);
-        //parser.parse("VF_Vortex.fga", m_content);
+        parser.parse("VF_Vortex.fga", m_content);
         //parser.parse("VF_Smoke.fga", m_content);
         //parser.parse("VF_Turbulence.fga", m_content);
         //parser.parse("VF_FluidVol.fga", m_content);
-        parser.parse("VF_Point.fga", m_content);
+        //parser.parse("VF_Point.fga", m_content);
+        //parser.parse("VF_CurveTile_1.fga", m_content);
+        //parser.parse("VF_CurveTile_2.fga", m_content);
+        //parser.parse("VF_CurveTile_3.fga", m_content);
+
+        //parser.parse("SignedDistance.vf", m_content);
 
         D3D11_TEXTURE3D_DESC desc;
         desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
@@ -62,8 +67,8 @@ namespace DemoParticles
 
         D3D11_SUBRESOURCE_DATA data;
         data.pSysMem = &m_content.forces[0];
-        data.SysMemPitch = m_content.sizeX;
-        data.SysMemSlicePitch = m_content.sizeY;
+        data.SysMemPitch = m_content.sizeX * sizeof(Vector4);
+        data.SysMemSlicePitch = m_content.sizeX * m_content.sizeY * sizeof(Vector4);
 
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateTexture3D(&desc, &data, &m_forceFieldTexture)
@@ -534,7 +539,7 @@ namespace DemoParticles
         m_simulateShader->setSRV(0, m_attractorsSRV);
         m_simulateShader->setSRV(1, m_noiseTextureSRV);
         m_simulateShader->setSRV(2, m_forceFieldTextureSRV);
-        context->CSSetSamplers(0, 1, RenderStatesHelper::LinearClamp().GetAddressOf());
+        context->CSSetSamplers(0, 1, RenderStatesHelper::PointBorder().GetAddressOf());
         m_simulateShader->begin();
         m_simulateShader->start(DX::align(m_maxParticles, 256) / 256, 1, 1);
         m_simulateShader->end();

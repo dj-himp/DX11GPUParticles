@@ -46,6 +46,9 @@ void main(uint3 id : SV_DispatchThreadID)
         p.velocity.x = direction.x * cos(yaw) + direction.y * sin(pitch) * sin(yaw) + direction.z * -sin(yaw) * cos(pitch);
         p.velocity.y = direction.y * cos(pitch) + direction.z * sin(pitch);
         p.velocity.z = direction.x * sin(yaw) + direction.y * -sin(pitch) * cos(yaw) + direction.z * cos(pitch) * cos(yaw);
+        p.velocity.w = 1.0;
+        
+        p.velocity = particlesBaseSpeed * normalize(p.velocity);
         
         p.lifeSpan = particlesLifeSpan * rand_xorshift_normalized();
         p.age = abs(p.lifeSpan); //abs() so if lifetime is infinite ( < 0.0) it's still has a life

@@ -762,6 +762,9 @@
     <CopyFileToFolders Include="Data\ForceFields\VF_Wind.fga">
       <Filter>Data\ForceFields</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\SignedDistance.vf">
+      <Filter>Data\ForceFields</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="Data\Textures\noisy-texture-256x256.png">

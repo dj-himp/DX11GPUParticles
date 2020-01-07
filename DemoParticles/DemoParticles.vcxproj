@@ -584,6 +584,9 @@
     <CopyFileToFolders Include="Data\ForceFields\VF_Wind.fga">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\SignedDistance.vf">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <None Include="Extern\assimp\.editorconfig" />
     <None Include="Extern\assimp\color4.inl" />
     <None Include="Extern\assimp\config.h.in" />

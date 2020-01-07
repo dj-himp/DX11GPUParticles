@@ -38,11 +38,11 @@ namespace DemoParticles
         desc.MipLevels = 1;
         desc.Usage = D3D11_USAGE_DEFAULT;
         desc.MiscFlags = 0;
-
+       
         D3D11_SUBRESOURCE_DATA data;
         data.pSysMem = &m_content.forces[0];
-        data.SysMemPitch = m_content.sizeX;
-        data.SysMemSlicePitch = m_content.sizeY;
+        data.SysMemPitch = m_content.sizeX * sizeof(Vector4);
+        data.SysMemSlicePitch = m_content.sizeX * m_content.sizeY * sizeof(Vector4);
 
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateTexture3D(&desc, &data, &m_forceFieldTexture)

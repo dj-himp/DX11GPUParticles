@@ -2,6 +2,7 @@
 #include "FGAParser.h"
 
 #include <sstream>
+#include <iterator>
 
 using namespace DirectX::SimpleMath;
 
@@ -10,6 +11,20 @@ namespace DemoParticles
 
     void FGAParser::parse(const char* filename, FGAContent& content)
     {
+        /*std::ifstream file;
+        file.open(filename, std::ios::binary);
+
+        assert(file);
+
+        float x, y, z, w;
+        file.read(reinterpret_cast<char*>(&x), sizeof(float));
+        file.read(reinterpret_cast<char*>(&y), sizeof(float));
+        file.read(reinterpret_cast<char*>(&z), sizeof(float));
+        file.read(reinterpret_cast<char*>(&w), sizeof(float));*/
+
+        //std::vector<char> buffer(std::istreambuf_iterator<char>(file), {});
+
+
         std::ifstream file;
         file.open(filename, std::ios::in);
         
@@ -34,7 +49,7 @@ namespace DemoParticles
         {
             Vector3 force;
             currentParse = parseVector3(currentParse, force);
-            content.forces[i] = Vector4(force.x, force.y, force.z, 0.0);
+            content.forces[i] = Vector4(force.x, force.y, force.z, 0.0f);
             i++;
         }
                 
