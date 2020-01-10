@@ -120,12 +120,6 @@
     <ClCompile Include="Src\Content\RenderModel.cpp">
       <Filter>Src\Content</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Content\RenderModelTK.cpp">
-      <Filter>Src\Content</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Content\SampleFpsTextRenderer.cpp">
-      <Filter>Src\Content</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Model\Model.cpp">
       <Filter>Src\Model</Filter>
     </ClCompile>
@@ -270,12 +264,6 @@
       <Filter>Src\Content</Filter>
     </ClInclude>
     <ClInclude Include="Src\Content\RenderModel.h">
-      <Filter>Src\Content</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Content\RenderModelTK.h">
-      <Filter>Src\Content</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Content\SampleFpsTextRenderer.h">
       <Filter>Src\Content</Filter>
     </ClInclude>
     <ClInclude Include="Src\Content\ShaderStructures.h">
