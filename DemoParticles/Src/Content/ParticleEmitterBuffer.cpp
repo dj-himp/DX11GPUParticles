@@ -18,8 +18,6 @@ namespace DemoParticles
         m_emitterConstantBufferData.color = Color(0.5f, 0.2f, 0.2f, 1.0f);
         m_emitterConstantBufferData.particleSizeStart = 0.01f;
         m_emitterConstantBufferData.particleSizeEnd = 0.01f;
-
-        //m_enabled = true;
     }
 
     void ParticleEmitterBuffer::createDeviceDependentResources()
@@ -35,21 +33,13 @@ namespace DemoParticles
 
     void ParticleEmitterBuffer::update(DX::StepTimer const& /*timer*/)
     {
-        if (!m_enabled)
-        {
-            return;
-        }
 
     }
 
     void ParticleEmitterBuffer::emit()
     {
-        if (!m_enabled)
-        {
-            return;
-        }
 
-        if (m_hasEmitted)
+        if (!m_needEmit)
         {
             return;
         }
@@ -78,14 +68,17 @@ namespace DemoParticles
         m_emitFromBufferParticles->setUAV(2, nullptr);
         
 
-        m_hasEmitted = true;
+        m_needEmit = false;
     }
 
     void ParticleEmitterBuffer::RenderImGui(Camera* /*camera*/)
     {
         if (ImGui::TreeNode("Buffer emitter"))
         {
-            ImGui::Checkbox("Enabled", &m_enabled);
+            if (ImGui::Button("Spawn"))
+            {
+                m_needEmit = true;
+            }
             ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1, 0, 10000000);
             //ImGui::DragFloat3("Position", (float*)&m_emitterConstantBufferData.position, 0.01f);
             const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
@@ -103,7 +96,7 @@ namespace DemoParticles
 
     void ParticleEmitterBuffer::reset()
     {
-        m_hasEmitted = false;
+        m_needEmit = false;
     }
 
     void ParticleEmitterBuffer::save(json& file)
