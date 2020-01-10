@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "ParticleEmitterCube.h"
 
-#include "../Common/ComputeShader.h"
+#include "Common/ComputeShader.h"
+#include "Camera/Camera.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -49,11 +50,11 @@ namespace DemoParticles
             m_needEmit = true;
         }
 
-        m_emitterConstantBufferData.world = Matrix::CreateScale(m_cubeSize);
-        m_emitterConstantBufferData.world *= Matrix::CreateRotationX(0.0f);
-        m_emitterConstantBufferData.world *= Matrix::CreateRotationY(0.0f);
-        m_emitterConstantBufferData.world *= Matrix::CreateRotationZ(0.0f);
-        m_emitterConstantBufferData.world *= Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        m_emitterConstantBufferData.world = Matrix::CreateScale(m_scale);
+        m_emitterConstantBufferData.world *= Matrix::CreateRotationX(m_rotation.x);
+        m_emitterConstantBufferData.world *= Matrix::CreateRotationY(m_rotation.y);
+        m_emitterConstantBufferData.world *= Matrix::CreateRotationZ(m_rotation.z);
+        m_emitterConstantBufferData.world *= Matrix::CreateTranslation(m_position);
         m_emitterConstantBufferData.world = m_emitterConstantBufferData.world.Transpose();
         
     }
@@ -75,7 +76,7 @@ namespace DemoParticles
         m_emitParticles->end();
     }
 
-    void ParticleEmitterCube::RenderImGui(Camera* /*camera*/)
+    void ParticleEmitterCube::RenderImGui(Camera* camera)
     {
         if (ImGui::TreeNode("Cube emitter"))
         {
@@ -90,6 +91,54 @@ namespace DemoParticles
             ImGui::ColorEdit4("Color", (float*)&m_emitterConstantBufferData.color);
             ImGui::DragFloat("Size Start", &m_emitterConstantBufferData.particleSizeStart, 0.01f, 0.0f, 10.0f);
             ImGui::DragFloat("Size End", &m_emitterConstantBufferData.particleSizeEnd, 0.01f, 0.0f, 10.0f);
+
+            ImGuizmo::DecomposeMatrixToComponents(m_worldf, (float*)&m_position, (float*)&m_rotation, (float*)&m_scale);
+            ImGui::DragFloat3("Position", (float*)&m_position, 0.01f);
+            ImGui::DragFloat3("Scale", (float*)&m_scale, 0.01f);
+            ImGui::DragFloat3("Rotation", (float*)&m_rotation, 0.01f);
+            ImGuizmo::RecomposeMatrixFromComponents((float*)&m_position, (float*)&m_rotation, (float*)&m_scale, m_worldf);
+
+            static bool guizmoHidden = true;
+            if (!m_enabled)
+            {
+                guizmoHidden = true;
+            }
+
+            if (ImGui::RadioButton("None", guizmoHidden))
+            {
+                guizmoHidden = true;
+            }
+            ImGui::SameLine();
+
+            static float snap[3] = { 0.1f, 0.1f, 0.1f };
+            static ImGuizmo::OPERATION guizmoOperation = ImGuizmo::TRANSLATE;
+            static ImGuizmo::MODE guizmoMode = ImGuizmo::WORLD;
+            if (ImGui::RadioButton("Translate", guizmoOperation == ImGuizmo::TRANSLATE && guizmoHidden == false))
+            {
+                guizmoOperation = ImGuizmo::TRANSLATE;
+                guizmoHidden = false;
+            }
+            ImGui::SameLine();
+            if (ImGui::RadioButton("Scale", guizmoOperation == ImGuizmo::SCALE && guizmoHidden == false))
+            {
+                guizmoOperation = ImGuizmo::SCALE;
+                guizmoHidden = false;
+            }
+
+            ImGui::SameLine();
+            if (ImGui::RadioButton("Rotation", guizmoOperation == ImGuizmo::ROTATE && guizmoHidden == false))
+            {
+                guizmoOperation = ImGuizmo::ROTATE;
+                guizmoHidden = false;
+            }
+
+            if (guizmoHidden == false)
+            {
+                ImGuiIO& io = ImGui::GetIO();
+                ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+                ImGuizmo::Manipulate(&camera->getView().Transpose().m[0][0], &camera->getProjection().Transpose().m[0][0], guizmoOperation, guizmoMode, m_worldf, nullptr, /*snap*/nullptr);
+                ImGuizmo::DecomposeMatrixToComponentsRadians(m_worldf, (float*)&m_position, (float*)&m_rotation, (float*)&m_scale);
+            }
 
             ImGui::TreePop();
         }
@@ -107,6 +156,11 @@ namespace DemoParticles
         file["Emitters"]["Cube"]["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
         file["Emitters"]["Cube"]["Size start"] = m_emitterConstantBufferData.particleSizeStart;
         file["Emitters"]["Cube"]["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
+        file["Emitters"]["Cube"]["Position"] = { m_position.x, m_position.y, m_position.z };
+        file["Emitters"]["Cube"]["Scale"] = { m_scale.x, m_scale.y, m_scale.z };
+        file["Emitters"]["Cube"]["Rotation"] = { m_rotation.x, m_rotation.y, m_rotation.z };
+        
+
     }
 
     void ParticleEmitterCube::load(json& file)
@@ -123,6 +177,17 @@ namespace DemoParticles
         m_emitterConstantBufferData.color = Vector4(&color[0]);
         m_emitterConstantBufferData.particleSizeStart = file["Emitters"]["Cube"]["Size start"];
         m_emitterConstantBufferData.particleSizeEnd = file["Emitters"]["Cube"]["Size end"];
+
+        std::vector<float> position = file["Emitters"]["Cube"]["Position"];
+        m_position= Vector3(&position[0]);
+
+        std::vector<float> scale = file["Emitters"]["Cube"]["Scale"];
+        m_scale = Vector3(&scale[0]);
+
+        std::vector<float> rotation = file["Emitters"]["Cube"]["Rotation"];
+        m_rotation = Vector3(&rotation[0]);
+
+        ImGuizmo::RecomposeMatrixFromComponents((float*)&m_position, (float*)&m_rotation, (float*)&m_scale, m_worldf);
     }
 
 }

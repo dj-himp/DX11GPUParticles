@@ -20,8 +20,6 @@ namespace DemoParticles
         virtual void save(json& file) override;
         virtual void load(json& file) override;
 
-        void setCubeSize(DirectX::SimpleMath::Vector3 cubeSize) { m_cubeSize = cubeSize; }
-
     private:
         
         std::unique_ptr<ComputeShader>                      m_emitParticles;
@@ -33,6 +31,15 @@ namespace DemoParticles
         float m_lastEmitTime = 0.0f;
         bool m_needEmit = false;
 
-        DirectX::SimpleMath::Vector3 m_cubeSize = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
+        DirectX::SimpleMath::Vector3 m_scale = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
+        DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
+        DirectX::SimpleMath::Vector3 m_rotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
+
+        float m_worldf[16] =
+        { 1.f, 0.f, 0.f, 0.f,
+          0.f, 1.f, 0.f, 0.f,
+          0.f, 0.f, 1.f, 0.f,
+          0.f, 0.f, 0.f, 1.f };
+
     };
 }
