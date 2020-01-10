@@ -17,6 +17,7 @@ cbuffer simulateParticlesConstantBuffer : register(b4)
     float curlCoefficient;
     
     float forceFieldForceScale;
+    float forceFieldIntensity;
     
     uint nbWantedAttractors;
     
@@ -26,7 +27,7 @@ cbuffer simulateParticlesConstantBuffer : register(b4)
     bool addCurlNoise;
     bool addDrag;
 
-    uint3 simulatePadding;
+    uint2 simulatePadding;
 }
 
 struct Attractor
@@ -53,7 +54,7 @@ StructuredBuffer<Attractor> attractorBuffer : register(t0);
 Texture2D<float4> noiseTexture : register(t1);
 Texture3D<float4> forceFieldTexture : register(t2);
 
-SamplerState linearWrapSampler : register(s0);
+SamplerState linearSampler : register(s0);
 
 #define MAX_ATTRACTORS 4
 groupshared Attractor attractorList[MAX_ATTRACTORS];
@@ -142,12 +143,15 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             particleForce += normalize(direction) * (a.gravity * p.mass * a.mass) / (max(1.0, distance * distance));
         }
 
+        //float4 forceFieldVelocity = float4(0.0, 0.0, 0.0, 1.0);
         if (addForceField)
         {
             float3 forceFieldUV = mul(float4(p.position.xyz, 1.0), forceFieldWorld2Volume).xyz;
-            float3 force = forceFieldTexture.SampleLevel(linearWrapSampler, forceFieldUV, 0).xyz;
+            float3 force = forceFieldTexture.SampleLevel(linearSampler, forceFieldUV, 0).xyz;
             //force = mul(float4(force, 0.0), forceFieldVolume2World).xyz;
             particleForce.xyz += force * forceFieldForceScale;
+            //forceFieldVelocity.xyz = force * forceFieldForceScale;
+
         }
 
         if(addAizama)
@@ -189,9 +193,10 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             particleForce -= dragCoefficient * p.velocity;
         }
 
-        //float3 acceleration = particleForce.xyz / p.mass;
-        //p.velocity.xyz += acceleration * dt;
+        float3 acceleration = particleForce.xyz / p.mass;
+        p.velocity.xyz += acceleration * dt;
         p.velocity.xyz = particleForce.xyz;
+        //p.velocity.xyz = lerp(p.velocity.xyz, forceFieldVelocity.xyz, forceFieldIntensity);
     
         //TEMP
         //float cap = 1.0;

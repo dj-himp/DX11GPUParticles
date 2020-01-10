@@ -29,6 +29,7 @@ namespace DemoParticles
         m_simulateParticlesBufferData.dragCoefficient = 0.001f;
         m_simulateParticlesBufferData.curlCoefficient = 1.0f;
         m_simulateParticlesBufferData.forceFieldForceScale = 1.0f;
+        m_simulateParticlesBufferData.forceFieldIntensity = 1.0f;
 
         for (const auto& file : std::filesystem::directory_iterator("."))
         {
@@ -366,7 +367,6 @@ namespace DemoParticles
             {
                 ImGui::Checkbox("Enabled", (bool*)&m_simulateParticlesBufferData.addForceField);
                 
-                
                 if (ImGui::BeginCombo("file", m_currentForceField.c_str()))
                 {
                     for (int i = 0; i < m_forceFieldList.size(); ++i)
@@ -385,10 +385,15 @@ namespace DemoParticles
                     }
                     ImGui::EndCombo();
                 }
-
-                ImGui::Checkbox("Render", &m_renderForceField);
+                
+                const char* modes[] = { "Wrap", "Border", "Clamp" };
+                ImGui::Combo("Sample Mode", &m_forceFieldSampleMode, modes, 3);
 
                 ImGui::DragFloat("Force scale", &m_simulateParticlesBufferData.forceFieldForceScale);
+                ImGui::DragFloat("Intensity", &m_simulateParticlesBufferData.forceFieldIntensity, 0.05f, 0.0f, 1.0f);
+                ImGui::Checkbox("Render", &m_renderForceField);
+
+                
 
                 ImGui::TreePop();
             }
@@ -456,6 +461,7 @@ namespace DemoParticles
         file["Simulation"]["ForceField"]["CurrentForceField"] = m_currentForceField;
         file["Simulation"]["ForceField"]["Render"] = m_renderForceField;
         file["Simulation"]["ForceField"]["ForceScale"] = m_simulateParticlesBufferData.forceFieldForceScale;
+        file["Simulation"]["ForceField"]["Intensity"] = m_simulateParticlesBufferData.forceFieldIntensity;
 
         file["Simulation"]["CurlNoise"]["Enabled"] = m_simulateParticlesBufferData.addCurlNoise;
         file["Simulation"]["CurlNoise"]["Curl Coefficient"] = m_simulateParticlesBufferData.curlCoefficient;
@@ -527,7 +533,21 @@ namespace DemoParticles
         m_simulateShader->setSRV(0, m_attractorsSRV);
         m_simulateShader->setSRV(1, m_noiseTextureSRV);
         m_simulateShader->setSRV(2, m_forceFieldTextureSRV);
-        context->CSSetSamplers(0, 1, RenderStatesHelper::LinearBorder().GetAddressOf());
+        switch (m_forceFieldSampleMode)
+        {
+        case 0:
+            context->CSSetSamplers(0, 1, RenderStatesHelper::LinearWrap().GetAddressOf());
+            break;
+        case 1:
+            context->CSSetSamplers(0, 1, RenderStatesHelper::LinearBorder().GetAddressOf());
+            break;
+        case 2:
+            context->CSSetSamplers(0, 1, RenderStatesHelper::LinearClamp().GetAddressOf());
+            break;
+        default:
+            break;
+        }
+        
         m_simulateShader->begin();
         m_simulateShader->start(DX::align(m_maxParticles, 256) / 256, 1, 1);
         m_simulateShader->end();
@@ -770,14 +790,10 @@ namespace DemoParticles
 
         m_simulateParticlesBufferData.addForceField = file["Simulation"]["ForceField"]["Enabled"];
         m_currentForceField = file["Simulation"]["ForceField"]["CurrentForceField"];
-        /*std::vector<ForceField>::iterator it = std::find_if(m_forceFieldList.begin(), m_forceFieldList.end(), [&](ForceField ff)->bool { return (m_currentForceField == ff.m_fileName); });
-        if (it != m_forceFieldList.end())
-        {
-
-        }*/
 
         m_renderForceField = file["Simulation"]["ForceField"]["Render"];
         m_simulateParticlesBufferData.forceFieldForceScale = file["Simulation"]["ForceField"]["ForceScale"];
+        m_simulateParticlesBufferData.forceFieldIntensity = file["Simulation"]["ForceField"]["Intensity"];
 
         m_simulateParticlesBufferData.addCurlNoise = file["Simulation"]["CurlNoise"]["Enabled"];
         m_simulateParticlesBufferData.curlCoefficient = file["Simulation"]["CurlNoise"]["Curl Coefficient"];

@@ -145,6 +145,7 @@ namespace DemoParticles
         float curlCoefficient;
 
         float forceFieldForceScale;
+        float forceFieldIntensity;
 
         UINT nbWantedAttractors;
 
@@ -154,7 +155,7 @@ namespace DemoParticles
         UINT addCurlNoise;
         UINT addDrag;
 
-        UINT padding[3];
+        UINT padding[2];
     };
 
     struct RenderForceFieldConstantBuffer

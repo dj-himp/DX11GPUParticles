@@ -169,6 +169,8 @@ void Game::Render()
         return;
     }
 
+    GpuProfiler::instance().beginFrame();
+
     Clear();
 
     m_deviceResources->PIXBeginEvent(L"Render");
@@ -179,16 +181,23 @@ void Game::Render()
     }
 
     m_sceneMenger->render();
+
+    GpuProfiler::instance().setTimestamp(GpuProfiler::TS_inter);
+
     DebugRenderer::instance().render();
 
     //m_fpsTextRenderer->Render();
 
     m_deviceResources->PIXEndEvent();
 
+    GpuProfiler::instance().waitAndGetData();
+
     RenderImGui();
 
     // Show the new frame.
     m_deviceResources->Present();
+
+    GpuProfiler::instance().endFrame();
 }
 
 // Helper method to clear the back buffers.
@@ -275,6 +284,8 @@ void Game::CreateDeviceDependentResources()
     DebugRenderer::instance().createDeviceDependentResources();
 
     m_sceneMenger->createDeviceDependentResources();
+
+    GpuProfiler::instance().init(m_deviceResources.get());
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
@@ -318,6 +329,14 @@ void Game::RenderImGui()
 
     ImGui::Begin("Debug Infos");
     ImGui::Text("FPS : %i", m_timer.GetFramesPerSecond());
+
+    float total = 0.0f;
+    for (GpuProfiler::TimeStamp t = GpuProfiler::TS_BeginFrame; t < GpuProfiler::TS_Max; t = GpuProfiler::TimeStamp(t + 1))
+    {
+        total += GpuProfiler::instance().getTimestamp(t);
+    }
+
+    ImGui::Text("Frame time : %f", 1000.0f * (total + GpuProfiler::instance().getTimestamp(GpuProfiler::TS_EndFrame)));
     ImGui::End();
 
     ImGui::Begin("Particles globals");

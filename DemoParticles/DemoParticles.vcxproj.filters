@@ -204,6 +204,9 @@
     <ClCompile Include="Extern\choreograph\TimelineItem.cpp">
       <Filter>Extern\choreograph</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Common\GpuProfiler.cpp">
+      <Filter>Src\Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\DeviceResources.h">
@@ -559,6 +562,9 @@
     </ClInclude>
     <ClInclude Include="Extern\choreograph\TimeType.h">
       <Filter>Extern\choreograph</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\GpuProfiler.h">
+      <Filter>Src\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

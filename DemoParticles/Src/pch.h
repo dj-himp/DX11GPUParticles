@@ -70,6 +70,7 @@
 #include "Common/RenderStatesHelper.h"
 #include "GlobalSettings.h"
 #include "Common/DirectXHelper.h"
+#include "Common/GpuProfiler.h"
 
 #include "imgui/imgui.h"
 #include "Gui/imgui_impl_win32.h"

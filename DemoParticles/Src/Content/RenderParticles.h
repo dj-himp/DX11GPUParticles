@@ -112,6 +112,7 @@ namespace DemoParticles
         RenderForceFieldConstantBuffer                      m_renderForceFieldConstantBufferData;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_renderForceFieldConstantBuffer;
         bool                                                m_renderForceField = false;
+        int                                                 m_forceFieldSampleMode = 0;
 
         struct ForceField
         {

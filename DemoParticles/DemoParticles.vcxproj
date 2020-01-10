@@ -188,6 +188,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Src\Common\GpuProfiler.cpp" />
     <ClCompile Include="Src\Content\ParticleEmitterPoint.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
@@ -468,6 +469,7 @@
     <ClInclude Include="Extern\imgui\imgui_user.h" />
     <ClInclude Include="Extern\imgui\ImSequencer.h" />
     <ClInclude Include="Extern\Json\json.hpp" />
+    <ClInclude Include="Src\Common\GpuProfiler.h" />
     <ClInclude Include="Src\Content\ParticleEmitterPoint.h" />
     <ClInclude Include="Src\Common\FGAParser.h" />
     <ClInclude Include="Src\Content\ParticleEmitterBuffer.h" />
