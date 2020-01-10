@@ -14,9 +14,6 @@ namespace DemoParticles
     public:
         MengerRenderer(const DX::DeviceResources* deviceResources);
 
-        virtual void init() override;
-        virtual void release() override;
-
         virtual void createDeviceDependentResources() override;
         virtual void createWindowSizeDependentResources() override;
         virtual void releaseDeviceDependentResources() override;

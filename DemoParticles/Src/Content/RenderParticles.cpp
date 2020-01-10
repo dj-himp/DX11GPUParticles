@@ -13,6 +13,8 @@
 #include "ParticleEmitterCube.h"
 #include "ParticleEmitterBuffer.h"
 
+#include <filesystem>
+
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
@@ -26,71 +28,19 @@ namespace DemoParticles
         m_simulateParticlesBufferData.lorenzParams1 = Vector4(10.0f, 8.0f/3.0f, 10.0f, 0.0f);
         m_simulateParticlesBufferData.dragCoefficient = 0.001f;
         m_simulateParticlesBufferData.curlCoefficient = 1.0f;
-    }
+        m_simulateParticlesBufferData.forceFieldForceScale = 1.0f;
 
-    void RenderParticles::init()
-    {
-        IRenderable::init();
-    }
-
-    void RenderParticles::release()
-    {
-        
+        for (const auto& file : std::filesystem::directory_iterator("."))
+        {
+            if (file.path().extension().compare(".fga") == 0 || file.path().extension().compare(".vf") == 0)
+            {               
+                m_forceFieldList.emplace_back(file.path().filename().string());
+            }
+        }
     }
 
     void RenderParticles::createDeviceDependentResources()
     {
-
-        FGAParser parser;
-        //parser.parse("forceFieldTest.fga", m_content);
-        parser.parse("VF_Vortex.fga", m_content);
-        //parser.parse("VF_Smoke.fga", m_content);
-        //parser.parse("VF_Turbulence.fga", m_content);
-        //parser.parse("VF_FluidVol.fga", m_content);
-        //parser.parse("VF_Point.fga", m_content);
-        //parser.parse("VF_CurveTile_1.fga", m_content);
-        //parser.parse("VF_CurveTile_2.fga", m_content);
-        //parser.parse("VF_CurveTile_3.fga", m_content);
-
-        //parser.parse("SignedDistance.vf", m_content);
-
-        D3D11_TEXTURE3D_DESC desc;
-        desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-        desc.CPUAccessFlags = 0;
-        desc.Width = m_content.sizeX;
-        desc.Height = m_content.sizeY;
-        desc.Depth = m_content.sizeZ;
-        desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-        desc.MipLevels = 1;
-        desc.Usage = D3D11_USAGE_DEFAULT;
-        desc.MiscFlags = 0;
-
-        D3D11_SUBRESOURCE_DATA data;
-        data.pSysMem = &m_content.forces[0];
-        data.SysMemPitch = m_content.sizeX * sizeof(Vector4);
-        data.SysMemSlicePitch = m_content.sizeX * m_content.sizeY * sizeof(Vector4);
-
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateTexture3D(&desc, &data, &m_forceFieldTexture)
-        );
-
-        D3D11_SHADER_RESOURCE_VIEW_DESC forceFieldTextureSRVDesc;
-        forceFieldTextureSRVDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-        forceFieldTextureSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE3D;
-        forceFieldTextureSRVDesc.Texture3D.MipLevels = 1;
-        forceFieldTextureSRVDesc.Texture3D.MostDetailedMip = 0;
-
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateShaderResourceView(m_forceFieldTexture.Get(), &forceFieldTextureSRVDesc, &m_forceFieldTextureSRV)
-        );
-
-        //NEED REFACTOR of Shader::Load to remove this 
-        std::vector<D3D11_INPUT_ELEMENT_DESC> inputElementDesc = {
-            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        };
-
-        m_shader = std::make_unique<Shader>(m_deviceResources);
-        m_shader->load(L"RenderParticles_VS.cso", L"RenderParticles_PS.cso", inputElementDesc, L"RenderParticles_GS.cso");
         
         //MAIN PARTICLE POOL
 
@@ -265,6 +215,7 @@ namespace DemoParticles
 
         initAttractors();
         initEmitters();
+        initForceField();
     }
 
     void RenderParticles::createWindowSizeDependentResources()
@@ -282,9 +233,10 @@ namespace DemoParticles
         if (!camera)
             assert(0);
 
-        Vector3 volumeOffset = m_content.boundMin;
-        Vector3 volumeScale = m_content.boundMax - m_content.boundMin;
-        Matrix volume2World = Matrix::CreateScale(volumeScale * 0.01f) * Matrix::CreateTranslation(volumeOffset * 0.01f);
+        float scale = 0.01f;
+        Vector3 volumeOffset = m_forceFieldList[m_currentlyLoadedForceField].m_content.boundMin;
+        Vector3 volumeScale = m_forceFieldList[m_currentlyLoadedForceField].m_content.boundMax - m_forceFieldList[m_currentlyLoadedForceField].m_content.boundMin;
+        Matrix volume2World = Matrix::CreateScale(volumeScale * scale) * Matrix::CreateTranslation(volumeOffset * scale);
         //m_simulateParticlesBufferData.forceFieldVolume2World = volume2World;
         m_simulateParticlesBufferData.forceFieldWorld2Volume = volume2World.Invert();
         m_simulateParticlesBufferData.forceFieldWorld2Volume = m_simulateParticlesBufferData.forceFieldWorld2Volume.Transpose();
@@ -294,6 +246,10 @@ namespace DemoParticles
             emitter->update(timer);
         }
 
+        if (m_renderForceField)
+        {
+            updateForceField();
+        }
     }
 
     void RenderParticles::render()
@@ -379,6 +335,11 @@ namespace DemoParticles
 
         context->GSSetShader(nullptr, nullptr, 0);
 
+        if (m_renderForceField)
+        {
+            renderForceField();
+        }
+
         m_deviceResources->PIXEndEvent();
     }
 
@@ -404,6 +365,30 @@ namespace DemoParticles
             if (ImGui::TreeNode("ForceField"))
             {
                 ImGui::Checkbox("Enabled", (bool*)&m_simulateParticlesBufferData.addForceField);
+                
+                
+                if (ImGui::BeginCombo("file", m_currentForceField.c_str()))
+                {
+                    for (int i = 0; i < m_forceFieldList.size(); ++i)
+                    {
+                        bool isSelected = (m_currentForceField == m_forceFieldList[i].m_fileName);
+                        if (ImGui::Selectable(m_forceFieldList[i].m_fileName.c_str(), isSelected))
+                        {
+                            m_currentForceField = m_forceFieldList[i].m_fileName;
+                            //m_currentlyLoadedForceField = i;
+                            initForceField();
+                        }
+                        if (isSelected)
+                        {
+                            ImGui::SetItemDefaultFocus();
+                        }
+                    }
+                    ImGui::EndCombo();
+                }
+
+                ImGui::Checkbox("Render", &m_renderForceField);
+
+                ImGui::DragFloat("Force scale", &m_simulateParticlesBufferData.forceFieldForceScale);
 
                 ImGui::TreePop();
             }
@@ -468,6 +453,9 @@ namespace DemoParticles
         file["Simulation"]["Lorenz"]["Enabled"] = m_simulateParticlesBufferData.addLorenz;
 
         file["Simulation"]["ForceField"]["Enabled"] = m_simulateParticlesBufferData.addForceField;
+        file["Simulation"]["ForceField"]["CurrentForceField"] = m_currentForceField;
+        file["Simulation"]["ForceField"]["Render"] = m_renderForceField;
+        file["Simulation"]["ForceField"]["ForceScale"] = m_simulateParticlesBufferData.forceFieldForceScale;
 
         file["Simulation"]["CurlNoise"]["Enabled"] = m_simulateParticlesBufferData.addCurlNoise;
         file["Simulation"]["CurlNoise"]["Curl Coefficient"] = m_simulateParticlesBufferData.curlCoefficient;
@@ -539,7 +527,7 @@ namespace DemoParticles
         m_simulateShader->setSRV(0, m_attractorsSRV);
         m_simulateShader->setSRV(1, m_noiseTextureSRV);
         m_simulateShader->setSRV(2, m_forceFieldTextureSRV);
-        context->CSSetSamplers(0, 1, RenderStatesHelper::PointBorder().GetAddressOf());
+        context->CSSetSamplers(0, 1, RenderStatesHelper::LinearBorder().GetAddressOf());
         m_simulateShader->begin();
         m_simulateShader->start(DX::align(m_maxParticles, 256) / 256, 1, 1);
         m_simulateShader->end();
@@ -590,34 +578,179 @@ namespace DemoParticles
 
     void RenderParticles::initEmitters()
     {
-        std::unique_ptr<ParticleEmitterSphere> sphereEmitter = std::make_unique<ParticleEmitterSphere>(m_deviceResources);
-        sphereEmitter->createDeviceDependentResources();
+        for (auto&& emitter : m_particleEmitters)
+        {
+            emitter->createDeviceDependentResources();
 
-        m_particleEmitters.push_back(std::move(sphereEmitter));
+            ParticleEmitterBuffer* bufferEmitter = dynamic_cast<ParticleEmitterBuffer*>(emitter.get());
+            if (bufferEmitter != nullptr)
+            {
+                bufferEmitter->setBuffer(m_bakedParticlesUAV);
+                bufferEmitter->setIndirectArgsBuffer(m_bakedIndirectArgsBuffer);
+                continue;
+            }
+            
+            ParticleEmitterCube* cubeEmitter = dynamic_cast<ParticleEmitterCube*>(emitter.get());
+            if (cubeEmitter != nullptr)
+            {
+                //cubeEmitter->setCubeSize(Vector3((float)m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeX, (float)m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeY, (float)m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeZ));
+            }
+        }
+    }
+
+    void RenderParticles::initForceField()
+    {
+        std::vector<ForceField>::iterator it = std::find_if(m_forceFieldList.begin(), m_forceFieldList.end(), [&](ForceField ff)->bool { return (m_currentForceField == ff.m_fileName); });
+        if (it != m_forceFieldList.end())
+        //if(m_forceFieldList[m_currentlyLoadedForceField].m_loaded == false)
+        {
+            m_currentlyLoadedForceField = std::distance(m_forceFieldList.begin(), it);
+
+            if (m_forceFieldList[m_currentlyLoadedForceField].m_loaded == false)
+            {
+                FGAParser parser;
+                parser.parse(m_forceFieldList[m_currentlyLoadedForceField].m_fileName.c_str(), m_forceFieldList[m_currentlyLoadedForceField].m_content);
+
+                m_forceFieldList[m_currentlyLoadedForceField].m_loaded = true;
+            }
+
+            D3D11_TEXTURE3D_DESC desc;
+            desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+            desc.CPUAccessFlags = 0;
+            desc.Width = m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeX;
+            desc.Height = m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeY;
+            desc.Depth = m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeZ;
+            desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+            desc.MipLevels = 1;
+            desc.Usage = D3D11_USAGE_DEFAULT;
+            desc.MiscFlags = 0;
+
+            D3D11_SUBRESOURCE_DATA data;
+            data.pSysMem = &m_forceFieldList[m_currentlyLoadedForceField].m_content.forces[0];
+            data.SysMemPitch = m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeX * sizeof(Vector4);
+            data.SysMemSlicePitch = m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeX * m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeY * sizeof(Vector4);
+
+            DX::ThrowIfFailed(
+                m_deviceResources->GetD3DDevice()->CreateTexture3D(&desc, &data, &m_forceFieldTexture)
+            );
+
+            D3D11_SHADER_RESOURCE_VIEW_DESC forceFieldTextureSRVDesc;
+            forceFieldTextureSRVDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+            forceFieldTextureSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE3D;
+            forceFieldTextureSRVDesc.Texture3D.MipLevels = 1;
+            forceFieldTextureSRVDesc.Texture3D.MostDetailedMip = 0;
+
+            DX::ThrowIfFailed(
+                m_deviceResources->GetD3DDevice()->CreateShaderResourceView(m_forceFieldTexture.Get(), &forceFieldTextureSRVDesc, &m_forceFieldTextureSRV)
+            );
+        }
+        //FGAParser parser;
+        //parser.parse("forceFieldTest.fga", m_content);
+        //parser.parse("VF_Vortex.fga", m_content);
+        //parser.parse("VF_Smoke.fga", m_content);
+        //parser.parse("VF_Turbulence.fga", m_content);
+        //parser.parse("VF_FluidVol.fga", m_content);
+        //parser.parse("VF_Point.fga", m_content);
+        //parser.parse("VF_CurveTile_1.fga", m_content);
+        //parser.parse("VF_CurveTile_2.fga", m_content);
+        //parser.parse("VF_CurveTile_3.fga", m_content);
+        //parser.parse("VF_Perlin_HighFreq_8x8x8.fga", m_content);
+
+        //parser.parse("SignedDistance.vf", m_content);
+
         
+        if (m_shader == nullptr)
+        {
+            //NEED REFACTOR of Shader::Load to remove this 
+            std::vector<D3D11_INPUT_ELEMENT_DESC> inputElementDesc = {
+                { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            };
 
-        std::unique_ptr<ParticleEmitterPoint> pointEmitter = std::make_unique<ParticleEmitterPoint>(m_deviceResources);
-        pointEmitter->createDeviceDependentResources();
+            m_shader = std::make_unique<Shader>(m_deviceResources);
+            m_shader->load(L"RenderParticles_VS.cso", L"RenderParticles_PS.cso", inputElementDesc, L"RenderParticles_GS.cso");
 
-        m_particleEmitters.push_back(std::move(pointEmitter));
-        
-        std::unique_ptr<ParticleEmitterCube> cubeEmitter = std::make_unique<ParticleEmitterCube>(m_deviceResources);
-        cubeEmitter->createDeviceDependentResources();
-        cubeEmitter->setCubeSize(Vector3((float)m_content.sizeX, (float)m_content.sizeY, (float)m_content.sizeZ));
+            CD3D11_BUFFER_DESC constantBufferDesc(sizeof(RenderForceFieldConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
+            DX::ThrowIfFailed(
+                m_deviceResources->GetD3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, &m_renderForceFieldConstantBuffer)
+            );
+        }
 
-        m_particleEmitters.push_back(std::move(cubeEmitter));
-        
+        if(m_drawForceFieldShader == nullptr)
+        {
+        //NEED REFACTOR of Shader::Load to remove this 
+        std::vector<D3D11_INPUT_ELEMENT_DESC> inputElementDesc2;/* = {
+            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        };*/
 
-        std::unique_ptr<ParticleEmitterBuffer> bufferEmitter = std::make_unique<ParticleEmitterBuffer>(m_deviceResources);
-        bufferEmitter->createDeviceDependentResources();
-        bufferEmitter->setBuffer(m_bakedParticlesUAV);
-        bufferEmitter->setIndirectArgsBuffer(m_bakedIndirectArgsBuffer);
+        m_drawForceFieldShader = std::make_unique<Shader>(m_deviceResources);
+        m_drawForceFieldShader->load(L"RenderForceField_VS.cso", L"RenderForceField_PS.cso", inputElementDesc2, L"RenderForceField_GS.cso");
+        }
+    }
 
-        m_particleEmitters.push_back(std::move(bufferEmitter));
+    void RenderParticles::updateForceField()
+    {
+        m_renderForceFieldConstantBufferData.size = Vector4((float)m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeX, (float)m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeY, (float)m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeZ, 1.0f);
+
+        float scale = 0.01f;
+        Vector3 volumeOffset = m_forceFieldList[m_currentlyLoadedForceField].m_content.boundMin;
+        Vector3 volumeScale = m_forceFieldList[m_currentlyLoadedForceField].m_content.boundMax - m_forceFieldList[m_currentlyLoadedForceField].m_content.boundMin;
+        m_renderForceFieldConstantBufferData.forceFieldVolume2World = Matrix::CreateScale(volumeScale * scale) * Matrix::CreateTranslation(volumeOffset * scale);
+        //m_constantBufferData.forceFieldVolume2World = m_constantBufferData.forceFieldVolume2World.Invert();
+        m_renderForceFieldConstantBufferData.forceFieldVolume2World = m_renderForceFieldConstantBufferData.forceFieldVolume2World.Transpose();
+    }
+
+    void RenderParticles::renderForceField()
+    {
+        auto context = m_deviceResources->GetD3DDeviceContext();
+
+        context->UpdateSubresource(m_renderForceFieldConstantBuffer.Get(), 0, nullptr, &m_renderForceFieldConstantBufferData, 0, 0);
+
+        context->VSSetShader(m_drawForceFieldShader->getVertexShader(), nullptr, 0);
+        context->GSSetShader(m_drawForceFieldShader->getGeometryShader(), nullptr, 0);
+        context->PSSetShader(m_drawForceFieldShader->getPixelShader(), nullptr, 0);
+
+        ID3D11Buffer* nullVertexBuffer = nullptr;
+        UINT stride = 0;
+        UINT offset = 0;
+        context->IASetVertexBuffers(0, 1, &nullVertexBuffer, &stride, &offset);
+        context->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
+        context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+
+        context->VSSetConstantBuffers(4, 1, m_renderForceFieldConstantBuffer.GetAddressOf());
+        ID3D11ShaderResourceView* SRVs[] = { m_forceFieldTextureSRV.Get() };
+        context->VSSetShaderResources(0, ARRAYSIZE(SRVs), SRVs);
+        context->VSSetSamplers(0, 1, RenderStatesHelper::PointClamp().GetAddressOf());
+
+        context->GSSetConstantBuffers(4, 1, m_renderForceFieldConstantBuffer.GetAddressOf());
+
+        const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
+        context->OMSetBlendState(RenderStatesHelper::Opaque().Get(), blendFactor, 0xffffffff);
+        context->RSSetState(RenderStatesHelper::CullNone().Get());
+        context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
+
+        context->DrawInstanced((UINT)m_forceFieldList[m_currentlyLoadedForceField].m_content.forces.size(), 1, 0, 0);
+
+        //ZeroMemory(SRVs, ARRAYSIZE(SRVs));
+        SRVs[0] = nullptr;
+        context->VSSetShaderResources(0, ARRAYSIZE(SRVs), SRVs);
+
+        context->GSSetShader(nullptr, nullptr, 0);
     }
 
     void RenderParticles::load(json& file)
     {
+        std::unique_ptr<ParticleEmitterSphere> sphereEmitter = std::make_unique<ParticleEmitterSphere>(m_deviceResources);
+        m_particleEmitters.push_back(std::move(sphereEmitter));
+
+        std::unique_ptr<ParticleEmitterPoint> pointEmitter = std::make_unique<ParticleEmitterPoint>(m_deviceResources);
+        m_particleEmitters.push_back(std::move(pointEmitter));
+
+        std::unique_ptr<ParticleEmitterCube> cubeEmitter = std::make_unique<ParticleEmitterCube>(m_deviceResources);
+        m_particleEmitters.push_back(std::move(cubeEmitter));
+
+        std::unique_ptr<ParticleEmitterBuffer> bufferEmitter = std::make_unique<ParticleEmitterBuffer>(m_deviceResources);
+        m_particleEmitters.push_back(std::move(bufferEmitter));
+
         for (auto&& emitter : m_particleEmitters)
         {
             emitter->load(file);
@@ -636,6 +769,15 @@ namespace DemoParticles
         m_simulateParticlesBufferData.addLorenz = file["Simulation"]["Lorenz"]["Enabled"];
 
         m_simulateParticlesBufferData.addForceField = file["Simulation"]["ForceField"]["Enabled"];
+        m_currentForceField = file["Simulation"]["ForceField"]["CurrentForceField"];
+        /*std::vector<ForceField>::iterator it = std::find_if(m_forceFieldList.begin(), m_forceFieldList.end(), [&](ForceField ff)->bool { return (m_currentForceField == ff.m_fileName); });
+        if (it != m_forceFieldList.end())
+        {
+
+        }*/
+
+        m_renderForceField = file["Simulation"]["ForceField"]["Render"];
+        m_simulateParticlesBufferData.forceFieldForceScale = file["Simulation"]["ForceField"]["ForceScale"];
 
         m_simulateParticlesBufferData.addCurlNoise = file["Simulation"]["CurlNoise"]["Enabled"];
         m_simulateParticlesBufferData.curlCoefficient = file["Simulation"]["CurlNoise"]["Curl Coefficient"];

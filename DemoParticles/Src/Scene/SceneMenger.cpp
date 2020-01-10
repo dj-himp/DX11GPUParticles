@@ -8,7 +8,6 @@
 #include "Content/BakeModelParticles.h"
 #include "Content/RenderFullscreenQuad.h"
 #include "Content/RenderParticles.h"
-#include "Content/RenderForceField.h"
 #include "Common/ComputeShader.h"
 #include "Common/InputManager.h"
 
@@ -24,7 +23,6 @@ namespace DemoParticles
         m_bakeModelParticles = std::make_unique<BakeModelParticles>(deviceResources);
         m_fullScreenQuad = std::make_unique<RenderFullscreenQuad>(deviceResources);
         m_renderParticles = std::make_unique<RenderParticles>(deviceResources);
-        m_renderForceField = std::make_unique<RenderForceField>(deviceResources);
     }
 
     SceneMenger::~SceneMenger()
@@ -115,7 +113,6 @@ namespace DemoParticles
         m_bakeModelParticles->createDeviceDependentResources();
         m_fullScreenQuad->createDeviceDependentResources();
         m_renderParticles->createDeviceDependentResources();
-        m_renderForceField->createDeviceDependentResources();
     }
 
     void SceneMenger::createWindowSizeDependentResources()
@@ -132,7 +129,6 @@ namespace DemoParticles
         m_bakeModelParticles->createWindowSizeDependentResources();
         m_fullScreenQuad->createWindowSizeDependentResources();
         m_renderParticles->createWindowSizeDependentResources();
-        m_renderForceField->createWindowSizeDependentResources();
 
     }
 
@@ -184,7 +180,6 @@ namespace DemoParticles
         m_bakeModelParticles->update(timer);
         m_fullScreenQuad->update(timer);
         m_renderParticles->update(timer, camera);
-        m_renderForceField->update(timer, camera);
     }
 
     void SceneMenger::render()

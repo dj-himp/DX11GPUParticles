@@ -12,17 +12,7 @@ namespace DemoParticles
     RenderFullscreenQuad::RenderFullscreenQuad(const DX::DeviceResources* deviceResources)
         : IRenderable(deviceResources)
     {
-        init();
-    }
-
-    void RenderFullscreenQuad::init()
-    {
-        IRenderable::init();
-    }
-
-    void RenderFullscreenQuad::release()
-    {
-        throw std::logic_error("The method or operation is not implemented.");
+        
     }
 
     void RenderFullscreenQuad::createDeviceDependentResources()

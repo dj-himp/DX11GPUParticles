@@ -57,6 +57,7 @@ Game::~Game()
 // Initialize the Direct3D resources required to run.
 void Game::Initialize(HWND window, int width, int height)
 {
+
     m_mouse = std::make_unique<DirectX::Mouse>();
     m_keyboard = std::make_unique<DirectX::Keyboard>();
     
@@ -90,6 +91,7 @@ void Game::Initialize(HWND window, int width, int height)
 
     m_sceneMenger = std::make_unique<DemoParticles::SceneMenger>(m_deviceResources.get());
 
+    load();
     CreateDeviceDependentResources();
     CreateWindowSizeDependentResources();
 
@@ -108,8 +110,6 @@ void Game::Initialize(HWND window, int width, int height)
     // Setup Platform/Renderer bindings
     ImGui_ImplWin32_Init(window);
     ImGui_ImplDX11_Init(m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext());
-
-    load();
 
     // TODO: Change the timer settings if you want something other than the default variable timestep mode.
     // e.g. for 60 FPS fixed timestep update logic, call:

@@ -193,11 +193,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="Src\Content\RenderForceField.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
-    </ClCompile>
     <ClCompile Include="Src\Common\FGAParser.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
@@ -488,7 +483,6 @@
     <ClInclude Include="Extern\imgui\ImSequencer.h" />
     <ClInclude Include="Extern\Json\json.hpp" />
     <ClInclude Include="Src\Content\ParticleEmitterPoint.h" />
-    <ClInclude Include="Src\Content\RenderForceField.h" />
     <ClInclude Include="Src\Common\FGAParser.h" />
     <ClInclude Include="Src\Content\ParticleEmitterBuffer.h" />
     <ClInclude Include="Src\Content\ParticleEmitterCube.h" />
@@ -585,6 +579,60 @@
       <FileType>Document</FileType>
     </CopyFileToFolders>
     <CopyFileToFolders Include="Data\ForceFields\SignedDistance.vf">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Alligator_HighFreq_16x16x16.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Alligator_HighFreq_32x32x32.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Alligator_HighFreq_8x8x8.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Alligator_LowFreq_16x16x16.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Alligator_LowFreq_32x32x32.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Alligator_LowFreq_8x8x8.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Perlin_HighFreq_16x16x16.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Perlin_HighFreq_32x32x32.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Perlin_HighFreq_8x8x8.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Perlin_LowFreq_16x16x16.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Perlin_LowFreq_32x32x32.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Perlin_LowFreq_8x8x8.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Simplex_HighFreq_16x16x16.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Simplex_HighFreq_32x32x32.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Simplex_HighFreq_8x8x8.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Simplex_LowFreq_16x16x16.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Simplex_LowFreq_32x32x32.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Simplex_LowFreq_8x8x8.fga">
       <FileType>Document</FileType>
     </CopyFileToFolders>
     <None Include="Extern\assimp\.editorconfig" />

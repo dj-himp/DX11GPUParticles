@@ -2,7 +2,7 @@
 cbuffer renderForceFieldConstantBuffer : register(b4)
 {
     float3 size;
-    float4x4 forceFieldWorld2Volume;
+    float4x4 forceFieldVolume2World;
 
     uint simulatePadding;
 }
@@ -28,9 +28,10 @@ GeometryShaderInput main(uint vertexId : SV_VertexID)
     uv.y = floor((vertexId - uv.z * cubeSizeSquared) / cubeSize);
     uv.x = vertexId - uv.z * cubeSizeSquared - uv.y * cubeSize;
     
-    output.force = forceList.SampleLevel(PointClampSampler, normalize(uv), 0).xyz;
+    //output.force = forceList.SampleLevel(PointClampSampler, normalize(uv), 0).xyz;
+    output.force = forceList.SampleLevel(PointClampSampler, uv / size.x, 0).xyz;
     
-    output.oPosition = uv * 0.5;
+    output.oPosition = uv/size.x;// * 0.5;
 
     return output;
 }

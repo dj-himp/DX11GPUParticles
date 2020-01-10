@@ -61,6 +61,9 @@
     <Filter Include="Extern\choreograph">
       <UniqueIdentifier>{f11edd2a-b11d-40ca-af30-46d5939dee96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Data\ForceFields\Pack_01">
+      <UniqueIdentifier>{92d518d4-5f65-4923-ab61-d4b7f94eef76}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\App.cpp">
@@ -178,9 +181,6 @@
       <Filter>Src\Common</Filter>
     </ClCompile>
     <ClCompile Include="Src\Content\ParticleEmitterCube.cpp">
-      <Filter>Src\Content</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Content\RenderForceField.cpp">
       <Filter>Src\Content</Filter>
     </ClCompile>
     <ClCompile Include="Src\Content\ParticleEmitterPoint.cpp">
@@ -363,9 +363,6 @@
       <Filter>Src\Common</Filter>
     </ClInclude>
     <ClInclude Include="Src\Content\ParticleEmitterCube.h">
-      <Filter>Src\Content</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Content\RenderForceField.h">
       <Filter>Src\Content</Filter>
     </ClInclude>
     <ClInclude Include="Src\Content\ParticleEmitterPoint.h">
@@ -764,6 +761,60 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="Data\ForceFields\SignedDistance.vf">
       <Filter>Data\ForceFields</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Alligator_HighFreq_8x8x8.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Alligator_HighFreq_16x16x16.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Alligator_HighFreq_32x32x32.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Alligator_LowFreq_8x8x8.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Alligator_LowFreq_16x16x16.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Alligator_LowFreq_32x32x32.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Perlin_HighFreq_8x8x8.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Perlin_HighFreq_16x16x16.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Perlin_HighFreq_32x32x32.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Perlin_LowFreq_8x8x8.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Perlin_LowFreq_16x16x16.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Perlin_LowFreq_32x32x32.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Simplex_HighFreq_8x8x8.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Simplex_HighFreq_16x16x16.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Simplex_HighFreq_32x32x32.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Simplex_LowFreq_8x8x8.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Simplex_LowFreq_16x16x16.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Simplex_LowFreq_32x32x32.fga">
+      <Filter>Data\ForceFields\Pack_01</Filter>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>

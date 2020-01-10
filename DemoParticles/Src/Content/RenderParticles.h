@@ -18,9 +18,6 @@ namespace DemoParticles
     public:
         RenderParticles(const DX::DeviceResources* deviceResources);
 
-        virtual void init() override;
-        virtual void release() override;
-
         virtual void createDeviceDependentResources() override;
         virtual void createWindowSizeDependentResources() override;
         virtual void releaseDeviceDependentResources() override;
@@ -42,6 +39,10 @@ namespace DemoParticles
         void simulateParticles();
         void initAttractors();
         void initEmitters();
+
+        void initForceField();
+        void updateForceField();
+        void renderForceField();
 
         std::unique_ptr<Shader>     m_moveShader;
 
@@ -107,6 +108,23 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11Texture3D>             m_forceFieldTexture;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_forceFieldTextureSRV;
         FGAParser::FGAContent                               m_content;
+        std::unique_ptr<Shader>                             m_drawForceFieldShader;
+        RenderForceFieldConstantBuffer                      m_renderForceFieldConstantBufferData;
+        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_renderForceFieldConstantBuffer;
+        bool                                                m_renderForceField = false;
+
+        struct ForceField
+        {
+            std::string m_fileName;
+            FGAParser::FGAContent m_content;
+            bool m_loaded = false;
+
+            ForceField(std::string fileName) { m_fileName = fileName; }
+        };
+
+        std::vector<ForceField>                            m_forceFieldList;
+        std::string                                        m_currentForceField = "VF_Vortex.fga";
+        size_t                                             m_currentlyLoadedForceField;
 
         bool m_sortParticles = false;
 

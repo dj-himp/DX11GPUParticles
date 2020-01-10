@@ -10,21 +10,10 @@ using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
 {
-    /*DebugRenderer::DebugRenderer(const DX::DeviceResources* deviceResources)
-        : IRenderable(deviceResources)
-    {
-        init();
-    }*/
-
     DebugRenderer& DebugRenderer::instance()
     {
         static DebugRenderer instance = DebugRenderer();
         return instance;
-    }
-
-    void DebugRenderer::init()
-    {
-
     }
 
     void DebugRenderer::release()

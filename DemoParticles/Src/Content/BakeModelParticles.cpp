@@ -16,19 +16,7 @@ namespace DemoParticles
     BakeModelParticles::BakeModelParticles(const DX::DeviceResources* deviceResources)
         : IRenderable(deviceResources)
     {
-        init();
-    }
-
-    void BakeModelParticles::init()
-    {
-        IRenderable::init();
-
-        
-    }
-
-    void BakeModelParticles::release()
-    {
-
+       
     }
 
     void BakeModelParticles::createDeviceDependentResources()

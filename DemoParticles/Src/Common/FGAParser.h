@@ -23,6 +23,9 @@ namespace DemoParticles
 
     private:
 
+        void parseFGA(const char* filename, FGAContent& content);
+        void parseVF(const char* filename, FGAContent& content);
+
         char* parseUntilDelimiter(char* buffer, char delimiter);
         char* parseFloat(char* buffer, float& outFloat);
         char* parseInt(char* buffer, int& outInt);

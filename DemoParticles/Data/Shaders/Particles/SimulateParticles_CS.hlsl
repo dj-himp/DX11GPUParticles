@@ -16,6 +16,8 @@ cbuffer simulateParticlesConstantBuffer : register(b4)
     float dragCoefficient;
     float curlCoefficient;
     
+    float forceFieldForceScale;
+    
     uint nbWantedAttractors;
     
     bool addForceField;
@@ -51,7 +53,7 @@ StructuredBuffer<Attractor> attractorBuffer : register(t0);
 Texture2D<float4> noiseTexture : register(t1);
 Texture3D<float4> forceFieldTexture : register(t2);
 
-SamplerState pointClampSampler : register(s0);
+SamplerState linearWrapSampler : register(s0);
 
 #define MAX_ATTRACTORS 4
 groupshared Attractor attractorList[MAX_ATTRACTORS];
@@ -143,9 +145,9 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
         if (addForceField)
         {
             float3 forceFieldUV = mul(float4(p.position.xyz, 1.0), forceFieldWorld2Volume).xyz;
-            float3 force = forceFieldTexture.SampleLevel(pointClampSampler, forceFieldUV, 0).xyz;
+            float3 force = forceFieldTexture.SampleLevel(linearWrapSampler, forceFieldUV, 0).xyz;
             //force = mul(float4(force, 0.0), forceFieldVolume2World).xyz;
-            particleForce.xyz += force * 0.1;
+            particleForce.xyz += force * forceFieldForceScale;
         }
 
         if(addAizama)
@@ -177,8 +179,8 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
         if (addCurlNoise)
         {
             //particleForce.xyz += curlNoise(p.velocity.xyz); // * 10.0;
-            particleForce.xyz += curlCoefficient * curlNoise(p.position.xyz);
-            //particleForce.xyz += curlNoise(particleForce.xyz);// * 10.0;
+            //particleForce.xyz += curlCoefficient * curlNoise(p.position.xyz);
+            particleForce.xyz += curlNoise(particleForce.xyz);// * 10.0;
         }
         
         //Add drag
@@ -187,9 +189,9 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             particleForce -= dragCoefficient * p.velocity;
         }
 
-        float3 acceleration = particleForce.xyz / p.mass;
-        p.velocity.xyz += acceleration * dt;
-        //p.velocity.xyz = particleForce.xyz;
+        //float3 acceleration = particleForce.xyz / p.mass;
+        //p.velocity.xyz += acceleration * dt;
+        p.velocity.xyz = particleForce.xyz;
     
         //TEMP
         //float cap = 1.0;

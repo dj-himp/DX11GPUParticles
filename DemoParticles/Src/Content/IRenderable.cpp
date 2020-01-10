@@ -19,13 +19,4 @@ namespace DemoParticles
         
     }
 
-    void IRenderable::init()
-    {
-        
-    }
-
-    void IRenderable::release()
-    {
-        releaseDeviceDependentResources();
-    }
 }

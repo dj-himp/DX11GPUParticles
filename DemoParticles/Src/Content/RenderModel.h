@@ -15,9 +15,6 @@ namespace DemoParticles
     public:
         RenderModel(const DX::DeviceResources* deviceResources);
 
-        void init() override;
-        void release() override;
-
         void createDeviceDependentResources() override;
         void createWindowSizeDependentResources() override;
         void releaseDeviceDependentResources() override;

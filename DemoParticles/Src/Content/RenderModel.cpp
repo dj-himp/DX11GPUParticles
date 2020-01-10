@@ -15,18 +15,6 @@ namespace DemoParticles
     RenderModel::RenderModel(const DX::DeviceResources* deviceResources)
         : IRenderable(deviceResources)
     {
-        init();
-    }
-
-    void RenderModel::init()
-    {
-        IRenderable::init();
-
-        
-    }
-
-    void RenderModel::release()
-    {
 
     }
 

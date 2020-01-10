@@ -12,17 +12,7 @@ namespace DemoParticles
     MengerRenderer::MengerRenderer(const DX::DeviceResources* deviceResources)
         : IRenderable(deviceResources)
     {
-        init();
-    }
-
-    void DemoParticles::MengerRenderer::init()
-    {
-        IRenderable::init();
-    }
-
-    void DemoParticles::MengerRenderer::release()
-    {
-        throw std::logic_error("The method or operation is not implemented.");
+        
     }
 
     void DemoParticles::MengerRenderer::createDeviceDependentResources()

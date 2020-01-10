@@ -17,9 +17,6 @@ namespace DemoParticles
         IRenderable(const DX::DeviceResources* deviceResources);
         virtual ~IRenderable();
 
-        virtual void init();
-        virtual void release();
-
         virtual void createDeviceDependentResources() = 0;
         virtual void createWindowSizeDependentResources() = 0;
         virtual void releaseDeviceDependentResources() = 0;

@@ -144,6 +144,8 @@ namespace DemoParticles
         float dragCoefficient;
         float curlCoefficient;
 
+        float forceFieldForceScale;
+
         UINT nbWantedAttractors;
 
         UINT addForceField;
@@ -152,14 +154,15 @@ namespace DemoParticles
         UINT addCurlNoise;
         UINT addDrag;
 
-        //UINT padding[3];
+        UINT padding[3];
     };
 
     struct RenderForceFieldConstantBuffer
     {
-        DirectX::SimpleMath::Vector3 size;
-
-        UINT padding[1];
+        DirectX::SimpleMath::Vector4 size;
+        
+        DirectX::SimpleMath::Matrix forceFieldVolume2World;
+        
     };
 
     struct Particle

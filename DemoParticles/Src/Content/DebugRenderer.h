@@ -15,7 +15,6 @@ namespace DemoParticles
 
         void setDeviceResources(const DX::DeviceResources* deviceResources) { m_deviceResources = deviceResources; }
 
-        void init();
         void release();
 
         void createDeviceDependentResources();

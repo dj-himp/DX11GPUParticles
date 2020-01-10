@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <iterator>
+#include <filesystem>
 
 using namespace DirectX::SimpleMath;
 
@@ -11,23 +12,22 @@ namespace DemoParticles
 
     void FGAParser::parse(const char* filename, FGAContent& content)
     {
-        /*std::ifstream file;
-        file.open(filename, std::ios::binary);
+        std::filesystem::path filePath(filename);
+        if (filePath.extension().compare(".fga") == 0)
+        {
+            parseFGA(filename, content);
+        }
+        else if (filePath.extension().compare(".vf") == 0)
+        {
+            parseVF(filename, content);
+        }
+    }
 
-        assert(file);
-
-        float x, y, z, w;
-        file.read(reinterpret_cast<char*>(&x), sizeof(float));
-        file.read(reinterpret_cast<char*>(&y), sizeof(float));
-        file.read(reinterpret_cast<char*>(&z), sizeof(float));
-        file.read(reinterpret_cast<char*>(&w), sizeof(float));*/
-
-        //std::vector<char> buffer(std::istreambuf_iterator<char>(file), {});
-
-
+    void FGAParser::parseFGA(const char* filename, FGAContent& content)
+    {
         std::ifstream file;
         file.open(filename, std::ios::in);
-        
+
         assert(file);
 
         std::stringstream strStream;
@@ -52,9 +52,49 @@ namespace DemoParticles
             content.forces[i] = Vector4(force.x, force.y, force.z, 0.0f);
             i++;
         }
-                
-        file.close();
 
+        file.close();
+    }
+
+    void FGAParser::parseVF(const char* filename, FGAContent& content)
+    {
+        std::ifstream file;
+        file.open(filename, std::ios::binary);
+
+        assert(file);
+
+        char header[4];
+        for (int i = 0; i < 4; ++i)
+        {
+            file.read(&header[i], 1);
+        }
+
+        UINT8 size[3];
+        for (int i = 0; i < 3; ++i)
+        {
+            file.read(reinterpret_cast<char*>(&size[i]), 1);
+            char trash;
+            file.read(&trash, 1);
+        }
+
+        content.sizeX = size[0];
+        content.sizeY = size[1];
+        content.sizeZ = size[2];
+
+        content.forces.resize(content.sizeX * content.sizeY * content.sizeZ);
+
+        for (int i = 0; i < content.forces.size(); ++i)
+        {
+            file.read(reinterpret_cast<char*>(&content.forces[i].x), sizeof(float));
+            file.read(reinterpret_cast<char*>(&content.forces[i].y), sizeof(float));
+            file.read(reinterpret_cast<char*>(&content.forces[i].z), sizeof(float));
+        }
+
+        content.boundMin = Vector3(-800.0f, -800.0f, -800.0f);
+        content.boundMax = Vector3(800.0f, 800.0f, 800.0f);
+
+        //std::vector<char> buffer(std::istreambuf_iterator<char>(file), {});
+        
     }
 
     char* FGAParser::parseFloat(char* buffer, float& outFloat)
