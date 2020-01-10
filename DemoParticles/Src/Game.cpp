@@ -315,6 +315,11 @@ void Game::RenderImGui()
     if (show_demo_window)
         ImGui::ShowDemoWindow(&show_demo_window);
     */
+
+    ImGui::Begin("Debug Infos");
+    ImGui::Text("FPS : %i", m_timer.GetFramesPerSecond());
+    ImGui::End();
+
     ImGui::Begin("Particles globals");
     
     if (ImGui::Button("Save"))
