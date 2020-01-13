@@ -10,7 +10,10 @@ namespace DemoParticles
         {
             TS_BeginFrame,
 
-            TS_inter,
+            TS_Emit,
+            TS_Simulate,
+            TS_Sort,
+            TS_Render,
 
             TS_EndFrame,
 
@@ -25,9 +28,10 @@ namespace DemoParticles
         void setTimestamp(TimeStamp ts);
         void endFrame();
 
-        void waitAndGetData();
+        void waitAndGetData(DX::StepTimer& timer);
 
         float getTimestamp(TimeStamp ts) { return m_lastFrameTimings[ts]; }
+        float getTimestampAverage(TimeStamp ts) { return m_lastFrameTimingsAverage[ts]; }
 
     private:
         GpuProfiler() {}

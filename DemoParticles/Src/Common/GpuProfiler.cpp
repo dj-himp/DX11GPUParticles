@@ -60,7 +60,7 @@ namespace DemoParticles
         m_frameQuery = (m_frameCollect + 1) % 2;
     }
 
-    void GpuProfiler::waitAndGetData()
+    void GpuProfiler::waitAndGetData(DX::StepTimer& timer)
     {
         //wait one frame before collect
         if (m_frameCollect < 0)
@@ -96,7 +96,7 @@ namespace DemoParticles
             return;
         }
 
-        for (TimeStamp t = TS_BeginFrame; t < TS_Max; t = TimeStamp(t + 1))
+        for (TimeStamp t = TimeStamp(TS_BeginFrame + 1); t < TS_Max; t = TimeStamp(t + 1))
         {
             UINT64 timestamp;
             if (context->GetData(m_queryTs[t][m_frameCollect].Get(), &timestamp, sizeof(UINT64), 0) != 0)
@@ -110,12 +110,20 @@ namespace DemoParticles
             m_lastFrameTimings[t] = float(timestamp - previousTimestamp) / float(timestampDisjointData.Frequency);
             previousTimestamp = timestamp;
 
-            //m_totalTimeDuringAverage[t] += m_lastFrameTimings[t];
+            m_totalTimeDuringAverage[t] += m_lastFrameTimings[t];
         }
 
-        //TODO AVERAGE
-        //m_frameCountDuringAverage++;
-        //if()
+        m_frameCountDuringAverage++;
+        if (timer.GetTotalSeconds() > m_timeBeginAverage + 0.5f)
+        {
+            for (TimeStamp t = TS_BeginFrame; t < TS_Max; t = TimeStamp(t + 1))
+            {
+                m_lastFrameTimingsAverage[t] = m_totalTimeDuringAverage[t] / m_frameCountDuringAverage;
+                m_totalTimeDuringAverage[t] = 0.0f;
+            }
+            m_frameCountDuringAverage = 0;
+            m_timeBeginAverage = timer.GetTotalSeconds();
+        }
 
         m_frameCollect = (m_frameCollect + 1) % 2;
     }
