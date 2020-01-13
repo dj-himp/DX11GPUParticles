@@ -7,17 +7,15 @@ namespace DX
 
 namespace DemoParticles
 {
-    class Shader
+    class VertexShader
     {
     public:
-        Shader(const DX::DeviceResources* deviceResources);
+        VertexShader(const DX::DeviceResources* deviceResources);
 
-        void load(const std::wstring& vertexFilename, const std::wstring& pixelFilename, const std::vector<D3D11_INPUT_ELEMENT_DESC>& vertexDesc, const std::wstring& geometryShader = L"");
+        void load(const std::wstring& vertexFilename, const std::vector<D3D11_INPUT_ELEMENT_DESC>& vertexDesc);
 
         ID3D11InputLayout* getInputLayout() { return m_inputLayout.Get(); }
         ID3D11VertexShader* getVertexShader() { return m_vertexShader.Get(); }
-        ID3D11PixelShader* getPixelShader() { return m_pixelShader.Get(); }
-        ID3D11GeometryShader* getGeometryShader() { return m_geometryShader.Get(); }
 
     private:
         const DX::DeviceResources* m_deviceResources;

@@ -129,9 +129,6 @@
     <ClCompile Include="Src\Model\ModelMesh.cpp">
       <Filter>Src\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Common\Shader.cpp">
-      <Filter>Src\Common</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Content\DebugRenderer.cpp">
       <Filter>Src\Content</Filter>
     </ClCompile>
@@ -205,6 +202,15 @@
       <Filter>Extern\choreograph</Filter>
     </ClCompile>
     <ClCompile Include="Src\Common\GpuProfiler.cpp">
+      <Filter>Src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\VertexShader.cpp">
+      <Filter>Src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\PixelShader.cpp">
+      <Filter>Src\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Common\GeometryShader.cpp">
       <Filter>Src\Common</Filter>
     </ClCompile>
   </ItemGroup>
@@ -282,9 +288,6 @@
       <Filter>Src\Model</Filter>
     </ClInclude>
     <ClInclude Include="Src\Common\DirectXHelper.h">
-      <Filter>Src\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Common\Shader.h">
       <Filter>Src\Common</Filter>
     </ClInclude>
     <ClInclude Include="Src\Content\DebugRenderer.h">
@@ -564,6 +567,15 @@
       <Filter>Extern\choreograph</Filter>
     </ClInclude>
     <ClInclude Include="Src\Common\GpuProfiler.h">
+      <Filter>Src\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\VertexShader.h">
+      <Filter>Src\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\PixelShader.h">
+      <Filter>Src\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Common\GeometryShader.h">
       <Filter>Src\Common</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,7 +5,9 @@
 
 namespace DemoParticles
 {
-    class Model;   
+    class Model;
+    class VertexShader;
+    class PixelShader;
 
     class DebugRenderer
     {
@@ -52,6 +54,7 @@ namespace DemoParticles
 
         WorldConstantBuffer   m_constantBufferData;
         Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
-        std::unique_ptr<Shader> m_shader;
+        std::unique_ptr<VertexShader> m_debugVS;
+        std::unique_ptr<PixelShader> m_debugPS;
     };
 }

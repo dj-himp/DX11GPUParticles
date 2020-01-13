@@ -4,7 +4,8 @@
 #include "Model/MeshFactory.h"
 #include "Model/Model.h"
 #include "Camera/Camera.h"
-#include "Common/Shader.h"
+#include "Common/VertexShader.h"
+#include "Common/PixelShader.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -23,8 +24,11 @@ namespace DemoParticles
 
     void DebugRenderer::createDeviceDependentResources()
     {
-        m_shader = std::make_unique<Shader>(m_deviceResources);
-        m_shader->load(L"RenderDebugColor_VS.cso", L"RenderDebugColor_PS.cso", MeshFactory::getInstance().getVertexElements());
+        m_debugVS = std::make_unique<VertexShader>(m_deviceResources);
+        m_debugVS->load(L"RenderDebugColor_VS.cso", MeshFactory::getInstance().getVertexElements());
+
+        m_debugPS = std::make_unique<PixelShader>(m_deviceResources);
+        m_debugPS->load(L"RenderDebugColor_PS.cso");
 
         CD3D11_BUFFER_DESC constantBufferDesc(sizeof(WorldConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
@@ -82,9 +86,9 @@ namespace DemoParticles
             context->IASetIndexBuffer(debugModel.m_model->getMesh(i)->getIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);
 
             context->IASetPrimitiveTopology(debugModel.m_model->getMesh(i)->getPrimitiveTopology());
-            context->IASetInputLayout(m_shader->getInputLayout());
+            context->IASetInputLayout(m_debugVS->getInputLayout());
 
-            context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
+            context->VSSetShader(m_debugVS->getVertexShader(), nullptr, 0);
             context->VSSetConstantBuffers(1, 1, m_constantBuffer.GetAddressOf());
 
             const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
@@ -92,7 +96,7 @@ namespace DemoParticles
             context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
             context->RSSetState(RenderStatesHelper::CullNone().Get());
 
-            context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);
+            context->PSSetShader(m_debugPS->getPixelShader(), nullptr, 0);
 
             ID3D11RenderTargetView* renderTargets[1] = { m_deviceResources->GetRenderTargetView() };
             context->OMSetRenderTargets(1, renderTargets, m_deviceResources->GetDepthStencilView());

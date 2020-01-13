@@ -9,6 +9,8 @@ namespace DemoParticles
     class Model;
     class ModelLoader;
     class Camera;
+    class VertexShader;
+    class PixelShader;
 
     class RenderModel : public IRenderable
     {
@@ -35,6 +37,7 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3(0.0f);
 
         WorldConstantBuffer m_constantBufferData;
-        
+        std::unique_ptr<VertexShader> m_modelVS;
+        std::unique_ptr<PixelShader> m_modelPS;
     };
 }

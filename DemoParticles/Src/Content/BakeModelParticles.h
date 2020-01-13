@@ -10,7 +10,8 @@ namespace DemoParticles
     class ModelLoader;
     class Camera;
     class RenderTarget;
-    class ComputeShader;
+    class VertexShader;
+    class PixelShader;
 
     class BakeModelParticles : public IRenderable
     {
@@ -38,5 +39,7 @@ namespace DemoParticles
 
         WorldConstantBuffer m_constantBufferData;
 
+        std::unique_ptr<VertexShader> m_bakeVS;
+        std::unique_ptr<PixelShader> m_bakePS;
     };
 }

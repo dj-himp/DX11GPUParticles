@@ -5,7 +5,8 @@
 #include "Model/Model.h"
 #include "Camera/Camera.h"
 #include "Common/InputManager.h"
-#include "Common/Shader.h"
+#include "Common/VertexShader.h"
+#include "Common/PixelShader.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -24,10 +25,12 @@ namespace DemoParticles
         //m_model = m_modelLoader->load("CatMac.fbx");
         m_model = m_modelLoader->load("deer.fbx");
 
-        m_shader = std::make_unique<Shader>(m_deviceResources);
-        m_shader->load(L"RenderModel_VS.cso", L"RenderModel_PS.cso", m_model->getInputElements());
+        m_modelVS = std::make_unique<VertexShader>(m_deviceResources);
+        m_modelVS->load(L"RenderModel_VS.cso", m_model->getInputElements());
 
-        
+        m_modelPS = std::make_unique<PixelShader>(m_deviceResources);
+        m_modelPS->load(L"RenderModel_PS.cso");
+
         CD3D11_BUFFER_DESC constantBufferDesc(sizeof(m_constantBufferData), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateBuffer(
@@ -72,14 +75,14 @@ namespace DemoParticles
             context->IASetIndexBuffer(m_model->getMesh(i)->getIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);
 
             context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-            context->IASetInputLayout(m_shader->getInputLayout());
+            context->IASetInputLayout(m_modelVS->getInputLayout());
 
-            context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
+            context->VSSetShader(m_modelVS->getVertexShader(), nullptr, 0);
             context->VSSetConstantBuffers(1, 1, m_constantBuffer.GetAddressOf());
 
             context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
 
-            context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);
+            context->PSSetShader(m_modelPS->getPixelShader(), nullptr, 0);
 
             context->DrawIndexed(m_model->getMesh(i)->getIndexCount(), 0, 0);
         }

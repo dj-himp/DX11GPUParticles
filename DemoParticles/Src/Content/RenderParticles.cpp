@@ -1,7 +1,9 @@
 #include "pch.h"
 #include "RenderParticles.h"
 
-#include "Common/Shader.h"
+#include "Common/VertexShader.h"
+#include "Common/GeometryShader.h"
+#include "Common/PixelShader.h"
 #include "Common/ComputeShader.h"
 #include "Camera/Camera.h"
 #include "Common/SortLib.h"
@@ -292,9 +294,9 @@ namespace DemoParticles
         GpuProfiler::instance().setTimestamp(GpuProfiler::TS_Sort);
 
         m_deviceResources->PIXSetMarker(L"Render");
-        context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
-        context->GSSetShader(m_shader->getGeometryShader(), nullptr, 0);
-        context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);
+        context->VSSetShader(m_renderParticleVS->getVertexShader(), nullptr, 0);
+        context->GSSetShader(m_renderParticleGS->getGeometryShader(), nullptr, 0);
+        context->PSSetShader(m_renderParticlePS->getPixelShader(), nullptr, 0);
 
         ID3D11Buffer* nullVertexBuffer = nullptr;
         UINT stride = 0;
@@ -668,46 +670,54 @@ namespace DemoParticles
                 m_deviceResources->GetD3DDevice()->CreateShaderResourceView(m_forceFieldTexture.Get(), &forceFieldTextureSRVDesc, &m_forceFieldTextureSRV)
             );
         }
-        //FGAParser parser;
-        //parser.parse("forceFieldTest.fga", m_content);
-        //parser.parse("VF_Vortex.fga", m_content);
-        //parser.parse("VF_Smoke.fga", m_content);
-        //parser.parse("VF_Turbulence.fga", m_content);
-        //parser.parse("VF_FluidVol.fga", m_content);
-        //parser.parse("VF_Point.fga", m_content);
-        //parser.parse("VF_CurveTile_1.fga", m_content);
-        //parser.parse("VF_CurveTile_2.fga", m_content);
-        //parser.parse("VF_CurveTile_3.fga", m_content);
-        //parser.parse("VF_Perlin_HighFreq_8x8x8.fga", m_content);
-
-        //parser.parse("SignedDistance.vf", m_content);
-
         
-        if (m_shader == nullptr)
+        if (m_renderParticleVS == nullptr)
         {
             //NEED REFACTOR of Shader::Load to remove this 
             std::vector<D3D11_INPUT_ELEMENT_DESC> inputElementDesc = {
                 { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             };
 
-            m_shader = std::make_unique<Shader>(m_deviceResources);
-            m_shader->load(L"RenderParticles_VS.cso", L"RenderParticles_PS.cso", inputElementDesc, L"RenderParticles_GS.cso");
-
-            CD3D11_BUFFER_DESC constantBufferDesc(sizeof(RenderForceFieldConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
-            DX::ThrowIfFailed(
-                m_deviceResources->GetD3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, &m_renderForceFieldConstantBuffer)
-            );
+            m_renderParticleVS = std::make_unique<VertexShader>(m_deviceResources);
+            m_renderParticleVS->load(L"RenderParticles_VS.cso", inputElementDesc);
         }
 
-        if(m_drawForceFieldShader == nullptr)
+        if (m_renderParticleGS == nullptr)
         {
-        //NEED REFACTOR of Shader::Load to remove this 
-        std::vector<D3D11_INPUT_ELEMENT_DESC> inputElementDesc2;/* = {
-            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        };*/
+            m_renderParticleGS = std::make_unique<GeometryShader>(m_deviceResources);
+            m_renderParticleGS->load(L"RenderParticles_GS.cso");
+        }
 
-        m_drawForceFieldShader = std::make_unique<Shader>(m_deviceResources);
-        m_drawForceFieldShader->load(L"RenderForceField_VS.cso", L"RenderForceField_PS.cso", inputElementDesc2, L"RenderForceField_GS.cso");
+        if (m_renderParticlePS == nullptr)
+        {
+            m_renderParticlePS = std::make_unique<PixelShader>(m_deviceResources);
+            m_renderParticlePS->load(L"RenderParticles_PS.cso");
+        }
+
+        CD3D11_BUFFER_DESC constantBufferDesc(sizeof(RenderForceFieldConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&constantBufferDesc, nullptr, &m_renderForceFieldConstantBuffer)
+        );
+
+        if (m_renderForceFieldVS == nullptr)
+        {
+            //NEED REFACTOR of Shader::Load to remove this 
+            std::vector<D3D11_INPUT_ELEMENT_DESC> inputElementDesc;
+
+            m_renderForceFieldVS = std::make_unique<VertexShader>(m_deviceResources);
+            m_renderForceFieldVS->load(L"RenderForceField_VS.cso", inputElementDesc);
+        }
+
+        if (m_renderForceFieldGS == nullptr)
+        {
+            m_renderForceFieldGS = std::make_unique<GeometryShader>(m_deviceResources);
+            m_renderForceFieldGS->load(L"RenderForceField_GS.cso");
+        }
+
+        if (m_renderForceFieldPS == nullptr)
+        {
+            m_renderForceFieldPS = std::make_unique<PixelShader>(m_deviceResources);
+            m_renderForceFieldPS->load(L"RenderForceField_PS.cso");
         }
     }
 
@@ -729,9 +739,9 @@ namespace DemoParticles
 
         context->UpdateSubresource(m_renderForceFieldConstantBuffer.Get(), 0, nullptr, &m_renderForceFieldConstantBufferData, 0, 0);
 
-        context->VSSetShader(m_drawForceFieldShader->getVertexShader(), nullptr, 0);
-        context->GSSetShader(m_drawForceFieldShader->getGeometryShader(), nullptr, 0);
-        context->PSSetShader(m_drawForceFieldShader->getPixelShader(), nullptr, 0);
+        context->VSSetShader(m_renderForceFieldVS->getVertexShader(), nullptr, 0);
+        context->GSSetShader(m_renderForceFieldGS->getGeometryShader(), nullptr, 0);
+        context->PSSetShader(m_renderForceFieldPS->getPixelShader(), nullptr, 0);
 
         ID3D11Buffer* nullVertexBuffer = nullptr;
         UINT stride = 0;

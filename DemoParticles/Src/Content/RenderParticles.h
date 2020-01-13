@@ -9,6 +9,9 @@ using json = nlohmann::json;
 
 namespace DemoParticles
 {
+    class VertexShader;
+    class GeometryShader;
+    class PixelShader;
     class ComputeShader;
     class SortLib;
     class IParticleEmitter;
@@ -44,7 +47,9 @@ namespace DemoParticles
         void updateForceField();
         void renderForceField();
 
-        std::unique_ptr<Shader>     m_moveShader;
+        std::unique_ptr<VertexShader>           m_renderParticleVS;
+        std::unique_ptr<GeometryShader>         m_renderParticleGS;
+        std::unique_ptr<PixelShader>            m_renderParticlePS;
 
         Microsoft::WRL::ComPtr<ID3D11Buffer>    m_vertexBuffer;
         UINT                                    m_vertexStride;
@@ -108,7 +113,9 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11Texture3D>             m_forceFieldTexture;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_forceFieldTextureSRV;
         FGAParser::FGAContent                               m_content;
-        std::unique_ptr<Shader>                             m_drawForceFieldShader;
+        std::unique_ptr<VertexShader>                       m_renderForceFieldVS;
+        std::unique_ptr<GeometryShader>                     m_renderForceFieldGS;
+        std::unique_ptr<PixelShader>                        m_renderForceFieldPS;
         RenderForceFieldConstantBuffer                      m_renderForceFieldConstantBufferData;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_renderForceFieldConstantBuffer;
         bool                                                m_renderForceField = false;

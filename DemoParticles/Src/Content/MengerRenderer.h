@@ -8,6 +8,8 @@
 namespace DemoParticles
 {
     class Camera;
+    class VertexShader;
+    class PixelShader;
 
     class MengerRenderer : public IRenderable
     {
@@ -25,6 +27,9 @@ namespace DemoParticles
 
         std::unique_ptr<MeshFactory> m_meshFactory; //TODO probably make it as a singleton
         std::unique_ptr<Model> m_quad;
+
+        std::unique_ptr<VertexShader> m_mengerShaderVS;
+        std::unique_ptr<PixelShader> m_mengerShaderPS;
 
         DirectX::SimpleMath::Matrix m_posScale;
     };

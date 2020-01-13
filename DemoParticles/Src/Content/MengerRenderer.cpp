@@ -3,7 +3,8 @@
 
 #include "Model/Model.h"
 #include "Camera/Camera.h"
-#include "Common/Shader.h"
+#include "Common/VertexShader.h"
+#include "Common/PixelShader.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -17,15 +18,13 @@ namespace DemoParticles
 
     void DemoParticles::MengerRenderer::createDeviceDependentResources()
     {
-        
-        //m_meshFactory = std::make_unique<MeshFactory>(m_deviceResources);
-        //m_quad = m_meshFactory->createQuad();
-
         m_quad = MeshFactory::getInstance().createQuad();
 
-        m_shader = std::make_unique<Shader>(m_deviceResources);
-        //m_shader->load(L"RenderDebugRM_VS.cso", L"RenderDebugRM_PS.cso", m_quad->getInputElements());
-        m_shader->load(L"RenderMenger_VS.cso", L"RenderMenger_PS.cso", m_quad->getInputElements());
+        m_mengerShaderVS = std::make_unique<VertexShader>(m_deviceResources);
+        m_mengerShaderVS->load(L"RenderMenger_VS.cso", m_quad->getInputElements());
+
+        m_mengerShaderPS = std::make_unique<PixelShader>(m_deviceResources);
+        m_mengerShaderPS->load(L"RenderMenger_PS.cso");
     }
 
     void DemoParticles::MengerRenderer::createWindowSizeDependentResources()
@@ -56,17 +55,15 @@ namespace DemoParticles
 
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-        context->IASetInputLayout(m_shader->getInputLayout());
+        context->IASetInputLayout(m_mengerShaderVS->getInputLayout());
 
-        context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
-
-        context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);
+        context->VSSetShader(m_mengerShaderVS->getVertexShader(), nullptr, 0);
+        context->PSSetShader(m_mengerShaderPS->getPixelShader(), nullptr, 0);
 
         const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
         context->OMSetBlendState(RenderStatesHelper::Opaque().Get(), blendFactor, 0xffffffff);
         context->RSSetState(RenderStatesHelper::CullNone().Get());
         context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
-
 
         context->DrawIndexed(m_quad->getMesh(0)->getIndexCount(), 0, 0);
     }

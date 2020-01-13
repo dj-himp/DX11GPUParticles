@@ -9,6 +9,8 @@ namespace DemoParticles
 {
     class Model;
     class Camera;
+    class VertexShader;
+    class PixelShader;
 
     class RenderFullscreenQuad : public IRenderable
     {
@@ -28,6 +30,8 @@ namespace DemoParticles
     private:
 
         std::unique_ptr<Model> m_quad;
+        std::unique_ptr<VertexShader> m_quadVS;
+        std::unique_ptr<PixelShader> m_quadPS;
 
         QuadConstantBuffer   m_constantBufferData;
 

@@ -3,7 +3,8 @@
 
 #include "Model/Model.h"
 #include "Camera/Camera.h"
-#include "Common/Shader.h"
+#include "Common/VertexShader.h"
+#include "Common/PixelShader.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -19,8 +20,12 @@ namespace DemoParticles
     {
         m_quad = MeshFactory::getInstance().createQuad();
 
-        m_shader = std::make_unique<Shader>(m_deviceResources);
-        m_shader->load(L"RenderQuad_VS.cso", L"RenderQuad_PS.cso", m_quad->getInputElements());
+        m_quadVS = std::make_unique<VertexShader>(m_deviceResources);
+        m_quadVS->load(L"RenderQuad_VS.cso", m_quad->getInputElements());
+
+        m_quadPS = std::make_unique<PixelShader>(m_deviceResources);
+        m_quadPS->load(L"RenderQuad_PS.cso");
+
 
         CD3D11_BUFFER_DESC constantBufferDesc(sizeof(QuadConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
@@ -61,16 +66,16 @@ namespace DemoParticles
         context->IASetVertexBuffers(0, 1, m_quad->getMesh(0)->getVertexBuffer().GetAddressOf(), &stride, &offset);
         context->IASetIndexBuffer(m_quad->getMesh(0)->getIndexBuffer().Get(), DXGI_FORMAT_R32_UINT, 0);
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        context->IASetInputLayout(m_shader->getInputLayout());
+        context->IASetInputLayout(m_quadVS->getInputLayout());
 
-        context->VSSetShader(m_shader->getVertexShader(), nullptr, 0);
+        context->VSSetShader(m_quadVS->getVertexShader(), nullptr, 0);
         context->VSSetConstantBuffers1(1, 1, m_constantBuffer.GetAddressOf(), nullptr, nullptr);
 
         context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
         
         context->PSSetSamplers(0, 1, RenderStatesHelper::PointClamp().GetAddressOf());
         context->PSSetShaderResources(0, 1, m_texture.GetAddressOf());
-        context->PSSetShader(m_shader->getPixelShader(), nullptr, 0);
+        context->PSSetShader(m_quadPS->getPixelShader(), nullptr, 0);
 
         context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get() , 0);
         

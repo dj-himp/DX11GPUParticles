@@ -31,8 +31,6 @@ namespace DemoParticles
 
         const DX::DeviceResources* m_deviceResources;
 
-        std::unique_ptr<Shader>     m_shader;
-
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_constantBuffer;
         
     };
