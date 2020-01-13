@@ -75,7 +75,5 @@ private:
     
     std::unique_ptr<DemoParticles::SceneMenger> m_sceneMenger;
 
-    //std::unique_ptr<SampleFpsTextRenderer> m_fpsTextRenderer;
-
     std::unique_ptr<DemoParticles::CameraControllerFPS> m_cameraControllerFPS;
 };
