@@ -147,9 +147,9 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
         if (addForceField)
         {
             float3 forceFieldUV = mul(float4(p.position.xyz, 1.0), forceFieldWorld2Volume).xyz;
-            float3 force = forceFieldTexture.SampleLevel(linearSampler, forceFieldUV, 0).xyz;
+            float4 force = forceFieldTexture.SampleLevel(linearSampler, forceFieldUV, 0).xyzw;
             //force = mul(float4(force, 0.0), forceFieldVolume2World).xyz;
-            particleForce.xyz += force * forceFieldForceScale;
+            particleForce.xyz += force.xyz * forceFieldForceScale * -force.w;
             //forceFieldVelocity.xyz = force * forceFieldForceScale;
 
         }
@@ -193,9 +193,11 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             particleForce -= dragCoefficient * p.velocity;
         }
 
+        p.velocity.xyz = particleForce.xyz;
+        
         float3 acceleration = particleForce.xyz / p.mass;
         p.velocity.xyz += acceleration * dt;
-        p.velocity.xyz = particleForce.xyz;
+        
         //p.velocity.xyz = lerp(p.velocity.xyz, forceFieldVelocity.xyz, forceFieldIntensity);
     
         //TEMP

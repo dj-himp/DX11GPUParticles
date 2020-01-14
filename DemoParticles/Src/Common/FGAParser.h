@@ -1,4 +1,14 @@
 #pragma once
+/*
+Class to parse FGA file (unreal vector field format) &&
+parse VF file (unity format)
+
+For VF file I renamed extentions as follow (but the format remain the same)
+.vf => vector field (Distance Gradient) (float3)
+.vfd => Signed distance field (float)
+
+*/
+
 
 namespace DemoParticles
 {
@@ -13,7 +23,7 @@ namespace DemoParticles
             int sizeZ;
             DirectX::SimpleMath::Vector3 boundMin;
             DirectX::SimpleMath::Vector3 boundMax;
-            std::vector<DirectX::SimpleMath::Vector4> forces;
+            std::vector<DirectX::SimpleMath::Vector4> forces; //xyz contains gradient & w contain SDF (if available)
         };
 
         FGAParser() {}

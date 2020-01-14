@@ -765,9 +765,6 @@
     <CopyFileToFolders Include="Data\ForceFields\VF_Wind.fga">
       <Filter>Data\ForceFields</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="Data\ForceFields\SignedDistance.vf">
-      <Filter>Data\ForceFields</Filter>
-    </CopyFileToFolders>
     <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Alligator_HighFreq_8x8x8.fga">
       <Filter>Data\ForceFields\Pack_01</Filter>
     </CopyFileToFolders>
@@ -821,6 +818,24 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Simplex_LowFreq_32x32x32.fga">
       <Filter>Data\ForceFields\Pack_01</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\rop_vector_field1.fga">
+      <Filter>Data\ForceFields</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Head.vf">
+      <Filter>Data\ForceFields</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Head.vfd">
+      <Filter>Data\ForceFields</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Teapot.vf">
+      <Filter>Data\ForceFields</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\TeapotNoiseGradient.vf">
+      <Filter>Data\ForceFields</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Teapot.vfd">
+      <Filter>Data\ForceFields</Filter>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>

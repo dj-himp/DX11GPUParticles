@@ -59,13 +59,13 @@ namespace DemoParticles
 
     struct EmitterPointConstantBuffer
     {
+        DirectX::SimpleMath::Matrix rotation;
         DirectX::SimpleMath::Vector4 position;
-        DirectX::SimpleMath::Vector4 direction;
         DirectX::SimpleMath::Color color;
 
         UINT maxSpawn;
-        float coneYaw;
-        float conePitch;
+        float coneColatitude;
+        float coneLongitude;
         UINT particleOrientation;
         float particlesBaseSpeed;
         float particlesLifeSpan;

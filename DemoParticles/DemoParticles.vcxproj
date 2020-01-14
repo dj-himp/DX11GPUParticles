@@ -566,9 +566,6 @@
     <CopyFileToFolders Include="Data\ForceFields\VF_Wind.fga">
       <FileType>Document</FileType>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="Data\ForceFields\SignedDistance.vf">
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
     <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Alligator_HighFreq_16x16x16.fga">
       <FileType>Document</FileType>
     </CopyFileToFolders>
@@ -621,6 +618,24 @@
       <FileType>Document</FileType>
     </CopyFileToFolders>
     <CopyFileToFolders Include="Data\ForceFields\Pack 01\VF_Simplex_LowFreq_8x8x8.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\rop_vector_field1.fga">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Head.vf">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Head.vfd">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Teapot.vf">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\TeapotNoiseGradient.vf">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\ForceFields\Teapot.vfd">
       <FileType>Document</FileType>
     </CopyFileToFolders>
     <None Include="Extern\assimp\.editorconfig" />

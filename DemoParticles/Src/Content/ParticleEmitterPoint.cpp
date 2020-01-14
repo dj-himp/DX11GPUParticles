@@ -11,8 +11,8 @@ namespace DemoParticles
     ParticleEmitterPoint::ParticleEmitterPoint(const DX::DeviceResources* deviceResources)
         : IParticleEmitter(deviceResources)
     {
+        m_emitterConstantBufferData.rotation = Matrix::CreateFromYawPitchRoll(0.0f, 0.0f, 0.0f);
         m_emitterConstantBufferData.position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
-        m_emitterConstantBufferData.direction = Vector4(0.0f, 1.0f, 0.0f, 1.0f);
         m_emitterConstantBufferData.maxSpawn = 100;
         m_emitterConstantBufferData.particleOrientation = 0;
         m_emitterConstantBufferData.particlesBaseSpeed = 1.0f;
@@ -21,8 +21,8 @@ namespace DemoParticles
         m_emitterConstantBufferData.color = Color(0.5f, 0.2f, 0.2f, 1.0f);
         m_emitterConstantBufferData.particleSizeStart = 0.01f;
         m_emitterConstantBufferData.particleSizeEnd = 0.01f;
-        m_emitterConstantBufferData.coneYaw = DirectX::XM_1DIVPI;
-        m_emitterConstantBufferData.conePitch = DirectX::XM_1DIVPI;
+        m_emitterConstantBufferData.coneColatitude = 0.0f;
+        m_emitterConstantBufferData.coneLongitude = 0.0f;
 
     }
 
@@ -79,7 +79,6 @@ namespace DemoParticles
         {
             ImGui::Checkbox("Enabled", &m_enabled);
             ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1, 0, 10000000);
-            ImGui::DragFloat3("Position", (float*)&m_emitterConstantBufferData.position, 0.01f);
             const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
             ImGui::Combo("Particles orientation", (int*)&m_emitterConstantBufferData.particleOrientation, orientationItems, 3);
             ImGui::DragFloat("Base speed", &m_emitterConstantBufferData.particlesBaseSpeed, 0.1f, 0.0f, 100.0f);
@@ -88,8 +87,8 @@ namespace DemoParticles
             ImGui::ColorEdit4("Color", (float*)&m_emitterConstantBufferData.color);
             ImGui::DragFloat("Size Start", &m_emitterConstantBufferData.particleSizeStart, 0.01f, 0.0f, 10.0f);
             ImGui::DragFloat("Size End", &m_emitterConstantBufferData.particleSizeEnd, 0.01f, 0.0f, 10.0f);
-            ImGui::SliderAngle("Cone Yaw", &m_emitterConstantBufferData.coneYaw, 0.0f, 360.0f);
-            ImGui::SliderAngle("Cone Pitch", &m_emitterConstantBufferData.conePitch, 0.0f, 360.0f);
+            ImGui::SliderAngle("Cone Colatitude", &m_emitterConstantBufferData.coneColatitude, 0.0f, 360.0f);
+            ImGui::SliderAngle("Cone Longitude", &m_emitterConstantBufferData.coneLongitude, 0.0f, 360.0f);
 
             float scale[3];
             ImGuizmo::DecomposeMatrixToComponents(m_worldf, (float*)&m_emitterConstantBufferData.position, (float*)&m_emitterRotation, scale);
@@ -148,8 +147,7 @@ namespace DemoParticles
 
                 ImGuizmo::DecomposeMatrixToComponentsRadians(m_worldf, (float*)&m_emitterConstantBufferData.position, (float*)&m_emitterRotation, scale);
 
-                Matrix matRotation = Matrix::CreateRotationX(m_emitterRotation.x) * Matrix::CreateRotationY(m_emitterRotation.y) * Matrix::CreateRotationZ(m_emitterRotation.z);
-                m_emitterConstantBufferData.direction = Vector4::Transform(Vector4(0.0f, 1.0f, 0.0f, 1.0f), matRotation);
+                m_emitterConstantBufferData.rotation = Matrix::CreateRotationX(m_emitterRotation.x) * Matrix::CreateRotationY(m_emitterRotation.y) * Matrix::CreateRotationZ(m_emitterRotation.z);
             }
 
             //ImGui::CurveEditor("curve", (float*)&m_emitterConstantBufferData.position, 3);
@@ -171,8 +169,8 @@ namespace DemoParticles
         file["Emitters"]["Point"]["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
         file["Emitters"]["Point"]["Size start"] = m_emitterConstantBufferData.particleSizeStart;
         file["Emitters"]["Point"]["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
-        file["Emitters"]["Point"]["Cone Yaw"] = m_emitterConstantBufferData.coneYaw;
-        file["Emitters"]["Point"]["Cone Pitch"] = m_emitterConstantBufferData.conePitch;
+        file["Emitters"]["Point"]["Cone Colatitude"] = m_emitterConstantBufferData.coneColatitude;
+        file["Emitters"]["Point"]["Cone Longitude"] = m_emitterConstantBufferData.coneLongitude;
         file["Emitters"]["Point"]["Rotation"] = { m_emitterRotation.x, m_emitterRotation.y, m_emitterRotation.z };
     }
 
@@ -191,13 +189,12 @@ namespace DemoParticles
         m_emitterConstantBufferData.color = Vector4(&color[0]);
         m_emitterConstantBufferData.particleSizeStart = file["Emitters"]["Point"]["Size start"];
         m_emitterConstantBufferData.particleSizeEnd = file["Emitters"]["Point"]["Size end"];
-        m_emitterConstantBufferData.coneYaw = file["Emitters"]["Point"]["Cone Yaw"];
-        m_emitterConstantBufferData.conePitch = file["Emitters"]["Point"]["Cone Pitch"];
+        m_emitterConstantBufferData.coneColatitude = file["Emitters"]["Point"]["Cone Colatitude"];
+        m_emitterConstantBufferData.coneLongitude = file["Emitters"]["Point"]["Cone Longitude"];
         std::vector<float> rotation = file["Emitters"]["Point"]["Rotation"];
         m_emitterRotation = Vector3(&rotation[0]);
 
-        Matrix matRotation = Matrix::CreateRotationX(m_emitterRotation.x) * Matrix::CreateRotationY(m_emitterRotation.y) * Matrix::CreateRotationZ(m_emitterRotation.z);
-        m_emitterConstantBufferData.direction = Vector4::Transform(Vector4(0.0f, 1.0f, 0.0f, 1.0f), matRotation);
+        m_emitterConstantBufferData.rotation = Matrix::CreateRotationX(m_emitterRotation.x) * Matrix::CreateRotationY(m_emitterRotation.y) * Matrix::CreateRotationZ(m_emitterRotation.z);
 
         float scale[3] = { 1.0f, 1.0f, 1.0f };
         ImGuizmo::RecomposeMatrixFromComponentsRadians((float*)&m_emitterConstantBufferData.position, (float*)&m_emitterRotation, scale, m_worldf);

@@ -5,13 +5,13 @@
 
 cbuffer emitterConstantBuffer : register(b4)
 {
+    float4x4 emitterRotation;
     float4 emitterPosition;
-    float4 emitterDirection;
     float4 color;
     
     uint emitterMaxSpawn;
-    float emitterConeYaw;
-    float emitterConePitch;
+    float emitterConeColatitude;
+    float emitterConeLongitude;
     uint particleOrientation;
     float particlesBaseSpeed;
     float particlesLifeSpan;
@@ -38,15 +38,16 @@ void main(uint3 id : SV_DispatchThreadID)
         p.position = emitterPosition;
         p.position.w = 1.0;
 
-        float4 direction = emitterDirection;
-        //p.velocity = particlesBaseSpeed * normalize(float4(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, 0.0)) * rand_xorshift_normalized();
-        float yaw = (0.5 - rand_xorshift_normalized()) * emitterConeYaw;
-        float pitch = (0.5 - rand_xorshift_normalized()) * emitterConePitch;
-        //p.velocity = particlesBaseSpeed * normalize(float4(-sin(yaw) * cos(pitch), sin(pitch), cos(pitch) * cos(yaw), 0.0)) * rand_xorshift_normalized();
-        p.velocity.x = direction.x * cos(yaw) + direction.y * sin(pitch) * sin(yaw) + direction.z * -sin(yaw) * cos(pitch);
-        p.velocity.y = direction.y * cos(pitch) + direction.z * sin(pitch);
-        p.velocity.z = direction.x * sin(yaw) + direction.y * -sin(pitch) * cos(yaw) + direction.z * cos(pitch) * cos(yaw);
-        p.velocity.w = 1.0;
+        float colatitude = (0.5 - rand_xorshift_normalized()) * emitterConeColatitude;
+        float longitude = (0.5 - rand_xorshift_normalized()) * emitterConeLongitude;
+        
+        float radius = 1.0f;
+        p.velocity.x = radius * sin(colatitude) * cos(longitude);
+        p.velocity.z = radius * sin(colatitude) * sin(longitude);
+        p.velocity.y = radius * cos(colatitude);
+        p.velocity.w = 1.0f;
+        
+        p.velocity = mul(p.velocity, emitterRotation);
         
         p.velocity = particlesBaseSpeed * normalize(p.velocity);
         
