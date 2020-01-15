@@ -49,7 +49,7 @@ namespace DemoParticles
         {
             Vector3 force;
             currentParse = parseVector3(currentParse, force);
-            content.forces[i] = Vector4(force.x, force.y, force.z, 0.0f);
+            content.forces[i] = Vector4(force.x, force.y, force.z, -1.0f);
             i++;
         }
 
@@ -90,6 +90,7 @@ namespace DemoParticles
             file.read(reinterpret_cast<char*>(&content.forces[i].x), sizeof(float));
             file.read(reinterpret_cast<char*>(&content.forces[i].y), sizeof(float));
             file.read(reinterpret_cast<char*>(&content.forces[i].z), sizeof(float));
+            content.forces[i].w = -1.0f;
         }
 
         content.boundMin = Vector3(-800.0f, -800.0f, -800.0f);
