@@ -217,6 +217,20 @@ namespace DemoParticles
         m_sortLib->init(m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext());
 
         initAttractors();
+
+        //TEMP INIT need to put it back in initEmitters
+        std::unique_ptr<ParticleEmitterSphere> sphereEmitter = std::make_unique<ParticleEmitterSphere>(m_deviceResources);
+        m_particleEmitters.push_back(std::move(sphereEmitter));
+
+        std::unique_ptr<ParticleEmitterPoint> pointEmitter = std::make_unique<ParticleEmitterPoint>(m_deviceResources);
+        m_particleEmitters.push_back(std::move(pointEmitter));
+
+        std::unique_ptr<ParticleEmitterCube> cubeEmitter = std::make_unique<ParticleEmitterCube>(m_deviceResources);
+        m_particleEmitters.push_back(std::move(cubeEmitter));
+
+        std::unique_ptr<ParticleEmitterBuffer> bufferEmitter = std::make_unique<ParticleEmitterBuffer>(m_deviceResources);
+        m_particleEmitters.push_back(std::move(bufferEmitter));
+
         initEmitters();
         initForceField();
     }
@@ -773,7 +787,7 @@ namespace DemoParticles
 
     void RenderParticles::load(json& file)
     {
-        std::unique_ptr<ParticleEmitterSphere> sphereEmitter = std::make_unique<ParticleEmitterSphere>(m_deviceResources);
+        /*std::unique_ptr<ParticleEmitterSphere> sphereEmitter = std::make_unique<ParticleEmitterSphere>(m_deviceResources);
         m_particleEmitters.push_back(std::move(sphereEmitter));
 
         std::unique_ptr<ParticleEmitterPoint> pointEmitter = std::make_unique<ParticleEmitterPoint>(m_deviceResources);
@@ -783,7 +797,7 @@ namespace DemoParticles
         m_particleEmitters.push_back(std::move(cubeEmitter));
 
         std::unique_ptr<ParticleEmitterBuffer> bufferEmitter = std::make_unique<ParticleEmitterBuffer>(m_deviceResources);
-        m_particleEmitters.push_back(std::move(bufferEmitter));
+        m_particleEmitters.push_back(std::move(bufferEmitter));*/
 
         for (auto&& emitter : m_particleEmitters)
         {

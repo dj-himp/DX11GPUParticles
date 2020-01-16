@@ -390,7 +390,10 @@ void Game::load()
     std::ifstream file("save.json");
     if (!file)
     {
-        return;
+        //no save so create default
+        save();
+        file.open("save.json");
+        //return;
     }
     file >> saveFile;
     file.close();
