@@ -193,12 +193,13 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             particleForce -= dragCoefficient * p.velocity;
         }
 
+//#define FORCE_VELOCITY
+#ifdef FORCE_VELOCITY
         p.velocity.xyz = particleForce.xyz;
-        
+#else
         float3 acceleration = particleForce.xyz / p.mass;
         p.velocity.xyz += acceleration * dt;
-        
-        //p.velocity.xyz = lerp(p.velocity.xyz, forceFieldVelocity.xyz, forceFieldIntensity);
+#endif   
     
         //TEMP
         //float cap = 1.0;
