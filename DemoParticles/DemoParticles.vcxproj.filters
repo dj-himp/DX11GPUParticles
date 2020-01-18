@@ -720,6 +720,9 @@
     <FxCompile Include="Data\Shaders\Particles\EmitParticlesPoint_CS.hlsl">
       <Filter>Data\Shaders\Particles</Filter>
     </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\RenderParticlesLine_GS.hlsl">
+      <Filter>Data\Shaders\Particles</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Data\Models\CatMac.fbx">

@@ -354,6 +354,9 @@ void Game::RenderImGui()
         ImGui::Checkbox("Disable culling", &ParticlesGlobals::g_cullNone);
         const char* items[] = { "Opaque", "NonPremultiplied", "Additive" };
         ImGui::Combo("Blend Mode", &ParticlesGlobals::g_blendMode, items, 3);
+
+        const char* shapeItems[] = { "Point", "Line" };
+        ImGui::Combo("Shape", &ParticlesGlobals::g_particleShape, shapeItems, 2);
     }
 
     m_sceneMenger->RenderImGui(m_cameraControllerFPS->getCamera());
@@ -375,6 +378,7 @@ void Game::save()
     json saveFile;
     saveFile["Global"]["Disable culling"] = ParticlesGlobals::g_cullNone;
     saveFile["Global"]["Blend Mode"] = ParticlesGlobals::g_blendMode;
+    saveFile["Global"]["Shape"] = ParticlesGlobals::g_particleShape;
 
     m_sceneMenger->save(saveFile);
 
@@ -400,6 +404,7 @@ void Game::load()
 
     ParticlesGlobals::g_cullNone = saveFile["Global"]["Disable culling"];
     ParticlesGlobals::g_blendMode = saveFile["Global"]["Blend Mode"];
+    ParticlesGlobals::g_particleShape = saveFile["Global"]["Shape"];
 
     m_sceneMenger->load(saveFile);
 }

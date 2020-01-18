@@ -40,6 +40,19 @@ namespace DemoParticles
                 m_forceFieldList.emplace_back(file.path().filename().string());
             }
         }
+
+        //TEMP INIT need to put it back in initEmitters
+        std::unique_ptr<ParticleEmitterSphere> sphereEmitter = std::make_unique<ParticleEmitterSphere>(m_deviceResources);
+        m_particleEmitters.push_back(std::move(sphereEmitter));
+
+        std::unique_ptr<ParticleEmitterPoint> pointEmitter = std::make_unique<ParticleEmitterPoint>(m_deviceResources);
+        m_particleEmitters.push_back(std::move(pointEmitter));
+
+        std::unique_ptr<ParticleEmitterCube> cubeEmitter = std::make_unique<ParticleEmitterCube>(m_deviceResources);
+        m_particleEmitters.push_back(std::move(cubeEmitter));
+
+        std::unique_ptr<ParticleEmitterBuffer> bufferEmitter = std::make_unique<ParticleEmitterBuffer>(m_deviceResources);
+        m_particleEmitters.push_back(std::move(bufferEmitter));
     }
 
     void RenderParticles::createDeviceDependentResources()
@@ -218,18 +231,7 @@ namespace DemoParticles
 
         initAttractors();
 
-        //TEMP INIT need to put it back in initEmitters
-        std::unique_ptr<ParticleEmitterSphere> sphereEmitter = std::make_unique<ParticleEmitterSphere>(m_deviceResources);
-        m_particleEmitters.push_back(std::move(sphereEmitter));
-
-        std::unique_ptr<ParticleEmitterPoint> pointEmitter = std::make_unique<ParticleEmitterPoint>(m_deviceResources);
-        m_particleEmitters.push_back(std::move(pointEmitter));
-
-        std::unique_ptr<ParticleEmitterCube> cubeEmitter = std::make_unique<ParticleEmitterCube>(m_deviceResources);
-        m_particleEmitters.push_back(std::move(cubeEmitter));
-
-        std::unique_ptr<ParticleEmitterBuffer> bufferEmitter = std::make_unique<ParticleEmitterBuffer>(m_deviceResources);
-        m_particleEmitters.push_back(std::move(bufferEmitter));
+        
 
         initEmitters();
         initForceField();
@@ -309,7 +311,15 @@ namespace DemoParticles
 
         m_deviceResources->PIXSetMarker(L"Render");
         context->VSSetShader(m_renderParticleVS->getVertexShader(), nullptr, 0);
-        context->GSSetShader(m_renderParticleGS->getGeometryShader(), nullptr, 0);
+        if (ParticlesGlobals::g_particleShape == 0)
+        {
+            context->GSSetShader(m_renderParticleGS->getGeometryShader(), nullptr, 0);
+        }
+        else
+        {
+            context->GSSetShader(m_renderParticleLineGS->getGeometryShader(), nullptr, 0);
+        }
+
         context->PSSetShader(m_renderParticlePS->getPixelShader(), nullptr, 0);
 
         ID3D11Buffer* nullVertexBuffer = nullptr;
@@ -706,6 +716,12 @@ namespace DemoParticles
         {
             m_renderParticlePS = std::make_unique<PixelShader>(m_deviceResources);
             m_renderParticlePS->load(L"RenderParticles_PS.cso");
+        }
+
+        if (m_renderParticleLineGS == nullptr)
+        {
+            m_renderParticleLineGS = std::make_unique<GeometryShader>(m_deviceResources);
+            m_renderParticleLineGS->load(L"RenderParticlesLine_GS.cso");
         }
 
         CD3D11_BUFFER_DESC constantBufferDesc(sizeof(RenderForceFieldConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);

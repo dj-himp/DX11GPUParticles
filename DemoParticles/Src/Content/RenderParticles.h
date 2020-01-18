@@ -50,6 +50,7 @@ namespace DemoParticles
         std::unique_ptr<VertexShader>           m_renderParticleVS;
         std::unique_ptr<GeometryShader>         m_renderParticleGS;
         std::unique_ptr<PixelShader>            m_renderParticlePS;
+        std::unique_ptr<GeometryShader>         m_renderParticleLineGS;
 
         Microsoft::WRL::ComPtr<ID3D11Buffer>    m_vertexBuffer;
         UINT                                    m_vertexStride;
