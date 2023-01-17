@@ -12,7 +12,9 @@ namespace DemoParticles
     void VertexShader::load(const std::wstring& vertexFilename, const std::vector<D3D11_INPUT_ELEMENT_DESC>& vertexDesc)
     {
         ID3DBlob* vs_blob;
-        D3DReadFileToBlob(vertexFilename.c_str(), &vs_blob);
+        DX::ThrowIfFailed(
+            D3DReadFileToBlob(vertexFilename.c_str(), &vs_blob)
+        );
 
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateVertexShader(

@@ -38,7 +38,7 @@ Game::Game() noexcept(false)
     //m_deviceResources = std::make_unique<DX::DeviceResources>(DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_FORMAT_D32_FLOAT, 2, D3D_FEATURE_LEVEL_11_0, DX::DeviceResources::c_FlipPresent | DX::DeviceResources::c_AllowTearing);
 
     //enable gamma correction;
-    m_deviceResources = std::make_unique<DX::DeviceResources>(DXGI_FORMAT_B8G8R8A8_UNORM_SRGB, DXGI_FORMAT_D32_FLOAT, 2, D3D_FEATURE_LEVEL_11_0, DX::DeviceResources::c_FlipPresent | DX::DeviceResources::c_AllowTearing);
+    m_deviceResources = std::make_unique<DX::DeviceResources>(DXGI_FORMAT_B8G8R8A8_UNORM_SRGB, DXGI_FORMAT_D32_FLOAT, 2, D3D_FEATURE_LEVEL_11_1, DX::DeviceResources::c_FlipPresent | DX::DeviceResources::c_AllowTearing);
 
     m_deviceResources->RegisterDeviceNotify(this);
 
