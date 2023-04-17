@@ -40,19 +40,6 @@ namespace DemoParticles
                 m_forceFieldList.emplace_back(file.path().filename().string());
             }
         }
-
-        //TEMP INIT need to put it back in initEmitters
-        std::unique_ptr<ParticleEmitterSphere> sphereEmitter = std::make_unique<ParticleEmitterSphere>(m_deviceResources);
-        m_particleEmitters.push_back(std::move(sphereEmitter));
-
-        std::unique_ptr<ParticleEmitterPoint> pointEmitter = std::make_unique<ParticleEmitterPoint>(m_deviceResources);
-        m_particleEmitters.push_back(std::move(pointEmitter));
-
-        std::unique_ptr<ParticleEmitterCube> cubeEmitter = std::make_unique<ParticleEmitterCube>(m_deviceResources);
-        m_particleEmitters.push_back(std::move(cubeEmitter));
-
-        std::unique_ptr<ParticleEmitterBuffer> bufferEmitter = std::make_unique<ParticleEmitterBuffer>(m_deviceResources);
-        m_particleEmitters.push_back(std::move(bufferEmitter));
     }
 
     void RenderParticles::createDeviceDependentResources()
@@ -230,10 +217,6 @@ namespace DemoParticles
         m_sortLib->init(m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext());
 
         initAttractors();
-
-        
-
-        initEmitters();
         initForceField();
     }
 
@@ -294,22 +277,25 @@ namespace DemoParticles
             m_resetParticles = false;
         }
 
-        m_deviceResources->PIXSetMarker(L"Emit");
+        m_deviceResources->PIXBeginEvent(L"Emit");
         emitParticles();
         GpuProfiler::instance().setTimestamp(GpuProfiler::TS_Emit);
+        m_deviceResources->PIXEndEvent();
 
-        m_deviceResources->PIXSetMarker(L"Simulate");
+        m_deviceResources->PIXBeginEvent(L"Simulate");
         simulateParticles();
         GpuProfiler::instance().setTimestamp(GpuProfiler::TS_Simulate);
+        m_deviceResources->PIXEndEvent();
 
         if (m_sortParticles)
         {
-            m_deviceResources->PIXSetMarker(L"Sort");
+            m_deviceResources->PIXBeginEvent(L"Sort");
             m_sortLib->run(m_maxParticles, m_aliveIndexUAV.Get(), m_aliveListCountConstantBuffer.Get());
+            m_deviceResources->PIXEndEvent();
         }
         GpuProfiler::instance().setTimestamp(GpuProfiler::TS_Sort);
 
-        m_deviceResources->PIXSetMarker(L"Render");
+        m_deviceResources->PIXBeginEvent(L"Render");
         context->VSSetShader(m_renderParticleVS->getVertexShader(), nullptr, 0);
         if (ParticlesGlobals::g_particleShape == 0)
         {
@@ -370,6 +356,7 @@ namespace DemoParticles
             renderForceField();
         }
         GpuProfiler::instance().setTimestamp(GpuProfiler::TS_Render);
+        m_deviceResources->PIXEndEvent();
 
         m_deviceResources->PIXEndEvent();
     }
@@ -378,11 +365,99 @@ namespace DemoParticles
     {
         if (ImGui::CollapsingHeader("Emitters"))
         {
+            static EmitterType emitterType;
+            if (ImGui::Button("Point"))
+            {
+                emitterType = EmitterType::ET_Point;
+                ImGui::OpenPopup("Select name");
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Sphere"))
+            {
+                emitterType = EmitterType::ET_Sphere;
+                ImGui::OpenPopup("Select name");
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cube"))
+            {
+                emitterType = EmitterType::ET_Cube;
+                ImGui::OpenPopup("Select name");
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Buffer"))
+            {
+                emitterType = EmitterType::ET_Buffer;
+                ImGui::OpenPopup("Select name");
+            }
+
+            if (ImGui::BeginPopupModal("Select name", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                static bool errorName = false;
+                if (errorName)
+                {
+                    ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Name already exist");
+                }
+                static char name[10] = "0";
+                ImGui::InputText("Name", name, IM_ARRAYSIZE(name) );
+                if (ImGui::Button("OK"))
+                {
+                    auto p = [this](auto const& emitter)
+                    {
+                        return emitter->getName() == name;
+                    };
+                    if (std::find_if(m_particleEmitters.begin(), m_particleEmitters.end(), p) != m_particleEmitters.end())
+                    {
+                        errorName = true;
+                    }
+                    else
+                    {
+                        ImGui::CloseCurrentPopup();
+                        addEmitter(emitterType, name);
+                        errorName = false;
+                    }
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Cancel"))
+                {
+                    ImGui::CloseCurrentPopup();
+                    errorName = false;
+                }
+                ImGui::EndPopup();
+            }
+            
+            ImGui::Separator();
+
             for (auto&& emitter : m_particleEmitters)
             {
+                
+                if (ImGui::Button(std::string("Delete " + emitter->getName()).c_str()))
+                {
+                    m_emitterNameToDelete = emitter->getName();
+                    ImGui::OpenPopup("Delete");
+                }
                 emitter->RenderImGui(camera);
+                ImGui::Separator();
             }
+            if (ImGui::BeginPopupModal("Delete",NULL, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::Text("Delete %s ? ", m_emitterNameToDelete.c_str());
+                if (ImGui::Button("OK"))
+                {
+                    ImGui::CloseCurrentPopup();
+                    m_particleEmitters.erase(std::remove_if(m_particleEmitters.begin(), m_particleEmitters.end(), [this](auto const& emitter) { return emitter->getName() == m_emitterNameToDelete; }));
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Cancel"))
+                {
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+                
+            }
+            
         }
+
+        
 
         if (ImGui::CollapsingHeader("Simulation"))
         {
@@ -596,7 +671,7 @@ namespace DemoParticles
 
     void RenderParticles::initAttractors()
     {
-        m_simulateParticlesBufferData.nbWantedAttractors = 0;
+        m_simulateParticlesBufferData.nbWantedAttractors = 4;
        
         m_attractorList[0].position = Vector4(-4.0f, 2.0f, 0.0f, 1.0f);
         m_attractorList[0].gravity = 10.0f;
@@ -626,25 +701,42 @@ namespace DemoParticles
         }
     }
 
-    void RenderParticles::initEmitters()
+    void RenderParticles::addEmitter(EmitterType type, std::string name)
     {
-        for (auto&& emitter : m_particleEmitters)
+        switch (type)
         {
-            emitter->createDeviceDependentResources();
-
-            ParticleEmitterBuffer* bufferEmitter = dynamic_cast<ParticleEmitterBuffer*>(emitter.get());
-            if (bufferEmitter != nullptr)
+            case ET_Point:
             {
+                std::unique_ptr<ParticleEmitterPoint> pointEmitter = std::make_unique<ParticleEmitterPoint>(m_deviceResources, name);
+                pointEmitter->createDeviceDependentResources();
+                m_particleEmitters.push_back(std::move(pointEmitter));
+            }
+                break;
+            case ET_Sphere:
+            {
+                std::unique_ptr<ParticleEmitterSphere> sphereEmitter = std::make_unique<ParticleEmitterSphere>(m_deviceResources, name);
+                sphereEmitter->createDeviceDependentResources();
+                m_particleEmitters.push_back(std::move(sphereEmitter));
+            }
+                break;
+            case ET_Cube:
+            {
+                std::unique_ptr<ParticleEmitterCube> cubeEmitter = std::make_unique<ParticleEmitterCube>(m_deviceResources, name);
+                cubeEmitter->createDeviceDependentResources(); 
+                m_particleEmitters.push_back(std::move(cubeEmitter));
+            }
+                break;
+            case ET_Buffer:
+            {
+                std::unique_ptr<ParticleEmitterBuffer> bufferEmitter = std::make_unique<ParticleEmitterBuffer>(m_deviceResources, name);
+                bufferEmitter->createDeviceDependentResources();
                 bufferEmitter->setBuffer(m_bakedParticlesUAV);
                 bufferEmitter->setIndirectArgsBuffer(m_bakedIndirectArgsBuffer);
-                continue;
+                m_particleEmitters.push_back(std::move(bufferEmitter));
             }
-            
-            ParticleEmitterCube* cubeEmitter = dynamic_cast<ParticleEmitterCube*>(emitter.get());
-            if (cubeEmitter != nullptr)
-            {
-                //cubeEmitter->setCubeSize(Vector3((float)m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeX, (float)m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeY, (float)m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeZ));
-            }
+                break;
+            default:
+                break;
         }
     }
 
@@ -803,18 +895,6 @@ namespace DemoParticles
 
     void RenderParticles::load(json& file)
     {
-        /*std::unique_ptr<ParticleEmitterSphere> sphereEmitter = std::make_unique<ParticleEmitterSphere>(m_deviceResources);
-        m_particleEmitters.push_back(std::move(sphereEmitter));
-
-        std::unique_ptr<ParticleEmitterPoint> pointEmitter = std::make_unique<ParticleEmitterPoint>(m_deviceResources);
-        m_particleEmitters.push_back(std::move(pointEmitter));
-
-        std::unique_ptr<ParticleEmitterCube> cubeEmitter = std::make_unique<ParticleEmitterCube>(m_deviceResources);
-        m_particleEmitters.push_back(std::move(cubeEmitter));
-
-        std::unique_ptr<ParticleEmitterBuffer> bufferEmitter = std::make_unique<ParticleEmitterBuffer>(m_deviceResources);
-        m_particleEmitters.push_back(std::move(bufferEmitter));*/
-
         for (auto&& emitter : m_particleEmitters)
         {
             emitter->load(file);

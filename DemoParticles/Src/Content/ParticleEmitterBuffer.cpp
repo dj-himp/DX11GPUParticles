@@ -7,8 +7,8 @@ using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
 {
-    ParticleEmitterBuffer::ParticleEmitterBuffer(const DX::DeviceResources* deviceResources)
-        : IParticleEmitter(deviceResources)
+    ParticleEmitterBuffer::ParticleEmitterBuffer(const DX::DeviceResources* deviceResources, std::string name)
+        : IParticleEmitter(deviceResources, name)
     {
         m_emitterConstantBufferData.maxSpawn = 500000;
         m_emitterConstantBufferData.particleOrientation = 0;
@@ -73,7 +73,7 @@ namespace DemoParticles
 
     void ParticleEmitterBuffer::RenderImGui(Camera* /*camera*/)
     {
-        if (ImGui::TreeNode("Buffer emitter"))
+        if (ImGui::TreeNode(toString().c_str()))
         {
             if (ImGui::Button("Spawn"))
             {
@@ -127,6 +127,11 @@ namespace DemoParticles
         m_emitterConstantBufferData.color = Vector4(&color[0]);
         m_emitterConstantBufferData.particleSizeStart = file["Emitters"]["Buffer"]["Size start"];
         m_emitterConstantBufferData.particleSizeEnd = file["Emitters"]["Buffer"]["Size end"];
+    }
+
+    std::string ParticleEmitterBuffer::toString()
+    {
+        return std::string("(Buffer)") + m_name;
     }
 
 }

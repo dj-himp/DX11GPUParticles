@@ -8,8 +8,8 @@ using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
 {
-    ParticleEmitterCube::ParticleEmitterCube(const DX::DeviceResources* deviceResources)
-        : IParticleEmitter(deviceResources)
+    ParticleEmitterCube::ParticleEmitterCube(const DX::DeviceResources* deviceResources, std::string name)
+        : IParticleEmitter(deviceResources, name)
     {
         m_emitDelay = 0.1f;
         m_emitterConstantBufferData.maxSpawn = 200000;
@@ -78,7 +78,7 @@ namespace DemoParticles
 
     void ParticleEmitterCube::RenderImGui(Camera* camera)
     {
-        if (ImGui::TreeNode("Cube emitter"))
+        if (ImGui::TreeNode(toString().c_str()))
         {
             ImGui::Checkbox("Enabled", &m_enabled);
             ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1, 0, 10000000);
@@ -111,24 +111,22 @@ namespace DemoParticles
             ImGui::SameLine();
 
             static float snap[3] = { 0.1f, 0.1f, 0.1f };
-            static ImGuizmo::OPERATION guizmoOperation = ImGuizmo::TRANSLATE;
-            static ImGuizmo::MODE guizmoMode = ImGuizmo::WORLD;
-            if (ImGui::RadioButton("Translate", guizmoOperation == ImGuizmo::TRANSLATE && guizmoHidden == false))
+            if (ImGui::RadioButton("Translate", m_guizmoOperation == ImGuizmo::TRANSLATE && guizmoHidden == false))
             {
-                guizmoOperation = ImGuizmo::TRANSLATE;
+                m_guizmoOperation = ImGuizmo::TRANSLATE;
                 guizmoHidden = false;
             }
             ImGui::SameLine();
-            if (ImGui::RadioButton("Scale", guizmoOperation == ImGuizmo::SCALE && guizmoHidden == false))
+            if (ImGui::RadioButton("Scale", m_guizmoOperation == ImGuizmo::SCALE && guizmoHidden == false))
             {
-                guizmoOperation = ImGuizmo::SCALE;
+                m_guizmoOperation = ImGuizmo::SCALE;
                 guizmoHidden = false;
             }
 
             ImGui::SameLine();
-            if (ImGui::RadioButton("Rotation", guizmoOperation == ImGuizmo::ROTATE && guizmoHidden == false))
+            if (ImGui::RadioButton("Rotation", m_guizmoOperation == ImGuizmo::ROTATE && guizmoHidden == false))
             {
-                guizmoOperation = ImGuizmo::ROTATE;
+                m_guizmoOperation = ImGuizmo::ROTATE;
                 guizmoHidden = false;
             }
 
@@ -136,7 +134,7 @@ namespace DemoParticles
             {
                 ImGuiIO& io = ImGui::GetIO();
                 ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-                ImGuizmo::Manipulate(&camera->getView().Transpose().m[0][0], &camera->getProjection().Transpose().m[0][0], guizmoOperation, guizmoMode, m_worldf, nullptr, /*snap*/nullptr);
+                ImGuizmo::Manipulate(&camera->getView().Transpose().m[0][0], &camera->getProjection().Transpose().m[0][0], m_guizmoOperation, m_guizmoMode, m_worldf, nullptr, /*snap*/nullptr);
                 ImGuizmo::DecomposeMatrixToComponentsRadians(m_worldf, (float*)&m_position, (float*)&m_rotation, (float*)&m_scale);
             }
 
@@ -188,6 +186,11 @@ namespace DemoParticles
         m_rotation = Vector3(&rotation[0]);
 
         ImGuizmo::RecomposeMatrixFromComponents((float*)&m_position, (float*)&m_rotation, (float*)&m_scale, m_worldf);
+    }
+
+    std::string ParticleEmitterCube::toString()
+    {
+        return std::string("(Cube)") + m_name;
     }
 
 }

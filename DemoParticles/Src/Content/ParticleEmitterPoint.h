@@ -10,7 +10,7 @@ namespace DemoParticles
     class ParticleEmitterPoint : public IParticleEmitter
     {
     public:
-        ParticleEmitterPoint(const DX::DeviceResources* deviceResources);
+        ParticleEmitterPoint(const DX::DeviceResources* deviceResources, std::string name);
         
         virtual void createDeviceDependentResources() override;
 
@@ -19,6 +19,7 @@ namespace DemoParticles
         virtual void RenderImGui(Camera* camera) override;
         virtual void save(json& file) override;
         virtual void load(json& file) override;
+        virtual std::string toString() override;
 
     private:
         
@@ -38,5 +39,9 @@ namespace DemoParticles
           0.f, 1.f, 0.f, 0.f,
           0.f, 0.f, 1.f, 0.f,
           0.f, 0.f, 0.f, 1.f };
+
+        bool m_guizmoHidden = true;
+        ImGuizmo::OPERATION m_guizmoOperation = ImGuizmo::TRANSLATE;
+        ImGuizmo::MODE m_guizmoMode = ImGuizmo::WORLD;
     };
 }

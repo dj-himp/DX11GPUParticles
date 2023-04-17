@@ -10,7 +10,7 @@ namespace DemoParticles
     class ParticleEmitterBuffer : public IParticleEmitter
     {
     public:
-        ParticleEmitterBuffer(const DX::DeviceResources* deviceResources);
+        ParticleEmitterBuffer(const DX::DeviceResources* deviceResources, std::string names);
 
         virtual void createDeviceDependentResources() override;
 
@@ -20,6 +20,7 @@ namespace DemoParticles
         virtual void reset() override;
         virtual void save(json& file) override;
         virtual void load(json& file) override;
+        virtual std::string toString() override;
 
         void setBuffer(Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> bufferUAV) { m_bufferUAV = bufferUAV; }
 

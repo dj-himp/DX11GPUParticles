@@ -9,8 +9,8 @@ using namespace choreograph;
 
 namespace DemoParticles
 {
-    ParticleEmitterSphere::ParticleEmitterSphere(const DX::DeviceResources* deviceResources)
-        : IParticleEmitter(deviceResources)
+    ParticleEmitterSphere::ParticleEmitterSphere(const DX::DeviceResources* deviceResources, std::string name)
+        : IParticleEmitter(deviceResources, name)
     {
         m_emitterConstantBufferData.maxSpawn = 1000;
         m_emitterConstantBufferData.position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -102,7 +102,7 @@ namespace DemoParticles
 
     void ParticleEmitterSphere::RenderImGui(Camera* camera)
     {
-        if (ImGui::TreeNode("Sphere emitter"))
+        if (ImGui::TreeNode(toString().c_str()))
         {
             ImGui::Checkbox("Enabled", &m_enabled);
             ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1, 0, 10000000);
@@ -147,26 +147,24 @@ namespace DemoParticles
             ImGui::SameLine();
 
             static float snap[3] = { 0.1f, 0.1f, 0.1f };
-            static ImGuizmo::OPERATION guizmoOperation = ImGuizmo::TRANSLATE;
-            static ImGuizmo::MODE guizmoMode = ImGuizmo::WORLD;
-            if (ImGui::RadioButton("Translate", guizmoOperation == ImGuizmo::TRANSLATE && useScaleForPartitioning == false && guizmoHidden == false))
+            if (ImGui::RadioButton("Translate", m_guizmoOperation == ImGuizmo::TRANSLATE && useScaleForPartitioning == false && guizmoHidden == false))
             {
-                guizmoOperation = ImGuizmo::TRANSLATE;
+                m_guizmoOperation = ImGuizmo::TRANSLATE;
                 useScaleForPartitioning = false;
                 guizmoHidden = false;
             }
             ImGui::SameLine();
-            if (ImGui::RadioButton("Scale", guizmoOperation == ImGuizmo::SCALE && useScaleForPartitioning == false && guizmoHidden == false))
+            if (ImGui::RadioButton("Scale", m_guizmoOperation == ImGuizmo::SCALE && useScaleForPartitioning == false && guizmoHidden == false))
             {
-                guizmoOperation = ImGuizmo::SCALE;
+                m_guizmoOperation = ImGuizmo::SCALE;
                 useScaleForPartitioning = false;
                 guizmoHidden = false;
             }
             
             ImGui::SameLine();
-            if (ImGui::RadioButton("Rotation", guizmoOperation == ImGuizmo::ROTATE && useScaleForPartitioning == false && guizmoHidden == false))
+            if (ImGui::RadioButton("Rotation", m_guizmoOperation == ImGuizmo::ROTATE && useScaleForPartitioning == false && guizmoHidden == false))
             {
-                guizmoOperation = ImGuizmo::ROTATE;
+                m_guizmoOperation = ImGuizmo::ROTATE;
                 useScaleForPartitioning = false;
                 guizmoHidden = false;
             }
@@ -174,7 +172,7 @@ namespace DemoParticles
             ImGui::SameLine();
             if (ImGui::RadioButton("Partitioning", useScaleForPartitioning == true && guizmoHidden == false))
             {
-                guizmoOperation = ImGuizmo::SCALE;
+                m_guizmoOperation = ImGuizmo::SCALE;
                 useScaleForPartitioning = true;
                 guizmoHidden = false;
             }
@@ -186,14 +184,14 @@ namespace DemoParticles
 
                 if (!useScaleForPartitioning)
                 {
-                    ImGuizmo::Manipulate(&camera->getView().Transpose().m[0][0], &camera->getProjection().Transpose().m[0][0], guizmoOperation, guizmoMode, m_worldf, nullptr, /*snap*/nullptr);
+                    ImGuizmo::Manipulate(&camera->getView().Transpose().m[0][0], &camera->getProjection().Transpose().m[0][0], m_guizmoOperation, m_guizmoMode, m_worldf, nullptr, /*snap*/nullptr);
                     ImGuizmo::DecomposeMatrixToComponentsRadians(m_worldf, (float*)&m_emitterConstantBufferData.position, (float*)&m_rotation[0], (float*)&m_emitterConstantBufferData.scale);
                     m_emitterConstantBufferData.rotation = Matrix::CreateRotationX(m_rotation[0]) * Matrix::CreateRotationY(m_rotation[1]) * Matrix::CreateRotationZ(m_rotation[2]);
                     m_emitterConstantBufferData.rotation = m_emitterConstantBufferData.rotation.Transpose();
                 }
                 else
                 {
-                    ImGuizmo::Manipulate(&camera->getView().Transpose().m[0][0], &camera->getProjection().Transpose().m[0][0], guizmoOperation, guizmoMode, m_fakeWorldf, nullptr, nullptr);
+                    ImGuizmo::Manipulate(&camera->getView().Transpose().m[0][0], &camera->getProjection().Transpose().m[0][0], m_guizmoOperation, m_guizmoMode, m_fakeWorldf, nullptr, nullptr);
                     ImGuizmo::DecomposeMatrixToComponentsRadians(m_fakeWorldf, p, r, (float*)&m_emitterConstantBufferData.partitioning);
                 }
             }
@@ -249,6 +247,11 @@ namespace DemoParticles
         
 
         ImGuizmo::RecomposeMatrixFromComponents((float*)&m_emitterConstantBufferData.position, (float*)&rotation, (float*)&m_emitterConstantBufferData.partitioning, m_fakeWorldf);
+    }
+
+    std::string ParticleEmitterSphere::toString()
+    {
+        return std::string("(Sphere)") + m_name;
     }
 
 }

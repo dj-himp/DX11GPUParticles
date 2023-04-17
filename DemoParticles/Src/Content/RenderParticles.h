@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IRenderable.h"
+#include "IParticleEmitter.h"
 
 #include "Content/ShaderStructures.h"
 #include "Common/FGAParser.h"
@@ -41,7 +42,7 @@ namespace DemoParticles
         void emitParticles();
         void simulateParticles();
         void initAttractors();
-        void initEmitters();
+        void addEmitter(EmitterType type, std::string name);
 
         void initForceField();
         void updateForceField();
@@ -136,6 +137,8 @@ namespace DemoParticles
         size_t                                             m_currentlyLoadedForceField;
 
         bool m_sortParticles = false;
+
+        std::string m_emitterNameToDelete;
 
     };
 }

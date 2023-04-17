@@ -8,8 +8,8 @@ using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
 {
-    ParticleEmitterPoint::ParticleEmitterPoint(const DX::DeviceResources* deviceResources)
-        : IParticleEmitter(deviceResources)
+    ParticleEmitterPoint::ParticleEmitterPoint(const DX::DeviceResources* deviceResources, std::string name)
+        : IParticleEmitter(deviceResources, name)
     {
         m_emitterConstantBufferData.rotation = Matrix::CreateFromYawPitchRoll(0.0f, 0.0f, 0.0f);
         m_emitterConstantBufferData.position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -75,7 +75,7 @@ namespace DemoParticles
 
     void ParticleEmitterPoint::RenderImGui(Camera* camera)
     {
-        if (ImGui::TreeNode("Point emitter"))
+        if (ImGui::TreeNode(toString().c_str()))
         {
             ImGui::Checkbox("Enabled", &m_enabled);
             ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1, 0, 10000000);
@@ -96,44 +96,41 @@ namespace DemoParticles
             ImGui::DragFloat3("Rotation", (float*)&m_emitterRotation);
             ImGuizmo::RecomposeMatrixFromComponents((float*)&m_emitterConstantBufferData.position, (float*)&m_emitterRotation, scale, m_worldf);
 
-            static bool guizmoHidden = true;
             if (!m_enabled)
             {
-                guizmoHidden = true;
+                m_guizmoHidden = true;
             }
 
-            if (ImGui::RadioButton("None", guizmoHidden))
+            if (ImGui::RadioButton("None", m_guizmoHidden))
             {
-                guizmoHidden = true;
+                m_guizmoHidden = true;
             }
             ImGui::SameLine();
 
             static float snap[3] = { 0.1f, 0.1f, 0.1f };
             static float angleSnap[3] = { 1.0f, 1.0f, 1.0f };
-            static ImGuizmo::OPERATION guizmoOperation = ImGuizmo::TRANSLATE;
-            static ImGuizmo::MODE guizmoMode = ImGuizmo::WORLD;
-            if (ImGui::RadioButton("Translate", guizmoOperation == ImGuizmo::TRANSLATE && guizmoHidden == false))
+            if (ImGui::RadioButton("Translate", m_guizmoOperation == ImGuizmo::TRANSLATE && m_guizmoHidden == false))
             {
-                guizmoOperation = ImGuizmo::TRANSLATE;
-                guizmoHidden = false;
+                m_guizmoOperation = ImGuizmo::TRANSLATE;
+                m_guizmoHidden = false;
             }
             ImGui::SameLine();
-            if (ImGui::RadioButton("Rotate", guizmoOperation == ImGuizmo::ROTATE && guizmoHidden == false))
+            if (ImGui::RadioButton("Rotate", m_guizmoOperation == ImGuizmo::ROTATE && m_guizmoHidden == false))
             {
-                guizmoOperation = ImGuizmo::ROTATE;
-                guizmoHidden = false;
+                m_guizmoOperation = ImGuizmo::ROTATE;
+                m_guizmoHidden = false;
             }
 
-            if (guizmoHidden == false)
+            if (m_guizmoHidden == false)
             {
-                if (ImGui::RadioButton("Local", guizmoMode == ImGuizmo::LOCAL))
+                if (ImGui::RadioButton("Local", m_guizmoMode == ImGuizmo::LOCAL))
                 {
-                    guizmoMode = ImGuizmo::LOCAL;
+                    m_guizmoMode = ImGuizmo::LOCAL;
                 }
                 ImGui::SameLine();
-                if (ImGui::RadioButton("World", guizmoMode == ImGuizmo::WORLD))
+                if (ImGui::RadioButton("World", m_guizmoMode == ImGuizmo::WORLD))
                 {
-                    guizmoMode = ImGuizmo::WORLD;
+                    m_guizmoMode = ImGuizmo::WORLD;
                 }
 
                 ImGuiIO& io = ImGui::GetIO();
@@ -143,14 +140,12 @@ namespace DemoParticles
                 //memcpy(m_projectionf, &camera->getProjection().Transpose().m[0][0], sizeof(m_projectionf));
 
                 //ImGuizmo::Manipulate(m_viewf, m_projectionf, guizmoOperation, guizmoMode, m_worldf, nullptr, snap);
-                ImGuizmo::Manipulate(&camera->getView().Transpose().m[0][0], &camera->getProjection().Transpose().m[0][0], guizmoOperation, guizmoMode, m_worldf, nullptr, guizmoOperation == ImGuizmo::TRANSLATE ? /*snap*/nullptr : angleSnap);
+                ImGuizmo::Manipulate(&camera->getView().Transpose().m[0][0], &camera->getProjection().Transpose().m[0][0], m_guizmoOperation, m_guizmoMode, m_worldf, nullptr, m_guizmoOperation == ImGuizmo::TRANSLATE ? /*snap*/nullptr : angleSnap);
 
                 ImGuizmo::DecomposeMatrixToComponentsRadians(m_worldf, (float*)&m_emitterConstantBufferData.position, (float*)&m_emitterRotation, scale);
 
                 m_emitterConstantBufferData.rotation = Matrix::CreateRotationX(m_emitterRotation.x) * Matrix::CreateRotationY(m_emitterRotation.y) * Matrix::CreateRotationZ(m_emitterRotation.z);
             }
-
-            //ImGui::CurveEditor("curve", (float*)&m_emitterConstantBufferData.position, 3);
 
             ImGui::TreePop();
         }
@@ -198,6 +193,11 @@ namespace DemoParticles
 
         float scale[3] = { 1.0f, 1.0f, 1.0f };
         ImGuizmo::RecomposeMatrixFromComponentsRadians((float*)&m_emitterConstantBufferData.position, (float*)&m_emitterRotation, scale, m_worldf);
+    }
+
+    std::string ParticleEmitterPoint::toString()
+    {
+        return std::string("(Point)") + m_name;
     }
 
 }

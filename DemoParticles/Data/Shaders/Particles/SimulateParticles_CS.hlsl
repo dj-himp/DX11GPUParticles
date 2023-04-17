@@ -193,7 +193,7 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             particleForce -= dragCoefficient * p.velocity;
         }
 
-#define FORCE_VELOCITY
+//#define FORCE_VELOCITY
 #ifdef FORCE_VELOCITY
         p.velocity.xyz = particleForce.xyz;
 #else
