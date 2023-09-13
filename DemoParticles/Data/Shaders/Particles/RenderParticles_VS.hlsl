@@ -27,14 +27,14 @@ GeometryShaderInput main(uint vertexId : SV_VertexID)
     output.oPosition = p.position.xyz;
     output.velocity = p.velocity.xyz;
 
-    //float alpha = p.lifeSpan >= 0.0 ? saturate(p.age / p.lifeSpan) : 0.1;
-    //float alpha = smoothstep(0.0, p.lifeSpan, p.age);
-    float alpha = smoothstep(0.0, abs(p.lifeSpan), p.age);
+    //float alpha = smoothstep(0.0, abs(p.lifeSpan), p.age);
+    float alpha = smoothstep(abs(p.lifeSpan), 0.0, p.age);
     output.Color = p.color;
     output.Color.a *= alpha;
     output.Normal = p.normal;
 
     output.orientation = p.orientation;
+    //output.size = p.sizeStart + alpha * (p.sizeEnd - p.sizeStart);
     output.size = p.sizeStart + alpha * (p.sizeEnd - p.sizeStart);
     
     return output;

@@ -213,6 +213,12 @@
     <ClCompile Include="Src\Common\GeometryShader.cpp">
       <Filter>Src\Common</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Content\ParticleAttractor.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Content\ParticleEmitterMesh.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\DeviceResources.h">
@@ -578,6 +584,12 @@
     <ClInclude Include="Src\Common\GeometryShader.h">
       <Filter>Src\Common</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Content\ParticleAttractor.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\ParticleEmitterMesh.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -721,6 +733,9 @@
       <Filter>Data\Shaders\Particles</Filter>
     </FxCompile>
     <FxCompile Include="Data\Shaders\Particles\RenderParticlesLine_GS.hlsl">
+      <Filter>Data\Shaders\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\EmitParticlesMesh_CS.hlsl">
       <Filter>Data\Shaders\Particles</Filter>
     </FxCompile>
   </ItemGroup>

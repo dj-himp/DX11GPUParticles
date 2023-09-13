@@ -18,7 +18,7 @@ namespace DemoParticles
 
     }
 
-    std::unique_ptr<DemoParticles::Model> ModelLoader::load(const std::string fileName)
+    std::unique_ptr<DemoParticles::Model> ModelLoader::load(const std::string fileName, const bool createSRV)
     {
         std::unique_ptr<Model> model = std::make_unique<Model>(m_deviceResources);
 
@@ -34,14 +34,14 @@ namespace DemoParticles
         }
 
         Matrix transform = Matrix::Identity;
-        AddVertexData(model, scene, scene->mRootNode, transform);
+        AddVertexData(model, scene, scene->mRootNode, transform, createSRV);
 
 
         return std::move(model);
     }
 
     //Create meshes and add vertex and index buffers
-    void ModelLoader::AddVertexData(std::unique_ptr<Model>& model, const aiScene* scene, const aiNode* node, Matrix& transform)
+    void ModelLoader::AddVertexData(std::unique_ptr<Model>& model, const aiScene* scene, const aiNode* node, Matrix& transform, const bool createSRV)
     {
         Matrix previousTransform = transform;
         transform = previousTransform * FromMatrix(node->mTransformation);
@@ -244,12 +244,75 @@ namespace DemoParticles
             //add it to the mesh
             modelMesh->setIndexBuffer(indexBuffer);
             modelMesh->setIndexCount((int)indices.size());
+
+
+            if (createSRV)
+            {
+                D3D11_BUFFER_DESC bufferDesc;
+                bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+                bufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+                bufferDesc.CPUAccessFlags = 0;
+                bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+                bufferDesc.ByteWidth = sizeof(VertexObject) * mesh->mNumVertices;
+                bufferDesc.StructureByteStride = sizeof(VertexObject);
+
+                Microsoft::WRL::ComPtr<ID3D11Buffer> buffer;
+
+                DX::ThrowIfFailed(
+                    m_deviceResources->GetD3DDevice()->CreateBuffer(&bufferDesc, &vertexBufferData, &buffer)
+                );
+
+                D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc;
+                SRVDesc.Format = DXGI_FORMAT_UNKNOWN;
+                SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+                SRVDesc.Buffer.FirstElement = 0;
+                SRVDesc.Buffer.NumElements = mesh->mNumVertices;
+
+                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> SRV;
+
+                DX::ThrowIfFailed(
+                    m_deviceResources->GetD3DDevice()->CreateShaderResourceView(buffer.Get(), &SRVDesc, &SRV)
+                );
+
+                modelMesh->setVertexSRV(SRV);
+
+
+                //index Buffer SRV
+                D3D11_BUFFER_DESC indexBufferDesc;
+                indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+                indexBufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+                indexBufferDesc.CPUAccessFlags = 0;
+                indexBufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+                indexBufferDesc.ByteWidth = (UINT)(sizeof(int) * indices.size());
+                indexBufferDesc.StructureByteStride = sizeof(int);
+
+                Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
+
+                DX::ThrowIfFailed(
+                    m_deviceResources->GetD3DDevice()->CreateBuffer(&indexBufferDesc, &indexBufferData, &indexBuffer)
+                );
+
+                D3D11_SHADER_RESOURCE_VIEW_DESC indexSRVDesc;
+                indexSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
+                indexSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+                indexSRVDesc.Buffer.FirstElement = 0;
+                indexSRVDesc.Buffer.NumElements = indices.size();
+
+                Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> indexSRV;
+
+                DX::ThrowIfFailed(
+                    m_deviceResources->GetD3DDevice()->CreateShaderResourceView(indexBuffer.Get(), &indexSRVDesc, &indexSRV)
+                );
+
+                modelMesh->setindexSRV(indexSRV);
+
+            }
         }
 
         //if node has more children process them as well
         for (unsigned int i = 0; i < node->mNumChildren; ++i)
         {
-            AddVertexData(model, scene, node->mChildren[i], transform);
+            AddVertexData(model, scene, node->mChildren[i], transform, createSRV);
         }
 
         transform = previousTransform;

@@ -48,6 +48,7 @@ namespace DemoParticles
         m_needEmit = false;
 
         m_lastEmitTime -= (float)timer.GetElapsedSeconds();
+        //m_lastEmitTime -= (float)timer.GetElapsedSeconds() / 1000.0f;
         if (m_lastEmitTime <= 0.0)
         {
             m_lastEmitTime = m_emitDelay;

@@ -1,6 +1,8 @@
 #include "pch.h"
-#include "ParticleEmitterCube.h"
+#include "ParticleEmitterMesh.h"
 
+#include "Model/ModelLoader.h"
+#include "Model/Model.h"
 #include "Common/ComputeShader.h"
 #include "Camera/Camera.h"
 
@@ -8,32 +10,37 @@ using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
 {
-    ParticleEmitterCube::ParticleEmitterCube(const DX::DeviceResources* deviceResources, std::string name)
+    ParticleEmitterMesh::ParticleEmitterMesh(const DX::DeviceResources* deviceResources, std::string name)
         : IParticleEmitter(deviceResources, name)
     {
-        //m_emitDelay = 0.1f;
-        m_emitterConstantBufferData.maxSpawn = 200000;
+        m_emitterConstantBufferData.maxSpawn = 100;
         m_emitterConstantBufferData.particleOrientation = 0;
-        m_emitterConstantBufferData.particlesBaseSpeed = 0.0f;
+        m_emitterConstantBufferData.particlesBaseSpeed = 1.0f;
         m_emitterConstantBufferData.particlesLifeSpan = 3.0f;
         m_emitterConstantBufferData.particlesMass = 1.0f;
         m_emitterConstantBufferData.color = Color(0.5f, 0.2f, 0.2f, 1.0f);
         m_emitterConstantBufferData.particleSizeStart = 0.01f;
         m_emitterConstantBufferData.particleSizeEnd = 0.01f;
+
     }
 
-    void ParticleEmitterCube::createDeviceDependentResources()
+    void ParticleEmitterMesh::createDeviceDependentResources()
     {
-        m_emitParticles = std::make_unique<ComputeShader>(m_deviceResources);
-        m_emitParticles->load(L"EmitParticlesCube_CS.cso");
+        m_modelLoader = std::make_unique<ModelLoader>(m_deviceResources);
+        //m_model = m_modelLoader->load("CatMac.fbx");
+        m_model = m_modelLoader->load("TrexByJoel3d.fbx", true);
+        //m_model = m_modelLoader->load("deer.fbx");
 
-        CD3D11_BUFFER_DESC emitterConstantBufferDesc(sizeof(EmitterCubeConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
+        m_emitParticles = std::make_unique<ComputeShader>(m_deviceResources);
+        m_emitParticles->load(L"EmitParticlesMesh_CS.cso");
+
+        CD3D11_BUFFER_DESC emitterConstantBufferDesc(sizeof(EmitterPointConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateBuffer(&emitterConstantBufferDesc, nullptr, &m_emitterConstantBuffer)
         );
     }
 
-    void ParticleEmitterCube::update(DX::StepTimer const& timer)
+    void ParticleEmitterMesh::update(DX::StepTimer const& timer)
     {
         if (!m_enabled)
         {
@@ -44,6 +51,7 @@ namespace DemoParticles
         m_needEmit = false;
 
         m_lastEmitTime -= (float)timer.GetElapsedSeconds();
+        //m_lastEmitTime -= (float)timer.GetElapsedSeconds() / 1000.0f;
         if (m_lastEmitTime <= 0.0)
         {
             m_lastEmitTime = m_emitDelay;
@@ -59,7 +67,7 @@ namespace DemoParticles
         
     }
 
-    void ParticleEmitterCube::emit()
+    void ParticleEmitterMesh::emit()
     {
         if (!m_enabled || !m_needEmit)
         {
@@ -71,16 +79,19 @@ namespace DemoParticles
         context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
 
         m_emitParticles->setConstantBuffer(4, m_emitterConstantBuffer);
+        m_emitParticles->setSRV(0, m_model->getMesh(m_currentMeshPart)->getVertexSRV());
+        m_emitParticles->setSRV(1, m_model->getMesh(m_currentMeshPart)->getIndexSRV());
         m_emitParticles->begin();
         m_emitParticles->start(DX::align(m_emitterConstantBufferData.maxSpawn, 1024) / 1024, 1, 1);
         m_emitParticles->end();
     }
 
-    void ParticleEmitterCube::RenderImGui(Camera* camera)
+    void ParticleEmitterMesh::RenderImGui(Camera* camera)
     {
         if (ImGui::TreeNode(toString().c_str()))
         {
             ImGui::Checkbox("Enabled", &m_enabled);
+            ImGui::DragInt("mesh Part", &m_currentMeshPart, 1.0f, 0, m_model->getMeshCount() - 1);
             ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1, 0, 10000000);
             //ImGui::DragFloat3("Position", (float*)&m_emitterConstantBufferData.position, 0.01f);
             const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
@@ -140,57 +151,56 @@ namespace DemoParticles
 
             ImGui::TreePop();
         }
-    }
-
-    void ParticleEmitterCube::save(json& file)
-    {
-        file["Emitters"]["Cube"]["Enabled"] = m_enabled;
-        file["Emitters"]["Cube"]["Max Spawn"] = m_emitterConstantBufferData.maxSpawn;
-        //file["Emitters"]["Cube"]["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
-        file["Emitters"]["Cube"]["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
-        file["Emitters"]["Cube"]["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
-        file["Emitters"]["Cube"]["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
-        file["Emitters"]["Cube"]["Mass"] = m_emitterConstantBufferData.particlesMass;
-        file["Emitters"]["Cube"]["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
-        file["Emitters"]["Cube"]["Size start"] = m_emitterConstantBufferData.particleSizeStart;
-        file["Emitters"]["Cube"]["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
-        file["Emitters"]["Cube"]["Position"] = { m_position.x, m_position.y, m_position.z };
-        file["Emitters"]["Cube"]["Scale"] = { m_scale.x, m_scale.y, m_scale.z };
-        file["Emitters"]["Cube"]["Rotation"] = { m_rotation.x, m_rotation.y, m_rotation.z };
         
-
     }
 
-    void ParticleEmitterCube::load(json& file)
+    void ParticleEmitterMesh::save(json& file)
     {
-        m_enabled = file["Emitters"]["Cube"]["Enabled"];
-        m_emitterConstantBufferData.maxSpawn = file["Emitters"]["Cube"]["Max Spawn"];
-        //std::vector<float> position = file["Emitters"]["Cube"]["Position"];
+        file["Emitters"]["Mesh"]["Enabled"] = m_enabled;
+        file["Emitters"]["Mesh"]["Max Spawn"] = m_emitterConstantBufferData.maxSpawn;
+        //file["Emitters"]["Mesh"]["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
+        file["Emitters"]["Mesh"]["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
+        file["Emitters"]["Mesh"]["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
+        file["Emitters"]["Mesh"]["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
+        file["Emitters"]["Mesh"]["Mass"] = m_emitterConstantBufferData.particlesMass;
+        file["Emitters"]["Mesh"]["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
+        file["Emitters"]["Mesh"]["Size start"] = m_emitterConstantBufferData.particleSizeStart;
+        file["Emitters"]["Mesh"]["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
+        file["Emitters"]["Mesh"]["Position"] = { m_position.x, m_position.y, m_position.z };
+        file["Emitters"]["Mesh"]["Scale"] = { m_scale.x, m_scale.y, m_scale.z };
+        file["Emitters"]["Mesh"]["Rotation"] = { m_rotation.x, m_rotation.y, m_rotation.z };
+    }
+
+    void ParticleEmitterMesh::load(json& file)
+    {
+        m_enabled = file["Emitters"]["Mesh"]["Enabled"];
+        m_emitterConstantBufferData.maxSpawn = file["Emitters"]["Mesh"]["Max Spawn"];
+        //std::vector<float> position = file["Emitters"]["Mesh"]["Position"];
         //m_emitterConstantBufferData.position = Vector4(&position[0]);
-        m_emitterConstantBufferData.particleOrientation = file["Emitters"]["Cube"]["Particles orientation"];
-        m_emitterConstantBufferData.particlesBaseSpeed = file["Emitters"]["Cube"]["Base speed"];
-        m_emitterConstantBufferData.particlesLifeSpan = file["Emitters"]["Cube"]["LifeSpan"];
-        m_emitterConstantBufferData.particlesMass = file["Emitters"]["Cube"]["Mass"];
-        std::vector<float> color = file["Emitters"]["Cube"]["Color"];
+        m_emitterConstantBufferData.particleOrientation = file["Emitters"]["Mesh"]["Particles orientation"];
+        m_emitterConstantBufferData.particlesBaseSpeed = file["Emitters"]["Mesh"]["Base speed"];
+        m_emitterConstantBufferData.particlesLifeSpan = file["Emitters"]["Mesh"]["LifeSpan"];
+        m_emitterConstantBufferData.particlesMass = file["Emitters"]["Mesh"]["Mass"];
+        std::vector<float> color = file["Emitters"]["Mesh"]["Color"];
         m_emitterConstantBufferData.color = Vector4(&color[0]);
-        m_emitterConstantBufferData.particleSizeStart = file["Emitters"]["Cube"]["Size start"];
-        m_emitterConstantBufferData.particleSizeEnd = file["Emitters"]["Cube"]["Size end"];
+        m_emitterConstantBufferData.particleSizeStart = file["Emitters"]["Mesh"]["Size start"];
+        m_emitterConstantBufferData.particleSizeEnd = file["Emitters"]["Mesh"]["Size end"];
 
-        std::vector<float> position = file["Emitters"]["Cube"]["Position"];
-        m_position= Vector3(&position[0]);
+        std::vector<float> position = file["Emitters"]["Mesh"]["Position"];
+        m_position = Vector3(&position[0]);
 
-        std::vector<float> scale = file["Emitters"]["Cube"]["Scale"];
+        std::vector<float> scale = file["Emitters"]["Mesh"]["Scale"];
         m_scale = Vector3(&scale[0]);
 
-        std::vector<float> rotation = file["Emitters"]["Cube"]["Rotation"];
+        std::vector<float> rotation = file["Emitters"]["Mesh"]["Rotation"];
         m_rotation = Vector3(&rotation[0]);
 
         ImGuizmo::RecomposeMatrixFromComponents((float*)&m_position, (float*)&m_rotation, (float*)&m_scale, m_worldf);
     }
 
-    std::string ParticleEmitterCube::toString()
+    std::string ParticleEmitterMesh::toString()
     {
-        return std::string("(Cube)") + m_name;
+        return std::string("(Mesh)") + m_name;
     }
 
 }

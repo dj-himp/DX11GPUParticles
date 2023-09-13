@@ -16,11 +16,11 @@ namespace DemoParticles
 
         ModelLoader(const DX::DeviceResources* deviceResources);
         
-        std::unique_ptr<Model> load(const std::string fileName);
+        std::unique_ptr<Model> load(const std::string fileName, const bool createSRV = false);
 
     private:
 
-        void AddVertexData(std::unique_ptr<Model>& model, const aiScene* scene, const aiNode* node, DirectX::SimpleMath::Matrix& transform);
+        void AddVertexData(std::unique_ptr<Model>& model, const aiScene* scene, const aiNode* node, DirectX::SimpleMath::Matrix& transform, const bool createSRV);
         int GetNoofInputElements(aiMesh* mesh);
 
         const DX::DeviceResources* m_deviceResources;

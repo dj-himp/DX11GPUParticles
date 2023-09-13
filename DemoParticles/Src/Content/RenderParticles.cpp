@@ -14,6 +14,7 @@
 #include "ParticleEmitterPoint.h"
 #include "ParticleEmitterCube.h"
 #include "ParticleEmitterBuffer.h"
+#include "ParticleEmitterMesh.h"
 
 #include <filesystem>
 
@@ -216,7 +217,7 @@ namespace DemoParticles
         m_sortLib = std::make_unique<SortLib>();
         m_sortLib->init(m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext());
 
-        initAttractors();
+        //initAttractors();
         initForceField();
     }
 
@@ -273,10 +274,10 @@ namespace DemoParticles
         {
             m_deviceResources->PIXSetMarker(L"Reset");
             resetParticles();
-            
             m_resetParticles = false;
         }
-
+            
+        GpuProfiler::instance().setTimestamp(GpuProfiler::TS_BeforeParticles);
         m_deviceResources->PIXBeginEvent(L"Emit");
         emitParticles();
         GpuProfiler::instance().setTimestamp(GpuProfiler::TS_Emit);
@@ -387,6 +388,12 @@ namespace DemoParticles
             if (ImGui::Button("Buffer"))
             {
                 emitterType = EmitterType::ET_Buffer;
+                ImGui::OpenPopup("Select name");
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Mesh"))
+            {
+                emitterType = EmitterType::ET_Mesh;
                 ImGui::OpenPopup("Select name");
             }
 
@@ -733,6 +740,13 @@ namespace DemoParticles
                 bufferEmitter->setBuffer(m_bakedParticlesUAV);
                 bufferEmitter->setIndirectArgsBuffer(m_bakedIndirectArgsBuffer);
                 m_particleEmitters.push_back(std::move(bufferEmitter));
+            }
+                break;
+            case ET_Mesh:
+            {
+                std::unique_ptr<ParticleEmitterMesh> meshEmitter = std::make_unique<ParticleEmitterMesh>(m_deviceResources, name);
+                meshEmitter->createDeviceDependentResources();
+                m_particleEmitters.push_back(std::move(meshEmitter));
             }
                 break;
             default:

@@ -22,7 +22,14 @@ namespace DemoParticles
         void setIndexBuffer(Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer) { m_indexBuffer = indexBuffer; }
         const Microsoft::WRL::ComPtr<ID3D11Buffer> getIndexBuffer() { return m_indexBuffer; }
 
+        void setVertexSRV(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> vertexSRV) { m_vertexSRV = vertexSRV; }
+        const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> getVertexSRV() { return m_vertexSRV; }
+        void setindexSRV(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> indexSRV) { m_indexSRV = indexSRV; }
+        const Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> getIndexSRV() { return m_indexSRV; }
+
         void setVertexCount(int vertexCount) { m_vertexCount = vertexCount; }
+        int getVertexCount() { return m_vertexCount; }
+
         void setPrimitiveCount(int primitiveCount) { m_primitiveCount = primitiveCount; }
         void setIndexCount(int indexCount) { m_indexCount = indexCount; }
         int getIndexCount() { return m_indexCount; }
@@ -36,6 +43,9 @@ namespace DemoParticles
 
         Microsoft::WRL::ComPtr<ID3D11Buffer>        m_vertexBuffer;
         Microsoft::WRL::ComPtr<ID3D11Buffer>        m_indexBuffer;
+
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_vertexSRV;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_indexSRV;
 
         int m_vertexCount;
         int m_primitiveCount;

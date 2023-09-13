@@ -23,8 +23,8 @@ namespace DemoParticles
     void BakeModelParticles::createDeviceDependentResources()
     {
         m_modelLoader = std::make_unique<ModelLoader>(m_deviceResources);
-        //m_model = m_modelLoader->load("CatMac.fbx");
-        m_model = m_modelLoader->load("TrexByJoel3d.fbx");
+        m_model = m_modelLoader->load("CatMac.fbx");
+        //m_model = m_modelLoader->load("TrexByJoel3d.fbx");
         //m_model = m_modelLoader->load("deer.fbx");
 
         m_bakeVS = std::make_unique<VertexShader>(m_deviceResources);

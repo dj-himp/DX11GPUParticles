@@ -21,6 +21,16 @@ struct ParticleIndexElement
     float index;
 };
 
+struct VertexObject
+{
+    float3 position;
+    float4   color;
+    float3 normal;
+    float3 tangent;
+    float3 bitangent;
+    float2 uv;
+};
+
 cbuffer renderParticlesGlobals : register(b1)
 {
     //float4 color;

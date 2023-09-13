@@ -12,6 +12,7 @@ namespace DemoParticles
         ET_Sphere,
         ET_Cube,
         ET_Buffer,
+        ET_Mesh,
 
         ET_Count
     };
@@ -22,6 +23,7 @@ namespace DemoParticles
         
 
         IParticleEmitter(const DX::DeviceResources* deviceResources, std::string name);
+        virtual ~IParticleEmitter();
 
         virtual void createDeviceDependentResources() = 0;
 

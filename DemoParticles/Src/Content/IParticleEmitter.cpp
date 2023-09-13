@@ -10,4 +10,9 @@ namespace DemoParticles
     {
 
     }
+
+    IParticleEmitter::~IParticleEmitter()
+    {
+
+    }
 }

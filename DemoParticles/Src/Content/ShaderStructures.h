@@ -110,6 +110,23 @@ namespace DemoParticles
 
     };
 
+    struct EmitterMeshConstantBuffer
+    {
+        DirectX::SimpleMath::Matrix world;
+        DirectX::SimpleMath::Color color;
+
+        UINT maxSpawn;
+        UINT particleOrientation;
+        float particlesBaseSpeed;
+        float particlesLifeSpan;
+        float particlesMass;
+        float particleSizeStart;
+        float particleSizeEnd;
+
+        UINT padding[1];
+
+    };
+
     struct DeadListCountConstantBuffer
     {
         UINT nbDeadParticles;

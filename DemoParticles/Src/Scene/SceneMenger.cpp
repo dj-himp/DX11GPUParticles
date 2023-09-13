@@ -243,7 +243,7 @@ namespace DemoParticles
             m_computePackParticle->setUAV(1, nullptr);
 
             InitIndirectComputeArgs1DConstantBuffer initBufferData;
-            initBufferData.nbThreadGroupX = 64; //see in emit compute shader
+            initBufferData.nbThreadGroupX = 1024; //see in emit compute shader
             context->UpdateSubresource(m_indirectComputeConstantBuffer.Get(), 0, nullptr, &initBufferData, 0, 0);
 
 

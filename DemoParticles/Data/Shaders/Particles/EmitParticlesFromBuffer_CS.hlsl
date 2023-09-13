@@ -21,7 +21,8 @@ RWStructuredBuffer<Particle> particleList : register(u1);
 RWStructuredBuffer<BakedParticle> bakedParticle : register(u2);
 
 
-[numthreads(64, 1, 1)]
+//spawn per batch of 1024 particles
+[numthreads(1024, 1, 1)]
 void main(uint3 id : SV_DispatchThreadID)
 {
     if(id.x < nbDeadParticles && id.x < emitterMaxSpawn)

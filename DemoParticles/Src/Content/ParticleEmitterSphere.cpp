@@ -24,30 +24,6 @@ namespace DemoParticles
         m_emitterConstantBufferData.color = Color(0.5f, 0.2f, 0.2f, 1.0f);
         m_emitterConstantBufferData.particleSizeStart = 0.01f;
         m_emitterConstantBufferData.particleSizeEnd = 0.0f;
-
-        /*PhraseRef<Vector4> bounce = makeProcedure<Vector4>(6.0, [](Time t, Time duration) {
-            return Vector4(sin(easeInOutQuad(t) * 1.0f * DirectX::XM_PI) * 3.0f, 0.0f, 0.0f, 1.0f);
-        });*/
-
-        //PhraseRef<Vector4> bounce = makeRamp(Vector4(-4.0f, 0.0f, 0.0f, 1.0f), Vector4(4.0f, 0.0f, 0.0f, 1.0f), 1.0f, EaseInOutSine());
-        //PhraseRef<Vector4> bounce2 = makeRamp(Vector4(4.0f, 0.0f, 0.0f, 1.0f), Vector4(-4.0f, 0.0f, 0.0f, 1.0f), 1.0f, EaseInOutSine());
-        
-        /*PhraseRef<Vector4> bounceUp = makeProcedure<Vector4>(10.0, [](Time t, Time duration) {
-            return Vector4(0.0f, sin(easeInOutQuad(t) * 6.0f * DirectX::XM_PI) * 3.0f, 0.0f, 1.0f);
-        });
-
-        PhraseRef<Vector4> cumul = makeAccumulator(Vector4(0.0f, 0.0f, 0.0f, 1.0f), bounce, bounceUp);
-        */
-
-        /*m_ChoreoPosition = m_emitterConstantBufferData.position;
-        auto motionOptions = m_timeline.apply(&m_ChoreoPosition, bounce)
-            .then(bounce2)
-            .finishFn([&m = *m_ChoreoPosition.inputPtr()]{
-            m.resetTime();
-                });
-                */
-        
-        //motionOptions.getControl()->cancel();
     }
 
     void ParticleEmitterSphere::createDeviceDependentResources()
@@ -96,6 +72,7 @@ namespace DemoParticles
 
         m_emitParticles->setConstantBuffer(4, m_emitterConstantBuffer);
         m_emitParticles->begin();
+        // div by 1024 == "WARP_SIZE" (same in CS shader)
         m_emitParticles->start(DX::align(m_emitterConstantBufferData.maxSpawn, 1024) / 1024, 1, 1);
         m_emitParticles->end();
     }
