@@ -10,6 +10,7 @@ namespace DemoParticles
         {
             TS_BeginFrame,
 
+            TS_BeforeParticles,
             TS_Emit,
             TS_Simulate,
             TS_Sort,
@@ -49,6 +50,8 @@ namespace DemoParticles
 
         float m_totalTimeDuringAverage[TS_Max];
         int m_frameCountDuringAverage;
-        float m_timeBeginAverage;
+        float m_timeBeginAverage = 0.0f;
+
+        bool m_hasBegun = false; //when activating the debug to be sure to have a begin before the end
     };
 }

@@ -169,10 +169,9 @@ void Game::Render()
         return;
     }
 
-    if (ParticlesGlobals::g_enableDetailDebug)
-    {
-        GpuProfiler::instance().beginFrame();
-    }
+    
+    GpuProfiler::instance().beginFrame();
+    
     Clear();
 
     m_deviceResources->PIXBeginEvent(L"Render");
@@ -190,19 +189,14 @@ void Game::Render()
 
     m_deviceResources->PIXEndEvent();
 
-    if (ParticlesGlobals::g_enableDetailDebug)
-    {
-        GpuProfiler::instance().waitAndGetData(m_timer);
-    }
+    GpuProfiler::instance().waitAndGetData(m_timer);
+    
     RenderImGui();
 
     // Show the new frame.
     m_deviceResources->Present();
 
-    if (ParticlesGlobals::g_enableDetailDebug)
-    {
-        GpuProfiler::instance().endFrame();
-    }
+    GpuProfiler::instance().endFrame();
 }
 
 // Helper method to clear the back buffers.
@@ -346,6 +340,7 @@ void Game::RenderImGui()
         }
 
         ImGui::Text("Draw time : %.2f ms", 1000.0f * total);
+        ImGui::Text("before Emit time : %.2f ms", 1000.0f * GpuProfiler::instance().getTimestampAverage(GpuProfiler::TS_BeforeParticles));
         ImGui::Text("Emit time : %.2f ms", 1000.0f * GpuProfiler::instance().getTimestampAverage(GpuProfiler::TS_Emit));
         ImGui::Text("Simulate time : %.2f ms", 1000.0f * GpuProfiler::instance().getTimestampAverage(GpuProfiler::TS_Simulate));
         ImGui::Text("Sort time : %.2f ms", 1000.0f * GpuProfiler::instance().getTimestampAverage(GpuProfiler::TS_Sort));
