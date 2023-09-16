@@ -311,6 +311,8 @@ void DeviceResources::CreateWindowSizeDependentResources()
 
         DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSwapChainDesc = {};
         fsSwapChainDesc.Windowed = TRUE;
+        //fsSwapChainDesc.RefreshRate.Numerator = 60;
+        //fsSwapChainDesc.RefreshRate.Denominator = 1;
 
         // Create a SwapChain from a Win32 window.
         ThrowIfFailed(m_dxgiFactory->CreateSwapChainForHwnd(

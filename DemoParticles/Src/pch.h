@@ -46,6 +46,7 @@
 #include <exception>
 #include <memory>
 #include <stdexcept>
+#include <array>
 
 #include <stdio.h>
 

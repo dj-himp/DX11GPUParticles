@@ -8,17 +8,18 @@ namespace DemoParticles
 
         enum TimeStamp
         {
-            TS_BeginFrame,
-
-            TS_BeforeParticles,
             TS_Emit,
             TS_Simulate,
             TS_Sort,
             TS_Render,
 
-            TS_EndFrame,
-
             TS_Max
+        };
+        static constexpr std::array s_enumNames {
+            "Emit",
+            "Simulate",
+            "Sort",
+            "Render"
         };
 
         static GpuProfiler& instance();
@@ -26,7 +27,8 @@ namespace DemoParticles
         void init(const DX::DeviceResources* deviceResources);
 
         void beginFrame();
-        void setTimestamp(TimeStamp ts);
+        void beginTimestamp(TimeStamp ts);
+        void endTimestamp(TimeStamp ts);
         void endFrame();
 
         void waitAndGetData(DX::StepTimer& timer);
@@ -43,7 +45,11 @@ namespace DemoParticles
         int m_frameCollect = -1; //[double buffered] query to collect;
 
         Microsoft::WRL::ComPtr<ID3D11Query> m_queryTsDisjoint[2];
-        Microsoft::WRL::ComPtr<ID3D11Query> m_queryTs[TS_Max][2];
+        Microsoft::WRL::ComPtr<ID3D11Query> m_queryTsBeginFrame[2];
+        Microsoft::WRL::ComPtr<ID3D11Query> m_queryTsEndFrame[2];
+
+        Microsoft::WRL::ComPtr<ID3D11Query> m_queryTsBegin[TS_Max][2];
+        Microsoft::WRL::ComPtr<ID3D11Query> m_queryTsEnd[TS_Max][2];
 
         float m_lastFrameTimings[TS_Max];
         float m_lastFrameTimingsAverage[TS_Max]; //average to 0.5s

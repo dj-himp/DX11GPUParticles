@@ -11,6 +11,8 @@ namespace DemoParticles
         static inline int g_particleShape = 0;
 
         static inline bool g_enableDetailDebug = true;
+
+        static inline float g_emitterEmitRate = 1.0f / 60.0f;
     };
 
 }

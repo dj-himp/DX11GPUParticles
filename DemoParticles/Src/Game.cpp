@@ -113,10 +113,10 @@ void Game::Initialize(HWND window, int width, int height)
 
     // TODO: Change the timer settings if you want something other than the default variable timestep mode.
     // e.g. for 60 FPS fixed timestep update logic, call:
-    /*
-    m_timer.SetFixedTimeStep(true);
-    m_timer.SetTargetElapsedSeconds(1.0 / 60);
-    */
+    
+    //m_timer.SetFixedTimeStep(true);
+    //m_timer.SetTargetElapsedSeconds(1.0 / 144.0);
+    
 }
 
 #pragma region Frame Update
@@ -333,7 +333,7 @@ void Game::RenderImGui()
 
     if (ParticlesGlobals::g_enableDetailDebug)
     {
-        float total = 0.0f;
+        /*float total = 0.0f;
         for (GpuProfiler::TimeStamp t = GpuProfiler::TS_BeginFrame; t < GpuProfiler::TS_Max; t = GpuProfiler::TimeStamp(t + 1))
         {
             total += GpuProfiler::instance().getTimestampAverage(t);
@@ -346,6 +346,16 @@ void Game::RenderImGui()
         ImGui::Text("Sort time : %.2f ms", 1000.0f * GpuProfiler::instance().getTimestampAverage(GpuProfiler::TS_Sort));
         ImGui::Text("Render time : %.2f ms", 1000.0f * GpuProfiler::instance().getTimestampAverage(GpuProfiler::TS_Render));
         ImGui::Text("Frame time : %.2f ms", 1000.0f * (total + GpuProfiler::instance().getTimestampAverage(GpuProfiler::TS_EndFrame)));
+        */
+
+        for (GpuProfiler::TimeStamp t = GpuProfiler::TimeStamp(0); t < GpuProfiler::TS_Max; t = GpuProfiler::TimeStamp(t + 1))
+        {
+            ImGui::Text("%s time : %.2f ms", GpuProfiler::s_enumNames[t], 1000.0f * GpuProfiler::instance().getTimestampAverage(t));
+            //ImGui::Text("a time : %.2f ms", 1000.0f * GpuProfiler::instance().getTimestampAverage(t));
+        }
+
+        ImGui::NewLine(); 
+        ImGui::Text("Particle Count : %i", m_sceneMenger->getCurrentPartioclesCount());
     }
 
     ImGui::End();

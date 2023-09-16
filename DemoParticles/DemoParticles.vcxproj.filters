@@ -738,6 +738,9 @@
     <FxCompile Include="Data\Shaders\Particles\EmitParticlesMesh_CS.hlsl">
       <Filter>Data\Shaders\Particles</Filter>
     </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\InitSimulateParticles_CS.hlsl">
+      <Filter>Data\Shaders\Particles</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="Data\Models\CatMac.fbx">

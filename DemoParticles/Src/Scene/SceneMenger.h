@@ -29,6 +29,9 @@ namespace DemoParticles
         virtual void save(json& file) override;
         virtual void load(json& file) override;
 
+
+        //TEMP
+        int getCurrentPartioclesCount();
     private:
 
         std::unique_ptr<MengerRenderer> m_mengerRenderer;

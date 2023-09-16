@@ -29,6 +29,8 @@ RWStructuredBuffer<Particle> particleList : register(u1);
 [numthreads(1024, 1, 1)]
 void main(uint3 id : SV_DispatchThreadID)
 {
+    float particlesToEmit = emitterMaxSpawn * dt;
+
     if(id.x < nbDeadParticles && id.x < emitterMaxSpawn)
     {
         //rng_state = wang_hash(id.x + time);

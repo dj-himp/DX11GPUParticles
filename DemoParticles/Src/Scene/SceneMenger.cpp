@@ -287,4 +287,10 @@ namespace DemoParticles
         m_renderParticles->load(file);
     }
 
+    //TEMP
+    int SceneMenger::getCurrentPartioclesCount()
+    {
+        return m_renderParticles->getCurrentPartioclesCount();
+    }
+
 }

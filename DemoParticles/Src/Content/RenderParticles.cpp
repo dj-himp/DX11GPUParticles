@@ -253,6 +253,13 @@ namespace DemoParticles
         {
             updateForceField();
         }
+
+        if (timer.GetTotalSeconds() > m_updateParticlesCountBeginTime + m_updateParticlesCountDelay)
+        {
+            m_measureParticlesCount = true;
+            m_updateParticlesCountBeginTime = timer.GetTotalSeconds();
+        }
+        
     }
 
     void RenderParticles::render()
@@ -277,25 +284,28 @@ namespace DemoParticles
             m_resetParticles = false;
         }
             
-        GpuProfiler::instance().setTimestamp(GpuProfiler::TS_BeforeParticles);
+        GpuProfiler::instance().beginTimestamp(GpuProfiler::TS_Emit);
         m_deviceResources->PIXBeginEvent(L"Emit");
         emitParticles();
-        GpuProfiler::instance().setTimestamp(GpuProfiler::TS_Emit);
+        GpuProfiler::instance().endTimestamp(GpuProfiler::TS_Emit);
         m_deviceResources->PIXEndEvent();
 
+        GpuProfiler::instance().beginTimestamp(GpuProfiler::TS_Simulate);
         m_deviceResources->PIXBeginEvent(L"Simulate");
         simulateParticles();
-        GpuProfiler::instance().setTimestamp(GpuProfiler::TS_Simulate);
+        GpuProfiler::instance().endTimestamp(GpuProfiler::TS_Simulate);
         m_deviceResources->PIXEndEvent();
 
+        GpuProfiler::instance().beginTimestamp(GpuProfiler::TS_Sort);
         if (m_sortParticles)
         {
             m_deviceResources->PIXBeginEvent(L"Sort");
             m_sortLib->run(m_maxParticles, m_aliveIndexUAV.Get(), m_aliveListCountConstantBuffer.Get());
             m_deviceResources->PIXEndEvent();
         }
-        GpuProfiler::instance().setTimestamp(GpuProfiler::TS_Sort);
+        GpuProfiler::instance().endTimestamp(GpuProfiler::TS_Sort);
 
+        GpuProfiler::instance().beginTimestamp(GpuProfiler::TS_Render);
         m_deviceResources->PIXBeginEvent(L"Render");
         context->VSSetShader(m_renderParticleVS->getVertexShader(), nullptr, 0);
         if (ParticlesGlobals::g_particleShape == 0)
@@ -356,7 +366,7 @@ namespace DemoParticles
         {
             renderForceField();
         }
-        GpuProfiler::instance().setTimestamp(GpuProfiler::TS_Render);
+        GpuProfiler::instance().endTimestamp(GpuProfiler::TS_Render);
         m_deviceResources->PIXEndEvent();
 
         m_deviceResources->PIXEndEvent();
@@ -673,7 +683,12 @@ namespace DemoParticles
 
         context->CopyStructureCount(m_aliveListCountConstantBuffer.Get(), 0, m_aliveIndexUAV.Get());
 
-        //int i = m_simulateShader->readCounter(m_aliveIndexUAV);
+        
+        if (ParticlesGlobals::g_enableDetailDebug && m_measureParticlesCount)
+        {
+            m_currentParticlesCount = m_simulateShader->readCounter(m_aliveIndexUAV);
+            m_measureParticlesCount = false;
+        }
    }
 
     void RenderParticles::initAttractors()

@@ -35,7 +35,6 @@ namespace DemoParticles
         EmitterMeshConstantBuffer                           m_emitterConstantBufferData;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_emitterConstantBuffer;
 
-        float m_emitDelay = 0.0f;
         float m_lastEmitTime = 0.0f;
         bool m_needEmit = false;
 

@@ -50,7 +50,7 @@ namespace DemoParticles
         m_lastEmitTime -= (float)timer.GetElapsedSeconds();
         if (m_lastEmitTime <= 0.0)
         {
-            m_lastEmitTime = m_emitDelay;
+            m_lastEmitTime = ParticlesGlobals::g_emitterEmitRate;
             m_needEmit = true;
         }
 

@@ -36,6 +36,9 @@ namespace DemoParticles
         void setBakedParticleUAV(Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> backedParticleUAV) { m_bakedParticlesUAV = backedParticleUAV; }
         void setBakedIndirectArgs(Microsoft::WRL::ComPtr<ID3D11Buffer> bakedIndirectArgsBuffer) { m_bakedIndirectArgsBuffer = bakedIndirectArgsBuffer; }
 
+
+        int getCurrentPartioclesCount() { return m_currentParticlesCount; }
+
     private:
 
         void resetParticles();
@@ -140,5 +143,9 @@ namespace DemoParticles
 
         std::string m_emitterNameToDelete;
 
+        int m_currentParticlesCount = 0;
+        bool m_measureParticlesCount = false;
+        const int m_updateParticlesCountDelay = 1; // in seconds
+        int m_updateParticlesCountBeginTime = 0;
     };
 }
