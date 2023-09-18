@@ -182,9 +182,7 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
         
         if (addCurlNoise)
         {
-            //particleForce.xyz += curlNoise(p.velocity.xyz); // * 10.0;
-            //particleForce.xyz += curlCoefficient * curlNoise(p.position.xyz);
-            particleForce.xyz += curlNoise(particleForce.xyz);// * 10.0;
+            particleForce.xyz += curlNoise(p.position.xyz * curlCoefficient + time);
         }
         
         //Add drag
