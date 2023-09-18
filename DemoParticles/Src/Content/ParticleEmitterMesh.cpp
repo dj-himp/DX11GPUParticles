@@ -48,7 +48,7 @@ namespace DemoParticles
         }
 
         //false to reset if the previous render emit particles
-        m_needEmit = false;
+        /*m_needEmit = false;
 
         m_lastEmitTime -= (float)timer.GetElapsedSeconds();
         //m_lastEmitTime -= (float)timer.GetElapsedSeconds() / 1000.0f;
@@ -56,6 +56,28 @@ namespace DemoParticles
         {
             m_lastEmitTime = ParticlesGlobals::g_emitterEmitRate;
             m_needEmit = true;
+        }*/
+
+        if (m_emissionRate > 0.0f)
+        {
+            m_emissionRateAccumulation += m_emissionRate * timer.GetElapsedSeconds();
+
+            if (m_emissionRateAccumulation > 1.0f)
+            {
+                float integerPart = 0.0f;
+                float fraction = modf(m_emissionRateAccumulation, &integerPart);
+                m_emitterConstantBufferData.maxSpawn = integerPart;
+                m_emissionRateAccumulation = fraction;
+            }
+            else
+            {
+                m_emitterConstantBufferData.maxSpawn = 0;
+            }
+        }
+        else
+        {
+            m_emitterConstantBufferData.maxSpawn = 0;
+            m_emissionRateAccumulation = 0;
         }
 
         m_emitterConstantBufferData.world = Matrix::CreateScale(m_scale);
@@ -69,7 +91,7 @@ namespace DemoParticles
 
     void ParticleEmitterMesh::emit()
     {
-        if (!m_enabled || !m_needEmit)
+        if (!m_enabled /*|| !m_needEmit*/)
         {
             return;
         }
@@ -92,7 +114,8 @@ namespace DemoParticles
         {
             ImGui::Checkbox("Enabled", &m_enabled);
             ImGui::DragInt("mesh Part", &m_currentMeshPart, 1.0f, 0, m_model->getMeshCount() - 1);
-            ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1, 0, 10000000);
+            //ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1, 0, 10000000);
+            ImGui::DragFloat("Emission Rate", (float*)&m_emissionRate, 1.0f, 0.0f, 10000000.0f);
             //ImGui::DragFloat3("Position", (float*)&m_emitterConstantBufferData.position, 0.01f);
             const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
             ImGui::Combo("Particles orientation", (int*)&m_emitterConstantBufferData.particleOrientation, orientationItems, 3);
@@ -157,7 +180,7 @@ namespace DemoParticles
     void ParticleEmitterMesh::save(json& file)
     {
         file["Emitters"]["Mesh"]["Enabled"] = m_enabled;
-        file["Emitters"]["Mesh"]["Max Spawn"] = m_emitterConstantBufferData.maxSpawn;
+        file["Emitters"]["Mesh"]["EmissionRate"] = m_emissionRate;
         //file["Emitters"]["Mesh"]["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
         file["Emitters"]["Mesh"]["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
         file["Emitters"]["Mesh"]["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
@@ -174,7 +197,7 @@ namespace DemoParticles
     void ParticleEmitterMesh::load(json& file)
     {
         m_enabled = file["Emitters"]["Mesh"]["Enabled"];
-        m_emitterConstantBufferData.maxSpawn = file["Emitters"]["Mesh"]["Max Spawn"];
+        m_emissionRate = file["Emitters"]["Mesh"]["EmissionRate"];
         //std::vector<float> position = file["Emitters"]["Mesh"]["Position"];
         //m_emitterConstantBufferData.position = Vector4(&position[0]);
         m_emitterConstantBufferData.particleOrientation = file["Emitters"]["Mesh"]["Particles orientation"];

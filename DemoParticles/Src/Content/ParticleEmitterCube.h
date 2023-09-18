@@ -31,6 +31,9 @@ namespace DemoParticles
         float m_lastEmitTime = 0.0f;
         bool m_needEmit = false;
 
+        float m_emissionRate = 10000.0f;
+        float m_emissionRateAccumulation = 0.0f;
+
         DirectX::SimpleMath::Vector3 m_scale = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
         DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
         DirectX::SimpleMath::Vector3 m_rotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);

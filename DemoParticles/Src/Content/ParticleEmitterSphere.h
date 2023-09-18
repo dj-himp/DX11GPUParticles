@@ -49,8 +49,10 @@ namespace DemoParticles
         ImGuizmo::OPERATION m_guizmoOperation = ImGuizmo::TRANSLATE;
         ImGuizmo::MODE m_guizmoMode = ImGuizmo::WORLD;
 
-        float m_dt;
-
+        float m_emissionRate = 10000.0f;
+        float m_emissionRateAccumulation = 0.0f;
+        
+        
         //TEMP
 
         choreograph::Timeline m_timeline;
