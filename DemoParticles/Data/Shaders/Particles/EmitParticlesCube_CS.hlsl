@@ -30,7 +30,8 @@ void main(uint3 id : SV_DispatchThreadID)
 {
     if(id.x < nbDeadParticles && id.x < emitterMaxSpawn)
     {
-        rng_state = wang_hash(id.x * time);
+        //rng_state = wang_hash(id.x + time);
+        rng_state = wang_hash(id.x + rngSeed);
 
         Particle p = (Particle) 0;
         
