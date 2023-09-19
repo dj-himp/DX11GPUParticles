@@ -21,6 +21,9 @@ cbuffer emitterCubeConstantBuffer : register(b4)
 
 ConsumeStructuredBuffer<uint> deadListBuffer : register(u0);
 RWStructuredBuffer<Particle> particleList : register(u1);
+AppendStructuredBuffer<ParticleIndexElement> aliveParticleIndex :register(u2);
+RWBuffer<uint> indirectDispatchArgs : register(u3);
+
 StructuredBuffer<VertexObject> meshVertices : register(t0);
 StructuredBuffer<int> meshindexes : register(t1);
 
@@ -34,8 +37,8 @@ float3 randomPointInTriangle(float3 v0, float3 v1, float3 v2) {
     return v0 + (v1 - v0) * sqrtR1 + (v2 - v0) * r2;
 }
 
-//spawn per batch of 1024 particles
-[numthreads(1024, 1, 1)]
+//spawn per batch of 256
+[numthreads(256, 1, 1)]
 void main(uint3 id : SV_DispatchThreadID)
 {
     if (id.x < nbDeadParticles && id.x < emitterMaxSpawn)
@@ -86,6 +89,12 @@ void main(uint3 id : SV_DispatchThreadID)
         uint index = deadListBuffer.Consume();
         particleList[index] = p;
 
+        ParticleIndexElement pe;
+        pe.index = index;
+        pe.distance = 0; //initialized in simulation
+        aliveParticleIndex.Append(pe);
+
+        InterlockedAdd(indirectDispatchArgs[0], 1);
     }
 
 }

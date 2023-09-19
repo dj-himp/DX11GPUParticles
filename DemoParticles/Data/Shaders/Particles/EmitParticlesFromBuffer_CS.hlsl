@@ -18,11 +18,12 @@ cbuffer emitterConstantBuffer : register(b4)
 
 ConsumeStructuredBuffer<uint> deadListBuffer : register(u0);
 RWStructuredBuffer<Particle> particleList : register(u1);
-RWStructuredBuffer<BakedParticle> bakedParticle : register(u2);
+RWStructuredBuffer<BakedParticle> bakedParticle : register(u4);
+AppendStructuredBuffer<ParticleIndexElement> aliveParticleIndex :register(u2);
+RWBuffer<uint> indirectDispatchArgs : register(u3);
 
-
-//spawn per batch of 1024 particles
-[numthreads(1024, 1, 1)]
+//spawn per batch of 256
+[numthreads(256, 1, 1)]
 void main(uint3 id : SV_DispatchThreadID)
 {
     if(id.x < nbDeadParticles && id.x < emitterMaxSpawn)
@@ -50,6 +51,12 @@ void main(uint3 id : SV_DispatchThreadID)
         uint index = deadListBuffer.Consume();
         particleList[index] = p;
 
+        ParticleIndexElement pe;
+        pe.index = index;
+        pe.distance = 0; //initialized in simulation
+        aliveParticleIndex.Append(pe);
+
+        InterlockedAdd(indirectDispatchArgs[0], 1);
     }
 
 }

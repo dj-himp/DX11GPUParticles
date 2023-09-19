@@ -116,7 +116,11 @@ namespace DemoParticles
         aliveIndexBufferDesc.StructureByteStride = sizeof(ParticleIndexElement);
 
         DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateBuffer(&aliveIndexBufferDesc, nullptr, &m_aliveIndexBuffer)
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&aliveIndexBufferDesc, nullptr, &m_aliveIndexBuffer[0])
+        );
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&aliveIndexBufferDesc, nullptr, &m_aliveIndexBuffer[1])
         );
 
         D3D11_UNORDERED_ACCESS_VIEW_DESC aliveIndexUAVDesc;
@@ -124,10 +128,30 @@ namespace DemoParticles
         aliveIndexUAVDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
         aliveIndexUAVDesc.Buffer.FirstElement = 0;
         aliveIndexUAVDesc.Buffer.NumElements = m_maxParticles;
-        aliveIndexUAVDesc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_COUNTER;
+        aliveIndexUAVDesc.Buffer.Flags = D3D11_BUFFER_UAV_FLAG_APPEND;
 
         DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_aliveIndexBuffer.Get(), &aliveIndexUAVDesc, &m_aliveIndexUAV)
+            m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_aliveIndexBuffer[0].Get(), &aliveIndexUAVDesc, &m_aliveIndexUAV[0])
+        );
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_aliveIndexBuffer[1].Get(), &aliveIndexUAVDesc, &m_aliveIndexUAV[1])
+        );
+
+        //Same UAV as before but for sorting
+        D3D11_UNORDERED_ACCESS_VIEW_DESC aliveIndexUAVSortingDesc;
+        aliveIndexUAVSortingDesc.Format = DXGI_FORMAT_UNKNOWN;
+        aliveIndexUAVSortingDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+        aliveIndexUAVSortingDesc.Buffer.FirstElement = 0;
+        aliveIndexUAVSortingDesc.Buffer.NumElements = m_maxParticles;
+        aliveIndexUAVSortingDesc.Buffer.Flags = 0;
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_aliveIndexBuffer[0].Get(), &aliveIndexUAVSortingDesc, &m_aliveIndexUAVSorting[0])
+        );
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_aliveIndexBuffer[1].Get(), &aliveIndexUAVSortingDesc, &m_aliveIndexUAVSorting[1])
         );
 
         D3D11_SHADER_RESOURCE_VIEW_DESC aliveIndexSRVDesc;
@@ -137,7 +161,11 @@ namespace DemoParticles
         aliveIndexSRVDesc.Buffer.NumElements = m_maxParticles;
 
         DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateShaderResourceView(m_aliveIndexBuffer.Get(), &aliveIndexSRVDesc, &m_aliveIndexSRV)
+            m_deviceResources->GetD3DDevice()->CreateShaderResourceView(m_aliveIndexBuffer[0].Get(), &aliveIndexSRVDesc, &m_aliveIndexSRV[0])
+        );
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateShaderResourceView(m_aliveIndexBuffer[1].Get(), &aliveIndexSRVDesc, &m_aliveIndexSRV[1])
         );
 
         m_initDeadListShader = std::make_unique<ComputeShader>(m_deviceResources);
@@ -151,6 +179,44 @@ namespace DemoParticles
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateBuffer(&deadListCountConstantBufferDesc, nullptr, &m_aliveListCountConstantBuffer)
         );
+
+        //Indirect Simulate Dispatch Args Buffer
+        D3D11_BUFFER_DESC indirectDispatchArgsBufferDesc;
+        ZeroMemory(&indirectDispatchArgsBufferDesc, sizeof(indirectDispatchArgsBufferDesc));
+        indirectDispatchArgsBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+        indirectDispatchArgsBufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
+        indirectDispatchArgsBufferDesc.ByteWidth = 3 * sizeof(UINT);
+        indirectDispatchArgsBufferDesc.MiscFlags = D3D11_RESOURCE_MISC_DRAWINDIRECT_ARGS;
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&indirectDispatchArgsBufferDesc, nullptr, &m_indirectDispatchArgsBuffer[0])
+        );
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&indirectDispatchArgsBufferDesc, nullptr, &m_indirectDispatchArgsBuffer[1])
+        );
+
+        D3D11_UNORDERED_ACCESS_VIEW_DESC indirectDispatchArgsUAVDesc;
+        indirectDispatchArgsUAVDesc.Format = DXGI_FORMAT_R32_UINT;
+        indirectDispatchArgsUAVDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+        indirectDispatchArgsUAVDesc.Buffer.FirstElement = 0;
+        indirectDispatchArgsUAVDesc.Buffer.NumElements = 3;
+        indirectDispatchArgsUAVDesc.Buffer.Flags = 0;
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_indirectDispatchArgsBuffer[0].Get(), &indirectDispatchArgsUAVDesc, &m_indirectDispatchArgsUAV[0])
+        );
+
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateUnorderedAccessView(m_indirectDispatchArgsBuffer[1].Get(), &indirectDispatchArgsUAVDesc, &m_indirectDispatchArgsUAV[1])
+        );
+
+
+        CD3D11_BUFFER_DESC initSimulateDispatchArgsBufferDesc(sizeof(InitIndirectComputeArgs1DConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(&initSimulateDispatchArgsBufferDesc, nullptr, &m_initSimulateDispatchArgsBuffer)
+        );
+
 
         //Indirect Draw Args Buffer
         D3D11_BUFFER_DESC indirectDrawArgsBuffer;
@@ -213,6 +279,9 @@ namespace DemoParticles
 
         m_simulateShader = std::make_unique<ComputeShader>(m_deviceResources);
         m_simulateShader->load(L"SimulateParticles_CS.cso");
+
+        m_initSimulateDispatchArgsShader = std::make_unique<ComputeShader>(m_deviceResources);
+        m_initSimulateDispatchArgsShader->load(L"InitIndirectComputeArgs1D_CS.cso");
 
         m_sortLib = std::make_unique<SortLib>();
         m_sortLib->init(m_deviceResources->GetD3DDevice(), m_deviceResources->GetD3DDeviceContext());
@@ -300,7 +369,7 @@ namespace DemoParticles
         if (m_sortParticles)
         {
             m_deviceResources->PIXBeginEvent(L"Sort");
-            m_sortLib->run(m_maxParticles, m_aliveIndexUAV.Get(), m_aliveListCountConstantBuffer.Get());
+            m_sortLib->run(m_maxParticles, m_aliveIndexUAVSorting[m_currentAliveBuffer].Get(), m_aliveListCountConstantBuffer.Get());
             m_deviceResources->PIXEndEvent();
         }
         GpuProfiler::instance().endTimestamp(GpuProfiler::TS_Sort);
@@ -326,7 +395,7 @@ namespace DemoParticles
         context->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
         context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
 
-        ID3D11ShaderResourceView* vertexShaderSRVs[] = { m_particleSRV.Get(), m_aliveIndexSRV.Get() };
+        ID3D11ShaderResourceView* vertexShaderSRVs[] = { m_particleSRV.Get(), m_aliveIndexSRV[m_currentAliveBuffer].Get()};
         context->VSSetShaderResources(0, ARRAYSIZE(vertexShaderSRVs), vertexShaderSRVs);
         context->VSSetConstantBuffers(3, 1, m_aliveListCountConstantBuffer.GetAddressOf());
 
@@ -603,11 +672,13 @@ namespace DemoParticles
         m_initDeadListShader->setUAV(0, m_deadListUAV, initialCount);
         initialCount[0] = (UINT)-1;
         m_initDeadListShader->setUAV(1, m_particleUAV, initialCount);
+        m_initDeadListShader->setUAV(2, m_indirectDispatchArgsUAV[m_currentAliveBuffer], initialCount);
         m_initDeadListShader->begin();
         m_initDeadListShader->start(DX::align(m_maxParticles, 256) / 256, 1, 1);
         m_initDeadListShader->end();
         m_initDeadListShader->setUAV(0, nullptr);
         m_initDeadListShader->setUAV(1, nullptr);
+        m_initDeadListShader->setUAV(2, nullptr);
 
         //int i = m_initDeadListShader->readCounter(m_deadListUAV);
     }
@@ -622,8 +693,8 @@ namespace DemoParticles
         //global constant buffers
         context->CSSetConstantBuffers(2, 1, m_deadListCountConstantBuffer.GetAddressOf());
         
-        UINT initialCounts[] = { (UINT)-1, (UINT)-1 };
-        ID3D11UnorderedAccessView* uavs[] = { m_deadListUAV.Get(), m_particleUAV.Get() };
+        UINT initialCounts[] = { (UINT)-1, (UINT)-1, (UINT)-1, (UINT)-1 };
+        ID3D11UnorderedAccessView* uavs[] = { m_deadListUAV.Get(), m_particleUAV.Get(), m_aliveIndexUAV[m_currentAliveBuffer].Get(), m_indirectDispatchArgsUAV[m_currentAliveBuffer].Get()};
         context->CSSetUnorderedAccessViews(0, ARRAYSIZE(uavs), uavs, initialCounts);
 
         for (auto&& emitter : m_particleEmitters)
@@ -641,17 +712,38 @@ namespace DemoParticles
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
+        //init indirect dispatch args (align)
+        m_initSimulateDispatchArgsData.nbThreadGroupX = 256.0f;
+        context->UpdateSubresource(m_initSimulateDispatchArgsBuffer.Get(), 0, nullptr, &m_initSimulateDispatchArgsData, 0, 0);
+
+        context->CSSetConstantBuffers(4, 1, m_initSimulateDispatchArgsBuffer.GetAddressOf());
+        UINT initCount[] = { (UINT)-1 };
+        m_initSimulateDispatchArgsShader->setUAV(0, m_indirectDispatchArgsUAV[m_currentAliveBuffer], initCount);
+        m_initSimulateDispatchArgsShader->begin();
+        m_initSimulateDispatchArgsShader->start(1, 1, 1);
+        m_initSimulateDispatchArgsShader->end();
+        m_initSimulateDispatchArgsShader->setUAV(0, nullptr);
+        
+
+
+        //simulation
         context->UpdateSubresource(m_simulateParticlesBuffer.Get(), 0, nullptr, &m_simulateParticlesBufferData, 0, 0);
         context->UpdateSubresource(m_attractorsBuffer.Get(), 0, nullptr, &m_attractorList, 0, 0);
 
         context->CSSetConstantBuffers(4, 1, m_simulateParticlesBuffer.GetAddressOf());
 
+        context->CopyStructureCount(m_aliveListCountConstantBuffer.Get(), 0, m_aliveIndexUAV[m_currentAliveBuffer].Get());
+        context->CSSetConstantBuffers(3, 1, m_aliveListCountConstantBuffer.GetAddressOf());
+
         UINT initialCount[] = { (UINT)-1 };
         m_simulateShader->setUAV(0, m_indirectDrawArgsUAV, initialCount);
         m_simulateShader->setUAV(2, m_deadListUAV, initialCount);
         m_simulateShader->setUAV(3, m_particleUAV, initialCount);
+        m_simulateShader->setUAV(4, m_aliveIndexUAV[m_currentAliveBuffer], initialCount);
+        m_simulateShader->setUAV(5, m_indirectDispatchArgsUAV[(m_currentAliveBuffer+1)%2], initialCount);
+        
         initialCount[0] = 0;
-        m_simulateShader->setUAV(1, m_aliveIndexUAV, initialCount);
+        m_simulateShader->setUAV(1, m_aliveIndexUAV[(m_currentAliveBuffer+1)%2], initialCount);
         m_simulateShader->setSRV(0, m_attractorsSRV);
         m_simulateShader->setSRV(1, m_noiseTextureSRV);
         m_simulateShader->setSRV(2, m_forceFieldTextureSRV);
@@ -671,24 +763,29 @@ namespace DemoParticles
         }
         
         m_simulateShader->begin();
-        m_simulateShader->start(DX::align(m_maxParticles, 256) / 256, 1, 1);
+        m_simulateShader->startIndirect(m_indirectDispatchArgsBuffer[m_currentAliveBuffer]);
         m_simulateShader->end();
         m_simulateShader->setUAV(0, nullptr);
         m_simulateShader->setUAV(1, nullptr);
         m_simulateShader->setUAV(2, nullptr);
         m_simulateShader->setUAV(3, nullptr);
+        m_simulateShader->setUAV(4, nullptr);
+        m_simulateShader->setUAV(5, nullptr);
         m_simulateShader->setSRV(0, nullptr);
         m_simulateShader->setSRV(1, nullptr);
         m_simulateShader->setSRV(2, nullptr);
 
-        context->CopyStructureCount(m_aliveListCountConstantBuffer.Get(), 0, m_aliveIndexUAV.Get());
+        context->CopyStructureCount(m_aliveListCountConstantBuffer.Get(), 0, m_aliveIndexUAV[(m_currentAliveBuffer+1)%2].Get());
 
         
         if (ParticlesGlobals::g_enableDetailDebug && m_measureParticlesCount)
         {
-            m_currentParticlesCount = m_simulateShader->readCounter(m_aliveIndexUAV);
+            m_currentParticlesCount = m_simulateShader->readCounter(m_aliveIndexUAV[(m_currentAliveBuffer+1)%2]);
             m_measureParticlesCount = false;
         }
+
+        //increment current alive
+        m_currentAliveBuffer = (m_currentAliveBuffer + 1) % 2;
    }
 
     void RenderParticles::initAttractors()

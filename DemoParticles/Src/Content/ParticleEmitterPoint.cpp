@@ -44,17 +44,6 @@ namespace DemoParticles
             return;
         }
 
-        //false to reset if the previous render emit particles
-        /*m_needEmit = false;
-
-        m_lastEmitTime -= (float)timer.GetElapsedSeconds();
-        //m_lastEmitTime -= (float)timer.GetElapsedSeconds() / 1000.0f;
-        if (m_lastEmitTime <= 0.0)
-        {
-            m_lastEmitTime =  ParticlesGlobals::g_emitterEmitRate;
-            m_needEmit = true;
-        }*/
-        
         if (m_emissionRate > 0.0f)
         {
             m_emissionRateAccumulation += m_emissionRate * timer.GetElapsedSeconds();
@@ -80,7 +69,7 @@ namespace DemoParticles
 
     void ParticleEmitterPoint::emit()
     {
-        if (!m_enabled /*|| !m_needEmit*/ || m_emitterConstantBufferData.maxSpawn == 0)
+        if (!m_enabled || m_emitterConstantBufferData.maxSpawn == 0)
         {
             return;
         }
@@ -91,7 +80,8 @@ namespace DemoParticles
 
         m_emitParticles->setConstantBuffer(4, m_emitterConstantBuffer);
         m_emitParticles->begin();
-        m_emitParticles->start(DX::align(m_emitterConstantBufferData.maxSpawn, 1024) / 1024, 1, 1);
+        //maxSpawn / 256 as group max so and in shader it's 256 so we spawn maxspawn aligned to 256 threads
+        m_emitParticles->start(DX::align(m_emitterConstantBufferData.maxSpawn, 256) / 256, 1, 1);
         m_emitParticles->end();
     }
 

@@ -136,7 +136,7 @@ namespace DemoParticles
 
     struct InitIndirectComputeArgs1DConstantBuffer
     {
-        UINT nbThreadGroupX;
+        float nbThreadGroupX;
 
         UINT padding[3];
     };

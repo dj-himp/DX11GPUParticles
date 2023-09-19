@@ -46,9 +46,11 @@ struct ForceField
 };
 
 RWBuffer<uint> indirectDrawArgs : register(u0);
-RWStructuredBuffer<ParticleIndexElement> aliveParticleIndex: register(u1);
+AppendStructuredBuffer<ParticleIndexElement> aliveParticleIndex: register(u1);
 AppendStructuredBuffer<uint> deadParticleIndex : register(u2);
 RWStructuredBuffer<Particle> particleList : register(u3);
+ConsumeStructuredBuffer<ParticleIndexElement> aliveParticleIndexIn: register(u4);
+RWBuffer<uint> indirectDispatchArgs : register(u5);
 
 StructuredBuffer<Attractor> attractorBuffer : register(t0);
 Texture2D<float4> noiseTexture : register(t1);
@@ -105,6 +107,10 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
         indirectDrawArgs[2] = 0;
         indirectDrawArgs[3] = 0;
         indirectDrawArgs[4] = 0;
+
+        indirectDispatchArgs[0] = 0;
+        indirectDispatchArgs[1] = 1;
+        indirectDispatchArgs[2] = 1;
     }
 
     // Wait after draw args are written so no other threads can write to them before they are initialized
@@ -122,7 +128,8 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
 
     GroupMemoryBarrierWithGroupSync();
 
-    Particle p = particleList[id.x];
+    ParticleIndexElement particle = aliveParticleIndexIn.Consume();
+    Particle p = particleList[particle.index];
     if(p.age > 0)
     {
         
@@ -218,20 +225,19 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
 
         if (p.age > 0)
         {
-            ParticleIndexElement particle;
             particle.distance = length(p.position - camPosition);
-            particle.index = id.x;
-            uint index = aliveParticleIndex.IncrementCounter();
-            aliveParticleIndex[index] = particle;
+            aliveParticleIndex.Append(particle);
 
             InterlockedAdd(indirectDrawArgs[0], 1);
+            InterlockedAdd(indirectDispatchArgs[0], 1);
+            
         }
         else
         {
             p.age = -1.0;
-            deadParticleIndex.Append(id.x);
+            deadParticleIndex.Append(particle.index);
         }
     }
 
-    particleList[id.x] = p;
+    particleList[particle.index] = p;
 }

@@ -28,9 +28,6 @@ namespace DemoParticles
         EmitterCubeConstantBuffer                           m_emitterConstantBufferData;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_emitterConstantBuffer;
 
-        float m_lastEmitTime = 0.0f;
-        bool m_needEmit = false;
-
         float m_emissionRate = 10000.0f;
         float m_emissionRateAccumulation = 0.0f;
 

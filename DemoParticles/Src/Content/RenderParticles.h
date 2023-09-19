@@ -37,8 +37,7 @@ namespace DemoParticles
         void setBakedIndirectArgs(Microsoft::WRL::ComPtr<ID3D11Buffer> bakedIndirectArgsBuffer) { m_bakedIndirectArgsBuffer = bakedIndirectArgsBuffer; }
 
 
-        int getCurrentPartioclesCount() { return m_currentParticlesCount; }
-
+        int getCurrentParticlesCount() { return m_currentParticlesCount; }
     private:
 
         void resetParticles();
@@ -78,9 +77,15 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_deadListBuffer;
         Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>   m_deadListUAV;
 
-        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_aliveIndexBuffer;
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_aliveIndexSRV;
-        Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>   m_aliveIndexUAV;
+        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_aliveIndexBuffer[2];
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_aliveIndexSRV[2];
+        Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>   m_aliveIndexUAV[2];
+        Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>   m_aliveIndexUAVSorting[2];
+        int                                                 m_currentAliveBuffer = 0;
+
+        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_indirectDispatchArgsBuffer[2];
+        Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>   m_indirectDispatchArgsUAV[2];
+        
 
         std::unique_ptr<ComputeShader>                      m_initDeadListShader;
 
@@ -91,6 +96,10 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>   m_indirectDrawArgsUAV;
 
         std::unique_ptr<ComputeShader>                      m_simulateShader;
+        std::unique_ptr<ComputeShader>                      m_initSimulateDispatchArgsShader;
+
+        Microsoft::WRL::ComPtr<ID3D11Buffer>                m_initSimulateDispatchArgsBuffer;
+        InitIndirectComputeArgs1DConstantBuffer             m_initSimulateDispatchArgsData;
 
         Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>   m_bakedParticlesUAV;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_bakedIndirectArgsBuffer;

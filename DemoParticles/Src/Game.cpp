@@ -355,7 +355,7 @@ void Game::RenderImGui()
         }
 
         ImGui::NewLine(); 
-        ImGui::Text("Particle Count : %i", m_sceneMenger->getCurrentPartioclesCount());
+        ImGui::Text("Particle Count : %i", m_sceneMenger->getCurrentParticlesCount());
     }
 
     ImGui::End();

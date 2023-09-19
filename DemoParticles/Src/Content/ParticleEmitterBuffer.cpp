@@ -61,11 +61,11 @@ namespace DemoParticles
         context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
 
         m_emitFromBufferParticles->setConstantBuffer(4, m_emitterConstantBuffer);
-        m_emitFromBufferParticles->setUAV(2, m_bufferUAV);
+        m_emitFromBufferParticles->setUAV(4, m_bufferUAV);
         m_emitFromBufferParticles->begin();
         m_emitFromBufferParticles->startIndirect(m_indirectArgsBuffer);
         m_emitFromBufferParticles->end();
-        m_emitFromBufferParticles->setUAV(2, nullptr);
+        m_emitFromBufferParticles->setUAV(4, nullptr);
         
 
         m_needEmit = false;

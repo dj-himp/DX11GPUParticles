@@ -31,7 +31,7 @@ namespace DemoParticles
 
 
         //TEMP
-        int getCurrentPartioclesCount();
+        int getCurrentParticlesCount();
     private:
 
         std::unique_ptr<MengerRenderer> m_mengerRenderer;
