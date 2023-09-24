@@ -1,15 +1,9 @@
-
 #include "../Globals.h"
 #include "ParticlesGlobals.h"
-#include "../Noises/Random.h"
 
 cbuffer emitterConstantBuffer : register(b4)
 {
-    float4 emitterPosition;
-    float4 emitterScale;
-    float4 emitterPartitioning; //don't know how to name that but influence repartition inside the volume (making cool effects)
     float4 color;
-    float4x4 emitterRotation;
     
     uint emitterMaxSpawn;
     uint particleOrientation;
@@ -24,6 +18,7 @@ cbuffer emitterConstantBuffer : register(b4)
 
 ConsumeStructuredBuffer<uint> deadListBuffer : register(u0);
 RWStructuredBuffer<Particle> particleList : register(u1);
+ConsumeStructuredBuffer<Particle> particlesToAppend : register(u4);
 AppendStructuredBuffer<ParticleIndexElement> aliveParticleIndex :register(u2);
 RWBuffer<uint> indirectDispatchArgs : register(u3);
 
@@ -33,22 +28,14 @@ void main(uint3 id : SV_DispatchThreadID)
 {
     if(id.x < nbDeadParticles && id.x < emitterMaxSpawn)
     {
-        //rng_state = wang_hash(id.x + time);
-        rng_state = wang_hash(id.x + rngSeed);
-        
-        Particle p = (Particle) 0;
-        
-        p.position = emitterPosition;
-        float3 position = emitterPartitioning.xyz * float3(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5);
-        position = mul(emitterScale.xyz * normalize(position), emitterRotation);
-        //p.position = mul(p.position, emitterRotation);
-        p.position.xyz += position;
-        p.position.w = 1.0;
-        
-        //p.velocity = particlesBaseSpeed * normalize(float4(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, 0.0));
-        p.velocity = particlesBaseSpeed * normalize(float4(position - emitterPosition, 0.0));
-        
-        p.lifeSpan = particlesLifeSpan * rand_xorshift_normalized();
+        Particle p = particlesToAppend.Consume();
+
+        //p.velocity = bp.normal * 0.01f;
+        //useless at the moment
+        //p.velocity = particlesBaseSpeed * float4(0.0, 0.0, 0.0, 1.0);
+        p.velocity = particlesBaseSpeed * p.normal;
+
+        p.lifeSpan = particlesLifeSpan;
         p.age = abs(p.lifeSpan); //abs() so if lifetime is infinite ( < 0.0) it's still has a life
         p.mass = particlesMass;
 
@@ -59,14 +46,13 @@ void main(uint3 id : SV_DispatchThreadID)
         
         uint index = deadListBuffer.Consume();
         particleList[index] = p;
-        
+
         ParticleIndexElement pe;
         pe.index = index;
         pe.distance = 0; //initialized in simulation
         aliveParticleIndex.Append(pe);
 
         InterlockedAdd(indirectDispatchArgs[0], 1);
-
     }
 
 }

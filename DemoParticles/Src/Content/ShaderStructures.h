@@ -159,12 +159,13 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector4 lorenzParams1;
 
         float dragCoefficient;
-        float curlCoefficient;
+        float curlScale;
+        float curlNoiseFactor;
 
         float forceFieldForceScale;
         float forceFieldIntensity;
 
-        UINT nbWantedAttractors;
+        UINT nbAttractors;
 
         UINT addForceField;
         UINT addAizama;
@@ -172,7 +173,7 @@ namespace DemoParticles
         UINT addCurlNoise;
         UINT addDrag;
 
-        UINT padding[2];
+        UINT padding[1];
     };
 
     struct RenderForceFieldConstantBuffer
@@ -204,7 +205,7 @@ namespace DemoParticles
         float index; //index in the particle buffer
     };
 
-#define MAX_ATTRACTORS 4 //also change it in the shader
+#define MAX_ATTRACTORS 4
     struct Attractor
     {
         DirectX::SimpleMath::Vector4 position;

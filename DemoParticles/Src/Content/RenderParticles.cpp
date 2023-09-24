@@ -15,6 +15,7 @@
 #include "ParticleEmitterCube.h"
 #include "ParticleEmitterBuffer.h"
 #include "ParticleEmitterMesh.h"
+#include "Content/RenderModelAndEmit.h"
 
 #include <filesystem>
 
@@ -30,7 +31,8 @@ namespace DemoParticles
         m_simulateParticlesBufferData.aizamaParams2 = Vector4(0.75f, 3.0f, 0.0f, 0.0f);
         m_simulateParticlesBufferData.lorenzParams1 = Vector4(10.0f, 8.0f/3.0f, 10.0f, 0.0f);
         m_simulateParticlesBufferData.dragCoefficient = 0.001f;
-        m_simulateParticlesBufferData.curlCoefficient = 1.0f;
+        m_simulateParticlesBufferData.curlScale = 1.0f;
+        m_simulateParticlesBufferData.curlNoiseFactor = 1.0f;
         m_simulateParticlesBufferData.forceFieldForceScale = 1.0f;
         m_simulateParticlesBufferData.forceFieldIntensity = 1.0f;
 
@@ -611,7 +613,8 @@ namespace DemoParticles
             if (ImGui::TreeNode("Curl noise"))
             {
                 ImGui::Checkbox("Enabled", (bool*)&m_simulateParticlesBufferData.addCurlNoise);
-                ImGui::DragFloat("Coefficient", &m_simulateParticlesBufferData.curlCoefficient, 0.1f);
+                ImGui::DragFloat("Scale", &m_simulateParticlesBufferData.curlScale, 0.005f, 1.0f, 1024.0f);
+                ImGui::DragFloat("Noise factor", &m_simulateParticlesBufferData.curlNoiseFactor, 0.001f, 0.0f, 50.0f);
 
                 ImGui::TreePop();
             }
@@ -655,7 +658,8 @@ namespace DemoParticles
         file["Simulation"]["ForceField"]["Intensity"] = m_simulateParticlesBufferData.forceFieldIntensity;
 
         file["Simulation"]["CurlNoise"]["Enabled"] = m_simulateParticlesBufferData.addCurlNoise;
-        file["Simulation"]["CurlNoise"]["Curl Coefficient"] = m_simulateParticlesBufferData.curlCoefficient;
+        file["Simulation"]["CurlNoise"]["Curl Scale"] = m_simulateParticlesBufferData.curlScale;
+        file["Simulation"]["CurlNoise"]["Curl Noise Factor"] = m_simulateParticlesBufferData.curlNoiseFactor;
 
         file["Simulation"]["Drag"]["Enabled"] = m_simulateParticlesBufferData.addDrag;
         file["Simulation"]["Drag"]["Drag Coefficient"] = m_simulateParticlesBufferData.dragCoefficient;
@@ -700,6 +704,16 @@ namespace DemoParticles
         for (auto&& emitter : m_particleEmitters)
         {
             emitter->emit();
+        }
+
+        if (m_modelAndEmit)
+        {
+            static bool a = true;
+            //if (a)
+            {
+                m_modelAndEmit->emit();
+                a = false;
+            }
         }
 
         //clean up globals
@@ -790,7 +804,7 @@ namespace DemoParticles
 
     void RenderParticles::initAttractors()
     {
-        m_simulateParticlesBufferData.nbWantedAttractors = 4;
+        m_simulateParticlesBufferData.nbAttractors = 4;
        
         m_attractorList[0].position = Vector4(-4.0f, 2.0f, 0.0f, 1.0f);
         m_attractorList[0].gravity = 10.0f;
@@ -813,7 +827,7 @@ namespace DemoParticles
         m_attractorList[3].killZoneRadius = 0.5f;
         
         //debug render
-        for (UINT i = 0; i < m_simulateParticlesBufferData.nbWantedAttractors; ++i)
+        for (UINT i = 0; i < m_simulateParticlesBufferData.nbAttractors; ++i)
         {
             Matrix world = Matrix::CreateTranslation(Vector3(m_attractorList[i].position.x, m_attractorList[i].position.y, m_attractorList[i].position.z));
             DebugRenderer::instance().pushBackModel(MeshFactory::getInstance().createAxis(), world);
@@ -1046,8 +1060,9 @@ namespace DemoParticles
         m_simulateParticlesBufferData.forceFieldIntensity = file["Simulation"]["ForceField"]["Intensity"];
 
         m_simulateParticlesBufferData.addCurlNoise = file["Simulation"]["CurlNoise"]["Enabled"];
-        m_simulateParticlesBufferData.curlCoefficient = file["Simulation"]["CurlNoise"]["Curl Coefficient"];
-
+        m_simulateParticlesBufferData.curlScale = file["Simulation"]["CurlNoise"]["Curl Scale"];
+        m_simulateParticlesBufferData.curlNoiseFactor = file["Simulation"]["CurlNoise"]["Curl Noise Factor"];
+        
         m_simulateParticlesBufferData.addDrag = file["Simulation"]["Drag"]["Enabled"];
         m_simulateParticlesBufferData.dragCoefficient = file["Simulation"]["Drag"]["Drag Coefficient"];
     }

@@ -3,7 +3,7 @@
 #include "ParticlesGlobals.h"
 #include "../Noises/Random.h"
 
-cbuffer emitterCubeConstantBuffer : register(b4)
+cbuffer emitterMeshConstantBuffer : register(b4)
 {
     float4x4 world;
     float4 color;
@@ -16,7 +16,7 @@ cbuffer emitterCubeConstantBuffer : register(b4)
     float particleSizeStart;
     float particleSizeEnd;
     
-    uint emitterCubePadding;
+    uint emitterMeshPadding;
 };
 
 ConsumeStructuredBuffer<uint> deadListBuffer : register(u0);
@@ -43,7 +43,8 @@ void main(uint3 id : SV_DispatchThreadID)
 {
     if (id.x < nbDeadParticles && id.x < emitterMaxSpawn)
     {
-        rng_state = wang_hash(id.x * time);
+        rng_state = wang_hash(id.x + time);
+        //rng_state = wang_hash(id.x + rng_state);
 
         Particle p = (Particle)0;
 
@@ -59,6 +60,7 @@ void main(uint3 id : SV_DispatchThreadID)
         meshindexes.GetDimensions(nbIndexes, stride);
 
         uint triangleIndex = uint(rand_xorshift()) % (nbIndexes / 3);
+        //uint triangleIndex = rand_xorshift_normalized() * (nbIndexes / 3);
         uint index0 = meshindexes[triangleIndex * 3];
         uint index1 = meshindexes[triangleIndex * 3 + 1];
         uint index2 = meshindexes[triangleIndex * 3 + 2];
@@ -70,11 +72,10 @@ void main(uint3 id : SV_DispatchThreadID)
         float3 randomPoint = randomPointInTriangle(v0, v1, v2);
         p.position = float4(randomPoint, 1.0);
 
-
         p.position = mul(p.position, world);
 
         //useless for the moment
-        p.velocity = particlesBaseSpeed * float4(0.0, 0.0, 0.0, 0.0);
+        p.velocity = float4(particlesBaseSpeed * meshVertices[index0].normal, 0.0);
         //p.velocity = float4(rand_xorshift_normalized(), rand_xorshift_normalized(), rand_xorshift_normalized(), 0.0);
         
         p.lifeSpan = particlesLifeSpan * rand_xorshift_normalized();

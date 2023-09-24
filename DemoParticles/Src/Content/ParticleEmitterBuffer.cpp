@@ -57,7 +57,7 @@ namespace DemoParticles
 
         //update the number of baked particle (TO DO do it once if no changes)
         context->CopyStructureCount(m_emitterConstantBuffer.Get(), 0, m_bufferUAV.Get());
-
+        //PROBABLY WRONG SINCE IT WILL ERASE CpoyStructureCount
         context->UpdateSubresource(m_emitterConstantBuffer.Get(), 0, nullptr, &m_emitterConstantBufferData, 0, 0);
 
         m_emitFromBufferParticles->setConstantBuffer(4, m_emitterConstantBuffer);

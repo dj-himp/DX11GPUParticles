@@ -2,6 +2,7 @@
 #include "../Globals.h"
 #include "ParticlesGlobals.h"
 #include "../Noises/SimplexNoise3D.h"
+#include "../Noises/BitangentNoise.h"
 
 cbuffer simulateParticlesConstantBuffer : register(b4)
 {
@@ -14,12 +15,13 @@ cbuffer simulateParticlesConstantBuffer : register(b4)
     float4 lorenzParams1;
     
     float dragCoefficient;
-    float curlCoefficient;
+    float curlScale;
+    float curlNoiseFactor;
     
     float forceFieldForceScale;
     float forceFieldIntensity;
     
-    uint nbWantedAttractors;
+    uint nbAttractors;
     
     bool addForceField;
     bool addAizama;
@@ -58,8 +60,6 @@ Texture3D<float4> forceFieldTexture : register(t2);
 
 SamplerState linearSampler : register(s0);
 
-#define MAX_ATTRACTORS 4
-groupshared Attractor attractorList[MAX_ATTRACTORS];
 
 float3 snoiseVec3(float3 x)
 {
@@ -116,18 +116,6 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
     // Wait after draw args are written so no other threads can write to them before they are initialized
     GroupMemoryBarrierWithGroupSync();
 
-    //load attractors in to shared memory
-    uint nbAttractors = min(nbWantedAttractors, MAX_ATTRACTORS);
-    if (groupId < nbAttractors)
-    {
-        attractorList[groupId].position = attractorBuffer[groupId].position;
-        attractorList[groupId].gravity = attractorBuffer[groupId].gravity;
-        attractorList[groupId].mass = attractorBuffer[groupId].mass;
-        attractorList[groupId].killZoneRadius = attractorBuffer[groupId].killZoneRadius;
-    }
-
-    GroupMemoryBarrierWithGroupSync();
-
     ParticleIndexElement particle = aliveParticleIndexIn.Consume();
     Particle p = particleList[particle.index];
     if(p.age > 0)
@@ -143,7 +131,7 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
 
         for (uint i = 0; i < nbAttractors; ++i)
         {
-            Attractor a = attractorList[i];
+            Attractor a = attractorBuffer[i];
             float4 direction = a.position - p.position;
             float distance = length(direction);
 
@@ -189,7 +177,11 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
         
         if (addCurlNoise)
         {
-            particleForce.xyz += curlNoise(p.position.xyz * curlCoefficient + time);
+            //scale 1 -> 1024
+            //factor 0 -> 50
+            particleForce.xyz += curlNoiseFactor * curlNoise(p.position.xyz * curlScale);
+            //particleForce.xyz += BitangentNoise4D(float4(p.position.xyz/* * curlCoefficient*/, time));
+
         }
         
         //Add drag
@@ -215,7 +207,7 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
         //kill particles inside attractors killzone (if killZoneRadius >= 0.0)
         for (uint j = 0; j < nbAttractors; ++j)
         {
-            Attractor a = attractorList[j];
+            Attractor a = attractorBuffer[j];
             float distance = length(a.position - p.position);
             if (distance < a.killZoneRadius)
             {

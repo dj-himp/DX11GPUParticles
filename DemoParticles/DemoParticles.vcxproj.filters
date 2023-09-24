@@ -219,6 +219,9 @@
     <ClCompile Include="Src\Content\ParticleEmitterMesh.cpp">
       <Filter>Src\Content</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Content\RenderModelAndEmit.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\DeviceResources.h">
@@ -590,6 +593,12 @@
     <ClInclude Include="Src\Content\ParticleEmitterMesh.h">
       <Filter>Src\Content</Filter>
     </ClInclude>
+    <ClInclude Include="Data\Shaders\Noises\BitangentNoise.h">
+      <Filter>Data\Shaders\Noises</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\RenderModelAndEmit.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -739,6 +748,21 @@
       <Filter>Data\Shaders\Particles</Filter>
     </FxCompile>
     <FxCompile Include="Data\Shaders\Particles\InitSimulateParticles_CS.hlsl">
+      <Filter>Data\Shaders\Particles</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\RenderModelAndEmit_GS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\RenderModelAndEmit_PS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\RenderModelAndEmit_VS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\RenderModelAndEmitInit_CS.hlsl">
+      <Filter>Data\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Data\Shaders\Particles\EmitParticlesFromAppendBuffer_CS.hlsl">
       <Filter>Data\Shaders\Particles</Filter>
     </FxCompile>
   </ItemGroup>
