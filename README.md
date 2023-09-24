@@ -1,4 +1,4 @@
-# DX11GPUPArticles
+# DX11GPUParticles
 
 - Full GPU particles engine I'm making for learning purpose. 
 - Repo could be broken sometimes
