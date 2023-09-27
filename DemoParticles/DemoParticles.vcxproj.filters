@@ -219,7 +219,10 @@
     <ClCompile Include="Src\Content\ParticleEmitterMesh.cpp">
       <Filter>Src\Content</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Content\RenderModelAndEmit.cpp">
+    <ClCompile Include="Src\Content\RenderModelAndEmitBuffer.cpp">
+      <Filter>Src\Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Content\ParticleEmitterAppendBuffer.cpp">
       <Filter>Src\Content</Filter>
     </ClCompile>
   </ItemGroup>
@@ -596,7 +599,10 @@
     <ClInclude Include="Data\Shaders\Noises\BitangentNoise.h">
       <Filter>Data\Shaders\Noises</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Content\RenderModelAndEmit.h">
+    <ClInclude Include="Src\Content\RenderModelAndEmitBuffer.h">
+      <Filter>Src\Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Content\ParticleEmitterAppendBuffer.h">
       <Filter>Src\Content</Filter>
     </ClInclude>
   </ItemGroup>
@@ -881,6 +887,12 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="Data\ForceFields\Teapot.vfd">
       <Filter>Data\ForceFields</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\Wolf.fbx">
+      <Filter>Data\Models</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\Dragon 2.5_fbx.fbx">
+      <Filter>Data\Models</Filter>
     </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>

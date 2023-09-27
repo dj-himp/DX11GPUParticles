@@ -10,7 +10,6 @@
 #include "Content/RenderParticles.h"
 #include "Common/ComputeShader.h"
 #include "Common/InputManager.h"
-#include "Content/RenderModelAndEmit.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -24,7 +23,6 @@ namespace DemoParticles
         m_bakeModelParticles = std::make_unique<BakeModelParticles>(deviceResources);
         m_fullScreenQuad = std::make_unique<RenderFullscreenQuad>(deviceResources);
         m_renderParticles = std::make_unique<RenderParticles>(deviceResources);
-        m_modelToEmit = std::make_unique<RenderModelAndEmit>(deviceResources);
     }
 
     SceneMenger::~SceneMenger()
@@ -115,9 +113,7 @@ namespace DemoParticles
         m_bakeModelParticles->createDeviceDependentResources();
         m_fullScreenQuad->createDeviceDependentResources();
         m_renderParticles->createDeviceDependentResources();
-        m_modelToEmit->createDeviceDependentResources();
-
-        m_renderParticles->addModelAndEmit(m_modelToEmit.get());
+       
     }
 
     void SceneMenger::createWindowSizeDependentResources()
@@ -134,7 +130,6 @@ namespace DemoParticles
         m_bakeModelParticles->createWindowSizeDependentResources();
         m_fullScreenQuad->createWindowSizeDependentResources();
         m_renderParticles->createWindowSizeDependentResources();
-        m_modelToEmit->createWindowSizeDependentResources();
 
     }
 
@@ -186,7 +181,6 @@ namespace DemoParticles
         m_bakeModelParticles->update(timer);
         m_fullScreenQuad->update(timer);
         m_renderParticles->update(timer, camera);
-        m_modelToEmit->update(timer);
     }
 
     void SceneMenger::render()
@@ -268,9 +262,6 @@ namespace DemoParticles
         }
 
         //m_mengerRenderer->render();
-        
-        m_modelToEmit->render();
-
         m_renderParticles->render();
         //m_renderForceField->render();
 

@@ -1,6 +1,12 @@
 #include "Globals.h"
 #include "Noises/Random.h"
 
+cbuffer modelToEmitConstantBuffer : register(b1)
+{
+    float2 scaleDensity;
+    float2 offsetDensity;
+}
+
 struct GeometryShaderInput
 {
     float4 Position : SV_POSITION;
@@ -52,9 +58,9 @@ void main(triangle GeometryShaderInput input[3], inout TriangleStream<PixelShade
     calculateUV(input[0].worldPos, input[1].worldPos, input[2].worldPos, faceNormal, uv[0], uv[1], uv[2]);
 
 
-    float2 scaleDensity = float2(0.03, 0.03);
-    float rnd = rand_xorshift_normalized();
-    float2 offset = float2(rnd, rnd) * scaleDensity;
+    //float2 scaleDensity = float2(0.03, 0.03);
+    //float rnd = rand_xorshift_normalized();
+    //float2 offsetDensity = float2(rnd, rnd) * scaleDensity;
 
     //for(int i=0;i<3;++i)
     //so it's not backface culled (don't know why I should do that yet) PRobably the normal is calculated with wrong winding
@@ -63,7 +69,7 @@ void main(triangle GeometryShaderInput input[3], inout TriangleStream<PixelShade
         PixelShaderInput output;
         output.worldPos = input[i].worldPos;
         //output.Position = float4((input[i].Position.xy + offset) * scaleDensity, 0.0, 1.0);
-        output.Position = float4((uv[i] + offset) * scaleDensity, 0.0, 1.0);
+        output.Position = float4((uv[i] + offsetDensity) * scaleDensity, 0.0, 1.0);
         output.uv = input[i].uv;
         output.normal = faceNormal;
         output.unfoldFlag = 1;

@@ -8,6 +8,7 @@ namespace DemoParticles
 
         enum TimeStamp
         {
+            TS_RenderToEmit,
             TS_Emit,
             TS_Simulate,
             TS_Sort,
@@ -16,6 +17,7 @@ namespace DemoParticles
             TS_Max
         };
         static constexpr std::array s_enumNames {
+            "RenderToEmit",
             "Emit",
             "Simulate",
             "Sort",

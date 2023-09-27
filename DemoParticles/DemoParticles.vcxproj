@@ -200,6 +200,7 @@
     <ClCompile Include="Src\Common\PixelShader.cpp" />
     <ClCompile Include="Src\Common\VertexShader.cpp" />
     <ClCompile Include="Src\Content\ParticleAttractor.cpp" />
+    <ClCompile Include="Src\Content\ParticleEmitterAppendBuffer.cpp" />
     <ClCompile Include="Src\Content\ParticleEmitterMesh.cpp" />
     <ClCompile Include="Src\Content\ParticleEmitterPoint.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
@@ -261,7 +262,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
-    <ClCompile Include="Src\Content\RenderModelAndEmit.cpp" />
+    <ClCompile Include="Src\Content\RenderModelAndEmitBuffer.cpp" />
     <ClCompile Include="Src\Content\RenderParticles.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
@@ -482,6 +483,7 @@
     <ClInclude Include="Src\Common\PixelShader.h" />
     <ClInclude Include="Src\Common\VertexShader.h" />
     <ClInclude Include="Src\Content\ParticleAttractor.h" />
+    <ClInclude Include="Src\Content\ParticleEmitterAppendBuffer.h" />
     <ClInclude Include="Src\Content\ParticleEmitterMesh.h" />
     <ClInclude Include="Src\Content\ParticleEmitterPoint.h" />
     <ClInclude Include="Src\Common\FGAParser.h" />
@@ -497,7 +499,7 @@
     <ClInclude Include="Extern\imgui\imstb_truetype.h" />
     <ClInclude Include="Src\Common\SortLib.h" />
     <ClInclude Include="Src\Content\IParticleEmitter.h" />
-    <ClInclude Include="Src\Content\RenderModelAndEmit.h" />
+    <ClInclude Include="Src\Content\RenderModelAndEmitBuffer.h" />
     <ClInclude Include="Src\Content\RenderParticles.h" />
     <ClInclude Include="Src\Common\ComputeShader.h" />
     <ClInclude Include="Src\GlobalSettings.h" />
@@ -648,6 +650,17 @@
     </CopyFileToFolders>
     <CopyFileToFolders Include="Data\ForceFields\Teapot.vfd">
       <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\Dragon 2.5_fbx.fbx">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\Wolf.fbx">
+      <DeploymentContent>false</DeploymentContent>
+      <FileType>Document</FileType>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </DeploymentContent>
     </CopyFileToFolders>
     <None Include="Extern\assimp\.editorconfig" />
     <None Include="Extern\assimp\color4.inl" />

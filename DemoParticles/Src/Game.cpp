@@ -153,6 +153,11 @@ void Game::Update(DX::StepTimer const& timer)
     m_sceneMenger->update(timer, m_cameraControllerFPS->getCamera());
     DebugRenderer::instance().update(timer, m_cameraControllerFPS->getCamera());
 
+
+    /*m_inputManager->isKeyDown(Keyboard::Escape)
+    {
+        
+    }*/
     //m_fpsTextRenderer->Update(m_timer);
 
     //elapsedTime;

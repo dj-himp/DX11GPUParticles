@@ -13,6 +13,7 @@ namespace DemoParticles
         ET_Cube,
         ET_Buffer,
         ET_Mesh,
+        ET_AppendBuffer,
 
         ET_Count
     };

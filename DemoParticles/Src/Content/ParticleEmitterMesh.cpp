@@ -28,8 +28,9 @@ namespace DemoParticles
     {
         m_modelLoader = std::make_unique<ModelLoader>(m_deviceResources);
         //m_model = m_modelLoader->load("CatMac.fbx");
-        m_model = m_modelLoader->load("TrexByJoel3d.fbx", true);
+        //m_model = m_modelLoader->load("TrexByJoel3d.fbx", true);
         //m_model = m_modelLoader->load("deer.fbx");
+        m_model = m_modelLoader->load("Wolf.fbx", true);
 
         m_emitParticles = std::make_unique<ComputeShader>(m_deviceResources);
         m_emitParticles->load(L"EmitParticlesMesh_CS.cso");

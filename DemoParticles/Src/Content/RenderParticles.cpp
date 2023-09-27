@@ -15,7 +15,8 @@
 #include "ParticleEmitterCube.h"
 #include "ParticleEmitterBuffer.h"
 #include "ParticleEmitterMesh.h"
-#include "Content/RenderModelAndEmit.h"
+#include "Content/RenderModelAndEmitBuffer.h"
+#include "ParticleEmitterAppendBuffer.h"
 
 #include <filesystem>
 
@@ -43,6 +44,8 @@ namespace DemoParticles
                 m_forceFieldList.emplace_back(file.path().filename().string());
             }
         }
+
+        m_modelToEmit = std::make_unique<RenderModelAndEmitBuffer>(deviceResources);
     }
 
     void RenderParticles::createDeviceDependentResources()
@@ -290,11 +293,13 @@ namespace DemoParticles
 
         //initAttractors();
         initForceField();
+
+        m_modelToEmit->createDeviceDependentResources();
     }
 
     void RenderParticles::createWindowSizeDependentResources()
     {
-        
+        m_modelToEmit->createWindowSizeDependentResources();
     }
 
     void RenderParticles::releaseDeviceDependentResources()
@@ -330,11 +335,28 @@ namespace DemoParticles
             m_measureParticlesCount = true;
             m_updateParticlesCountBeginTime = timer.GetTotalSeconds();
         }
+
+        if (m_modelToEmitEnabled)
+        {
+            m_modelToEmit->update(timer);
+        }
         
     }
 
     void RenderParticles::render()
     {
+
+        GpuProfiler::instance().beginTimestamp(GpuProfiler::TS_RenderToEmit);
+        if (m_modelToEmitEnabled)
+        {
+            m_deviceResources->PIXBeginEvent(L"ModelToEmit::Render");
+            
+            m_modelToEmit->render();
+            
+            m_deviceResources->PIXEndEvent();
+        }
+        GpuProfiler::instance().endTimestamp(GpuProfiler::TS_RenderToEmit);
+
         m_deviceResources->PIXBeginEvent(L"Particles");
 
         auto context = m_deviceResources->GetD3DDeviceContext();
@@ -445,6 +467,14 @@ namespace DemoParticles
 
     void RenderParticles::RenderImGui(Camera* camera)
     {
+        if (ImGui::CollapsingHeader("Renderers"))
+        {
+            ImGui::Checkbox("ModelToEmit enabled", &m_modelToEmitEnabled);
+            if (m_modelToEmitEnabled)
+            {
+                m_modelToEmit->RenderImGui(camera);
+            }
+        }
         if (ImGui::CollapsingHeader("Emitters"))
         {
             static EmitterType emitterType;
@@ -476,6 +506,13 @@ namespace DemoParticles
             {
                 emitterType = EmitterType::ET_Mesh;
                 ImGui::OpenPopup("Select name");
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("AppendBuffer"))
+            {
+                emitterType = EmitterType::ET_AppendBuffer;
+                ImGui::OpenPopup("Select name");
+                m_modelToEmitEnabled = true;
             }
 
             if (ImGui::BeginPopupModal("Select name", NULL, ImGuiWindowFlags_AlwaysAutoResize))
@@ -691,29 +728,19 @@ namespace DemoParticles
     {
         auto context = m_deviceResources->GetD3DDeviceContext();
 
-        //copy the deadList counter to a constantBuffer
-        context->CopyStructureCount(m_deadListCountConstantBuffer.Get(), 0, m_deadListUAV.Get());
-
-        //global constant buffers
-        context->CSSetConstantBuffers(2, 1, m_deadListCountConstantBuffer.GetAddressOf());
-        
         UINT initialCounts[] = { (UINT)-1, (UINT)-1, (UINT)-1, (UINT)-1 };
         ID3D11UnorderedAccessView* uavs[] = { m_deadListUAV.Get(), m_particleUAV.Get(), m_aliveIndexUAV[m_currentAliveBuffer].Get(), m_indirectDispatchArgsUAV[m_currentAliveBuffer].Get()};
         context->CSSetUnorderedAccessViews(0, ARRAYSIZE(uavs), uavs, initialCounts);
 
         for (auto&& emitter : m_particleEmitters)
         {
-            emitter->emit();
-        }
+            //copy the deadList counter to a constantBuffer
+            context->CopyStructureCount(m_deadListCountConstantBuffer.Get(), 0, m_deadListUAV.Get());
 
-        if (m_modelAndEmit)
-        {
-            static bool a = true;
-            //if (a)
-            {
-                m_modelAndEmit->emit();
-                a = false;
-            }
+            //global constant buffers
+            context->CSSetConstantBuffers(2, 1, m_deadListCountConstantBuffer.GetAddressOf());
+
+            emitter->emit();
         }
 
         //clean up globals
@@ -873,6 +900,15 @@ namespace DemoParticles
                 std::unique_ptr<ParticleEmitterMesh> meshEmitter = std::make_unique<ParticleEmitterMesh>(m_deviceResources, name);
                 meshEmitter->createDeviceDependentResources();
                 m_particleEmitters.push_back(std::move(meshEmitter));
+            }
+                break;
+            case ET_AppendBuffer:
+            {
+                std::unique_ptr<ParticleEmitterAppendBuffer> bufferEmitter = std::make_unique<ParticleEmitterAppendBuffer>(m_deviceResources, name);
+                bufferEmitter->createDeviceDependentResources();
+                bufferEmitter->setAppendBuffer(m_modelToEmit->getParticleUAV());
+                bufferEmitter->setIndirectArgsBuffer(m_modelToEmit->getIndirectArgsBuffer());
+                m_particleEmitters.push_back(std::move(bufferEmitter));
             }
                 break;
             default:

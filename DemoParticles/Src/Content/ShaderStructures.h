@@ -184,6 +184,12 @@ namespace DemoParticles
         
     };
 
+    struct ModelToEmitConstantBuffer
+    {
+        DirectX::SimpleMath::Vector2 scaleDensity;
+        DirectX::SimpleMath::Vector2 offsetDensity;
+    };
+
     struct Particle
     {
         DirectX::SimpleMath::Vector4 position;

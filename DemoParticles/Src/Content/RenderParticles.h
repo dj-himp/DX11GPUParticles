@@ -16,7 +16,7 @@ namespace DemoParticles
     class ComputeShader;
     class SortLib;
     class IParticleEmitter;
-    class RenderModelAndEmit;
+    class RenderModelAndEmitBuffer;
 
     class RenderParticles : public IRenderable
     {
@@ -36,8 +36,6 @@ namespace DemoParticles
         void setShaderResourceViews(Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> positionView, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> normalView);
         void setBakedParticleUAV(Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> backedParticleUAV) { m_bakedParticlesUAV = backedParticleUAV; }
         void setBakedIndirectArgs(Microsoft::WRL::ComPtr<ID3D11Buffer> bakedIndirectArgsBuffer) { m_bakedIndirectArgsBuffer = bakedIndirectArgsBuffer; }
-
-        void addModelAndEmit(RenderModelAndEmit* modelAndEmit) { m_modelAndEmit = modelAndEmit; }
 
         int getCurrentParticlesCount() { return m_currentParticlesCount; }
     private:
@@ -159,6 +157,7 @@ namespace DemoParticles
         const int m_updateParticlesCountDelay = 1; // in seconds
         int m_updateParticlesCountBeginTime = 0;
 
-        RenderModelAndEmit* m_modelAndEmit = nullptr;
+        std::unique_ptr<RenderModelAndEmitBuffer> m_modelToEmit;
+        bool m_modelToEmitEnabled = false;
     };
 }
