@@ -512,7 +512,7 @@ namespace DemoParticles
             {
                 emitterType = EmitterType::ET_AppendBuffer;
                 ImGui::OpenPopup("Select name");
-                m_modelToEmitEnabled = true;
+                //m_modelToEmitEnabled = true;
             }
 
             if (ImGui::BeginPopupModal("Select name", NULL, ImGuiWindowFlags_AlwaysAutoResize))
@@ -670,36 +670,6 @@ namespace DemoParticles
     {
         m_positionView = positionView;
         m_normalView = normalView;
-    }
-
-    void RenderParticles::save(json& file)
-    {
-        for (auto&& emitter : m_particleEmitters)
-        {
-            emitter->save(file);
-        }
-
-        file["Simulation"]["Aizama"]["Enabled"] = m_simulateParticlesBufferData.addAizama;
-        file["Simulation"]["Aizama"]["AizamaParams1"] = { m_simulateParticlesBufferData.aizamaParams1.x, m_simulateParticlesBufferData.aizamaParams1.y, m_simulateParticlesBufferData.aizamaParams1.z, m_simulateParticlesBufferData.aizamaParams1.w };
-        file["Simulation"]["Aizama"]["AizamaParams2"] = { m_simulateParticlesBufferData.aizamaParams2.x, m_simulateParticlesBufferData.aizamaParams2.y, m_simulateParticlesBufferData.aizamaParams2.z, m_simulateParticlesBufferData.aizamaParams2.w };
-
-        file["Simulation"]["Lorenz"]["Enabled"] = m_simulateParticlesBufferData.addLorenz;
-        file["Simulation"]["Lorenz"]["lorenzParams1"] = { m_simulateParticlesBufferData.lorenzParams1.x, m_simulateParticlesBufferData.lorenzParams1.y, m_simulateParticlesBufferData.lorenzParams1.z, m_simulateParticlesBufferData.lorenzParams1.w };
-
-        file["Simulation"]["Lorenz"]["Enabled"] = m_simulateParticlesBufferData.addLorenz;
-
-        file["Simulation"]["ForceField"]["Enabled"] = m_simulateParticlesBufferData.addForceField;
-        file["Simulation"]["ForceField"]["CurrentForceField"] = m_currentForceField;
-        file["Simulation"]["ForceField"]["Render"] = m_renderForceField;
-        file["Simulation"]["ForceField"]["ForceScale"] = m_simulateParticlesBufferData.forceFieldForceScale;
-        file["Simulation"]["ForceField"]["Intensity"] = m_simulateParticlesBufferData.forceFieldIntensity;
-
-        file["Simulation"]["CurlNoise"]["Enabled"] = m_simulateParticlesBufferData.addCurlNoise;
-        file["Simulation"]["CurlNoise"]["Curl Scale"] = m_simulateParticlesBufferData.curlScale;
-        file["Simulation"]["CurlNoise"]["Curl Noise Factor"] = m_simulateParticlesBufferData.curlNoiseFactor;
-
-        file["Simulation"]["Drag"]["Enabled"] = m_simulateParticlesBufferData.addDrag;
-        file["Simulation"]["Drag"]["Drag Coefficient"] = m_simulateParticlesBufferData.dragCoefficient;
     }
 
     void RenderParticles::resetParticles()
@@ -909,6 +879,9 @@ namespace DemoParticles
                 bufferEmitter->setAppendBuffer(m_modelToEmit->getParticleUAV());
                 bufferEmitter->setIndirectArgsBuffer(m_modelToEmit->getIndirectArgsBuffer());
                 m_particleEmitters.push_back(std::move(bufferEmitter));
+                
+                //find a better way
+                m_modelToEmitEnabled = true;
             }
                 break;
             default:
@@ -1069,11 +1042,46 @@ namespace DemoParticles
         context->GSSetShader(nullptr, nullptr, 0);
     }
 
-    void RenderParticles::load(json& file)
+    void RenderParticles::save(json& file)
     {
+        file["Emitters"] = json::array();
         for (auto&& emitter : m_particleEmitters)
         {
-            emitter->load(file);
+            json emitterJson;
+            emitter->save(emitterJson);
+            file["Emitters"].push_back(emitterJson);
+        }
+
+        file["Simulation"]["Aizama"]["Enabled"] = m_simulateParticlesBufferData.addAizama;
+        file["Simulation"]["Aizama"]["AizamaParams1"] = { m_simulateParticlesBufferData.aizamaParams1.x, m_simulateParticlesBufferData.aizamaParams1.y, m_simulateParticlesBufferData.aizamaParams1.z, m_simulateParticlesBufferData.aizamaParams1.w };
+        file["Simulation"]["Aizama"]["AizamaParams2"] = { m_simulateParticlesBufferData.aizamaParams2.x, m_simulateParticlesBufferData.aizamaParams2.y, m_simulateParticlesBufferData.aizamaParams2.z, m_simulateParticlesBufferData.aizamaParams2.w };
+
+        file["Simulation"]["Lorenz"]["Enabled"] = m_simulateParticlesBufferData.addLorenz;
+        file["Simulation"]["Lorenz"]["lorenzParams1"] = { m_simulateParticlesBufferData.lorenzParams1.x, m_simulateParticlesBufferData.lorenzParams1.y, m_simulateParticlesBufferData.lorenzParams1.z, m_simulateParticlesBufferData.lorenzParams1.w };
+
+        file["Simulation"]["Lorenz"]["Enabled"] = m_simulateParticlesBufferData.addLorenz;
+
+        file["Simulation"]["ForceField"]["Enabled"] = m_simulateParticlesBufferData.addForceField;
+        file["Simulation"]["ForceField"]["CurrentForceField"] = m_currentForceField;
+        file["Simulation"]["ForceField"]["Render"] = m_renderForceField;
+        file["Simulation"]["ForceField"]["ForceScale"] = m_simulateParticlesBufferData.forceFieldForceScale;
+        file["Simulation"]["ForceField"]["Intensity"] = m_simulateParticlesBufferData.forceFieldIntensity;
+
+        file["Simulation"]["CurlNoise"]["Enabled"] = m_simulateParticlesBufferData.addCurlNoise;
+        file["Simulation"]["CurlNoise"]["Curl Scale"] = m_simulateParticlesBufferData.curlScale;
+        file["Simulation"]["CurlNoise"]["Curl Noise Factor"] = m_simulateParticlesBufferData.curlNoiseFactor;
+
+        file["Simulation"]["Drag"]["Enabled"] = m_simulateParticlesBufferData.addDrag;
+        file["Simulation"]["Drag"]["Drag Coefficient"] = m_simulateParticlesBufferData.dragCoefficient;
+    }
+
+    void RenderParticles::load(json& file)
+    {
+
+        for (auto json : file["Emitters"])
+        {
+            addEmitter(json["Type"], json["Name"]);
+            m_particleEmitters.back()->load(json);
         }
 
         m_simulateParticlesBufferData.addAizama = file["Simulation"]["Aizama"]["Enabled"];

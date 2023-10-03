@@ -9,7 +9,7 @@ using namespace DirectX::SimpleMath;
 namespace DemoParticles
 {
     ParticleEmitterCube::ParticleEmitterCube(const DX::DeviceResources* deviceResources, std::string name)
-        : IParticleEmitter(deviceResources, name)
+        : IParticleEmitter(deviceResources, name, EmitterType::ET_Cube)
     {
         //m_emitDelay = 0.1f;
         m_emitterConstantBufferData.maxSpawn = 200000;
@@ -158,45 +158,46 @@ namespace DemoParticles
 
     void ParticleEmitterCube::save(json& file)
     {
-        file["Emitters"]["Cube"]["Enabled"] = m_enabled;
-        file["Emitters"]["Cube"]["EmissionRate"] = m_emissionRate;
-        //file["Emitters"]["Cube"]["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
-        file["Emitters"]["Cube"]["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
-        file["Emitters"]["Cube"]["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
-        file["Emitters"]["Cube"]["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
-        file["Emitters"]["Cube"]["Mass"] = m_emitterConstantBufferData.particlesMass;
-        file["Emitters"]["Cube"]["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
-        file["Emitters"]["Cube"]["Size start"] = m_emitterConstantBufferData.particleSizeStart;
-        file["Emitters"]["Cube"]["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
-        file["Emitters"]["Cube"]["Position"] = { m_position.x, m_position.y, m_position.z };
-        file["Emitters"]["Cube"]["Scale"] = { m_scale.x, m_scale.y, m_scale.z };
-        file["Emitters"]["Cube"]["Rotation"] = { m_rotation.x, m_rotation.y, m_rotation.z };
+        file["Type"] = m_type;
+        file["Name"] = m_name;
+        file["Enabled"] = m_enabled;
+        file["EmissionRate"] = m_emissionRate;
+        file["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
+        file["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
+        file["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
+        file["Mass"] = m_emitterConstantBufferData.particlesMass;
+        file["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
+        file["Size start"] = m_emitterConstantBufferData.particleSizeStart;
+        file["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
+        file["Position"] = { m_position.x, m_position.y, m_position.z };
+        file["Scale"] = { m_scale.x, m_scale.y, m_scale.z };
+        file["Rotation"] = { m_rotation.x, m_rotation.y, m_rotation.z };
         
 
     }
 
     void ParticleEmitterCube::load(json& file)
     {
-        m_enabled = file["Emitters"]["Cube"]["Enabled"];
-        m_emissionRate = file["Emitters"]["Cube"]["EmissionRate"];
+        m_enabled =                                                                 file["Enabled"];
+        m_emissionRate =                                                            file["EmissionRate"];
         //std::vector<float> position = file["Emitters"]["Cube"]["Position"];
         //m_emitterConstantBufferData.position = Vector4(&position[0]);
-        m_emitterConstantBufferData.particleOrientation = file["Emitters"]["Cube"]["Particles orientation"];
-        m_emitterConstantBufferData.particlesBaseSpeed = file["Emitters"]["Cube"]["Base speed"];
-        m_emitterConstantBufferData.particlesLifeSpan = file["Emitters"]["Cube"]["LifeSpan"];
-        m_emitterConstantBufferData.particlesMass = file["Emitters"]["Cube"]["Mass"];
-        std::vector<float> color = file["Emitters"]["Cube"]["Color"];
+        m_emitterConstantBufferData.particleOrientation =                           file["Particles orientation"];
+        m_emitterConstantBufferData.particlesBaseSpeed =                            file["Base speed"];
+        m_emitterConstantBufferData.particlesLifeSpan =                             file["LifeSpan"];
+        m_emitterConstantBufferData.particlesMass =                                 file["Mass"];
+        std::vector<float> color =                                                  file["Color"];
         m_emitterConstantBufferData.color = Vector4(&color[0]);
-        m_emitterConstantBufferData.particleSizeStart = file["Emitters"]["Cube"]["Size start"];
-        m_emitterConstantBufferData.particleSizeEnd = file["Emitters"]["Cube"]["Size end"];
+        m_emitterConstantBufferData.particleSizeStart =                             file["Size start"];
+        m_emitterConstantBufferData.particleSizeEnd =                               file["Size end"];
 
-        std::vector<float> position = file["Emitters"]["Cube"]["Position"];
+        std::vector<float> position =                                               file["Position"];
         m_position= Vector3(&position[0]);
 
-        std::vector<float> scale = file["Emitters"]["Cube"]["Scale"];
+        std::vector<float> scale =                                                  file["Scale"];
         m_scale = Vector3(&scale[0]);
 
-        std::vector<float> rotation = file["Emitters"]["Cube"]["Rotation"];
+        std::vector<float> rotation =                                               file["Rotation"];
         m_rotation = Vector3(&rotation[0]);
 
         ImGuizmo::RecomposeMatrixFromComponents((float*)&m_position, (float*)&m_rotation, (float*)&m_scale, m_worldf);

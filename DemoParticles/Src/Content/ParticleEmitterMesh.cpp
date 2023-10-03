@@ -11,7 +11,7 @@ using namespace DirectX::SimpleMath;
 namespace DemoParticles
 {
     ParticleEmitterMesh::ParticleEmitterMesh(const DX::DeviceResources* deviceResources, std::string name)
-        : IParticleEmitter(deviceResources, name)
+        : IParticleEmitter(deviceResources, name, EmitterType::ET_Mesh)
     {
         m_emitterConstantBufferData.maxSpawn = 100;
         m_emitterConstantBufferData.particleOrientation = 0;
@@ -170,43 +170,45 @@ namespace DemoParticles
 
     void ParticleEmitterMesh::save(json& file)
     {
-        file["Emitters"]["Mesh"]["Enabled"] = m_enabled;
-        file["Emitters"]["Mesh"]["EmissionRate"] = m_emissionRate;
-        //file["Emitters"]["Mesh"]["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
-        file["Emitters"]["Mesh"]["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
-        file["Emitters"]["Mesh"]["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
-        file["Emitters"]["Mesh"]["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
-        file["Emitters"]["Mesh"]["Mass"] = m_emitterConstantBufferData.particlesMass;
-        file["Emitters"]["Mesh"]["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
-        file["Emitters"]["Mesh"]["Size start"] = m_emitterConstantBufferData.particleSizeStart;
-        file["Emitters"]["Mesh"]["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
-        file["Emitters"]["Mesh"]["Position"] = { m_position.x, m_position.y, m_position.z };
-        file["Emitters"]["Mesh"]["Scale"] = { m_scale.x, m_scale.y, m_scale.z };
-        file["Emitters"]["Mesh"]["Rotation"] = { m_rotation.x, m_rotation.y, m_rotation.z };
+        file["Type"] = m_type;
+        file["Name"] = m_name;
+        file["Enabled"] = m_enabled;
+        file["EmissionRate"] = m_emissionRate;
+        //file["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
+        file["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
+        file["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
+        file["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
+        file["Mass"] = m_emitterConstantBufferData.particlesMass;
+        file["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
+        file["Size start"] = m_emitterConstantBufferData.particleSizeStart;
+        file["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
+        file["Position"] = { m_position.x, m_position.y, m_position.z };
+        file["Scale"] = { m_scale.x, m_scale.y, m_scale.z };
+        file["Rotation"] = { m_rotation.x, m_rotation.y, m_rotation.z };
     }
 
     void ParticleEmitterMesh::load(json& file)
     {
-        m_enabled = file["Emitters"]["Mesh"]["Enabled"];
-        m_emissionRate = file["Emitters"]["Mesh"]["EmissionRate"];
+        m_enabled =                                                             file["Enabled"];
+        m_emissionRate =                                                        file["EmissionRate"];
         //std::vector<float> position = file["Emitters"]["Mesh"]["Position"];
         //m_emitterConstantBufferData.position = Vector4(&position[0]);
-        m_emitterConstantBufferData.particleOrientation = file["Emitters"]["Mesh"]["Particles orientation"];
-        m_emitterConstantBufferData.particlesBaseSpeed = file["Emitters"]["Mesh"]["Base speed"];
-        m_emitterConstantBufferData.particlesLifeSpan = file["Emitters"]["Mesh"]["LifeSpan"];
-        m_emitterConstantBufferData.particlesMass = file["Emitters"]["Mesh"]["Mass"];
-        std::vector<float> color = file["Emitters"]["Mesh"]["Color"];
+        m_emitterConstantBufferData.particleOrientation =                       file["Particles orientation"];
+        m_emitterConstantBufferData.particlesBaseSpeed =                        file["Base speed"];
+        m_emitterConstantBufferData.particlesLifeSpan =                         file["LifeSpan"];
+        m_emitterConstantBufferData.particlesMass =                             file["Mass"];
+        std::vector<float> color =                                              file["Color"];
         m_emitterConstantBufferData.color = Vector4(&color[0]);
-        m_emitterConstantBufferData.particleSizeStart = file["Emitters"]["Mesh"]["Size start"];
-        m_emitterConstantBufferData.particleSizeEnd = file["Emitters"]["Mesh"]["Size end"];
+        m_emitterConstantBufferData.particleSizeStart =                         file["Size start"];
+        m_emitterConstantBufferData.particleSizeEnd =                           file["Size end"];
 
-        std::vector<float> position = file["Emitters"]["Mesh"]["Position"];
+        std::vector<float> position =                                           file["Position"];
         m_position = Vector3(&position[0]);
 
-        std::vector<float> scale = file["Emitters"]["Mesh"]["Scale"];
+        std::vector<float> scale =                                              file["Scale"];
         m_scale = Vector3(&scale[0]);
 
-        std::vector<float> rotation = file["Emitters"]["Mesh"]["Rotation"];
+        std::vector<float> rotation =                                           file["Rotation"];
         m_rotation = Vector3(&rotation[0]);
 
         ImGuizmo::RecomposeMatrixFromComponents((float*)&m_position, (float*)&m_rotation, (float*)&m_scale, m_worldf);

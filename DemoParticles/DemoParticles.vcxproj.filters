@@ -773,9 +773,6 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="Data\Models\CatMac.fbx">
-      <Filter>Data\Models</Filter>
-    </CopyFileToFolders>
     <CopyFileToFolders Include="Data\Models\cube.dae">
       <Filter>Data\Models</Filter>
     </CopyFileToFolders>
@@ -888,10 +885,16 @@
     <CopyFileToFolders Include="Data\ForceFields\Teapot.vfd">
       <Filter>Data\ForceFields</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="Data\Models\Wolf.fbx">
+    <CopyFileToFolders Include="Data\ForceFields\am_vecField_star04_32x32x32.fga">
+      <Filter>Data\ForceFields</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\stanford-bunny.fbx">
       <Filter>Data\Models</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="Data\Models\Dragon 2.5_fbx.fbx">
+    <CopyFileToFolders Include="Data\Models\Blender_Monkey_Suzanne.fbx">
+      <Filter>Data\Models</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\Blender_Monkey_Suzanne_high_poly.fbx">
       <Filter>Data\Models</Filter>
     </CopyFileToFolders>
   </ItemGroup>

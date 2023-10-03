@@ -21,6 +21,7 @@ namespace DemoParticles
     private:
 
         void AddVertexData(std::unique_ptr<Model>& model, const aiScene* scene, const aiNode* node, DirectX::SimpleMath::Matrix& transform, const bool createSRV);
+        void InitMesh(std::unique_ptr<Model>& model, const aiScene* scene, const bool createSRV);
         int GetNoofInputElements(aiMesh* mesh);
 
         const DX::DeviceResources* m_deviceResources;

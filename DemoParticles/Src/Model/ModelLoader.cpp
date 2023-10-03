@@ -55,7 +55,7 @@ namespace DemoParticles
         for (unsigned int meshId = 0; meshId < node->mNumMeshes; ++meshId)
         {
             //get a mesh from the scene
-            aiMesh* mesh = scene->mMeshes[meshId];
+            aiMesh* mesh = scene->mMeshes[node->mMeshes[meshId]];
 
             //create new mesh to add to model
             std::unique_ptr<ModelMesh>& modelMesh = model->AddMesh();

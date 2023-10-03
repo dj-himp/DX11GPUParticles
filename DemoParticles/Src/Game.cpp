@@ -91,10 +91,9 @@ void Game::Initialize(HWND window, int width, int height)
 
     m_sceneMenger = std::make_unique<DemoParticles::SceneMenger>(m_deviceResources.get());
 
-    load();
     CreateDeviceDependentResources();
     CreateWindowSizeDependentResources();
-
+    load();
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();

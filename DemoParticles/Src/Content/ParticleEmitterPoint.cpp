@@ -9,7 +9,7 @@ using namespace DirectX::SimpleMath;
 namespace DemoParticles
 {
     ParticleEmitterPoint::ParticleEmitterPoint(const DX::DeviceResources* deviceResources, std::string name)
-        : IParticleEmitter(deviceResources, name)
+        : IParticleEmitter(deviceResources, name, EmitterType::ET_Point)
     {
         m_emitterConstantBufferData.rotation = Matrix::CreateFromYawPitchRoll(0.0f, 0.0f, 0.0f);
         m_emitterConstantBufferData.position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -167,39 +167,40 @@ namespace DemoParticles
 
     void ParticleEmitterPoint::save(json& file)
     {
-        file["Emitters"]["Point"]["Enabled"] = m_enabled;
-        file["Emitters"]["Point"]["EmissionRate"] = m_emissionRate;
-        file["Emitters"]["Point"]["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
-        file["Emitters"]["Point"]["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
-        file["Emitters"]["Point"]["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
-        file["Emitters"]["Point"]["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
-        file["Emitters"]["Point"]["Mass"] = m_emitterConstantBufferData.particlesMass;
-        file["Emitters"]["Point"]["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
-        file["Emitters"]["Point"]["Size start"] = m_emitterConstantBufferData.particleSizeStart;
-        file["Emitters"]["Point"]["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
-        file["Emitters"]["Point"]["Cone Colatitude"] = m_emitterConstantBufferData.coneColatitude;
-        file["Emitters"]["Point"]["Cone Longitude"] = m_emitterConstantBufferData.coneLongitude;
-        file["Emitters"]["Point"]["Rotation"] = { m_emitterRotation.x, m_emitterRotation.y, m_emitterRotation.z };
+        file["Type"] = m_type;
+        file["Name"] = m_name;
+        file["Enabled"] = m_enabled;
+        file["EmissionRate"] = m_emissionRate;
+        file["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
+        file["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
+        file["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
+        file["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
+        file["Mass"] = m_emitterConstantBufferData.particlesMass;
+        file["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
+        file["Size start"] = m_emitterConstantBufferData.particleSizeStart;
+        file["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
+        file["Cone Colatitude"] = m_emitterConstantBufferData.coneColatitude;
+        file["Cone Longitude"] = m_emitterConstantBufferData.coneLongitude;
+        file["Rotation"] = { m_emitterRotation.x, m_emitterRotation.y, m_emitterRotation.z };
     }
 
     void ParticleEmitterPoint::load(json& file)
     {
-        m_enabled = file["Emitters"]["Point"].value("Enabled", false);
-        //m_enabled = file["Emitters"]["Point"]["Enabled"];
-        m_emissionRate = file["Emitters"]["Point"]["EmissionRate"];
-        std::vector<float> position = file["Emitters"]["Point"]["Position"];
+        m_enabled =                                                             file.value("Enabled", false);
+        m_emissionRate =                                                        file["EmissionRate"];
+        std::vector<float> position =                                           file["Position"];
         m_emitterConstantBufferData.position = Vector4(&position[0]);
-        m_emitterConstantBufferData.particleOrientation = file["Emitters"]["Point"]["Particles orientation"];
-        m_emitterConstantBufferData.particlesBaseSpeed = file["Emitters"]["Point"]["Base speed"];
-        m_emitterConstantBufferData.particlesLifeSpan = file["Emitters"]["Point"]["LifeSpan"];
-        m_emitterConstantBufferData.particlesMass = file["Emitters"]["Point"]["Mass"];
-        std::vector<float> color = file["Emitters"]["Point"]["Color"];
+        m_emitterConstantBufferData.particleOrientation =                       file["Particles orientation"];
+        m_emitterConstantBufferData.particlesBaseSpeed =                        file["Base speed"];
+        m_emitterConstantBufferData.particlesLifeSpan =                         file["LifeSpan"];
+        m_emitterConstantBufferData.particlesMass =                             file["Mass"];
+        std::vector<float> color =                                              file["Color"];
         m_emitterConstantBufferData.color = Vector4(&color[0]);
-        m_emitterConstantBufferData.particleSizeStart = file["Emitters"]["Point"]["Size start"];
-        m_emitterConstantBufferData.particleSizeEnd = file["Emitters"]["Point"]["Size end"];
-        m_emitterConstantBufferData.coneColatitude = file["Emitters"]["Point"]["Cone Colatitude"];
-        m_emitterConstantBufferData.coneLongitude = file["Emitters"]["Point"]["Cone Longitude"];
-        std::vector<float> rotation = file["Emitters"]["Point"]["Rotation"];
+        m_emitterConstantBufferData.particleSizeStart =                         file["Size start"];
+        m_emitterConstantBufferData.particleSizeEnd =                           file["Size end"];
+        m_emitterConstantBufferData.coneColatitude =                            file["Cone Colatitude"];
+        m_emitterConstantBufferData.coneLongitude =                             file["Cone Longitude"];
+        std::vector<float> rotation =                                           file["Rotation"];
         m_emitterRotation = Vector3(&rotation[0]);
 
         m_emitterConstantBufferData.rotation = Matrix::CreateRotationX(m_emitterRotation.x) * Matrix::CreateRotationY(m_emitterRotation.y) * Matrix::CreateRotationZ(m_emitterRotation.z);

@@ -10,7 +10,7 @@ using namespace choreograph;
 namespace DemoParticles
 {
     ParticleEmitterSphere::ParticleEmitterSphere(const DX::DeviceResources* deviceResources, std::string name)
-        : IParticleEmitter(deviceResources, name)
+        : IParticleEmitter(deviceResources, name, EmitterType::ET_Sphere)
     {
         m_emitterConstantBufferData.maxSpawn = 1000;
         m_emitterConstantBufferData.position = Vector4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -193,45 +193,47 @@ namespace DemoParticles
 
     void ParticleEmitterSphere::save(json& file)
     {
-        file["Emitters"]["Sphere"]["Enabled"] = m_enabled;
-        file["Emitters"]["Sphere"]["EmissionRate"] = m_emissionRate;
-        file["Emitters"]["Sphere"]["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
-        file["Emitters"]["Sphere"]["Scale"] = { m_emitterConstantBufferData.scale.x, m_emitterConstantBufferData.scale.y, m_emitterConstantBufferData.scale.z, m_emitterConstantBufferData.scale.w };
-        file["Emitters"]["Sphere"]["Rotation"] = { m_rotation[0], m_rotation[1], m_rotation[2] };
-        file["Emitters"]["Sphere"]["Partitioning"] = { m_emitterConstantBufferData.partitioning.x, m_emitterConstantBufferData.partitioning.y, m_emitterConstantBufferData.partitioning.z, m_emitterConstantBufferData.partitioning.w };
-        file["Emitters"]["Sphere"]["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
-        file["Emitters"]["Sphere"]["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
-        file["Emitters"]["Sphere"]["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
-        file["Emitters"]["Sphere"]["Mass"] = m_emitterConstantBufferData.particlesMass;
-        file["Emitters"]["Sphere"]["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
-        file["Emitters"]["Sphere"]["Size start"] = m_emitterConstantBufferData.particleSizeStart;
-        file["Emitters"]["Sphere"]["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
+        file["Type"] = m_type;
+        file["Name"] = m_name;
+        file["Enabled"] = m_enabled;
+        file["EmissionRate"] = m_emissionRate;
+        file["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
+        file["Scale"] = { m_emitterConstantBufferData.scale.x, m_emitterConstantBufferData.scale.y, m_emitterConstantBufferData.scale.z, m_emitterConstantBufferData.scale.w };
+        file["Rotation"] = { m_rotation[0], m_rotation[1], m_rotation[2] };
+        file["Partitioning"] = { m_emitterConstantBufferData.partitioning.x, m_emitterConstantBufferData.partitioning.y, m_emitterConstantBufferData.partitioning.z, m_emitterConstantBufferData.partitioning.w };
+        file["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
+        file["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
+        file["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
+        file["Mass"] = m_emitterConstantBufferData.particlesMass;
+        file["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
+        file["Size start"] = m_emitterConstantBufferData.particleSizeStart;
+        file["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
     }
 
     void ParticleEmitterSphere::load(json& file)
     {
-        m_enabled = file["Emitters"]["Sphere"]["Enabled"];
-        m_emissionRate = file["Emitters"]["Sphere"]["EmissionRate"];
-        std::vector<float> position = file["Emitters"]["Sphere"]["Position"];
+        m_enabled =                                                                         file["Enabled"];
+        m_emissionRate =                                                                    file["EmissionRate"];
+        std::vector<float> position =                                                       file["Position"];
         m_emitterConstantBufferData.position = Vector4(&position[0]);
-        std::vector<float> scale = file["Emitters"]["Sphere"]["Scale"];
+        std::vector<float> scale =                                                          file["Scale"];
         m_emitterConstantBufferData.scale = Vector4(&scale[0]);
         
         std::vector<float> defaultRotation = { 0.0f, 0.0f, 0.0f };
-        m_rotation = file["Emitters"]["Sphere"].value("Rotation", defaultRotation);
+        m_rotation =                                                                        file.value("Rotation", defaultRotation);
         m_emitterConstantBufferData.rotation = Matrix::CreateRotationX(m_rotation[0]) * Matrix::CreateRotationY(m_rotation[1]) * Matrix::CreateRotationZ(m_rotation[2]);
         m_emitterConstantBufferData.rotation = m_emitterConstantBufferData.rotation.Transpose();
 
-        std::vector<float> partitioning = file["Emitters"]["Sphere"]["Partitioning"];
+        std::vector<float> partitioning =                                                   file["Partitioning"];
         m_emitterConstantBufferData.partitioning = Vector4(&partitioning[0]);
-        m_emitterConstantBufferData.particleOrientation = file["Emitters"]["Sphere"]["Particles orientation"];
-        m_emitterConstantBufferData.particlesBaseSpeed = file["Emitters"]["Sphere"]["Base speed"];
-        m_emitterConstantBufferData.particlesLifeSpan = file["Emitters"]["Sphere"]["LifeSpan"];
-        m_emitterConstantBufferData.particlesMass = file["Emitters"]["Sphere"]["Mass"];
-        std::vector<float> color = file["Emitters"]["Sphere"]["Color"];
+        m_emitterConstantBufferData.particleOrientation =                                   file["Particles orientation"];
+        m_emitterConstantBufferData.particlesBaseSpeed =                                    file["Base speed"];
+        m_emitterConstantBufferData.particlesLifeSpan =                                     file["LifeSpan"];
+        m_emitterConstantBufferData.particlesMass =                                         file["Mass"];
+        std::vector<float> color =                                                          file["Color"];
         m_emitterConstantBufferData.color = Vector4(&color[0]);
-        m_emitterConstantBufferData.particleSizeStart = file["Emitters"]["Sphere"]["Size start"];
-        m_emitterConstantBufferData.particleSizeEnd = file["Emitters"]["Sphere"]["Size end"];
+        m_emitterConstantBufferData.particleSizeStart =                                     file["Size start"];
+        m_emitterConstantBufferData.particleSizeEnd =                                       file["Size end"];
 
         float rotation[3] = { 0.0f, 0.0f, 0.0f };
         ImGuizmo::RecomposeMatrixFromComponentsRadians((float*)&m_emitterConstantBufferData.position, (float*)&m_rotation[0], (float*)&m_emitterConstantBufferData.scale, m_worldf);

@@ -531,11 +531,6 @@
     <ClInclude Include="Src\Scene\IScene.h" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="Data\Models\CatMac.fbx">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
-      <FileType>Document</FileType>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-    </CopyFileToFolders>
     <CopyFileToFolders Include="Data\Models\cube.dae">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
       <FileType>Document</FileType>
@@ -651,16 +646,17 @@
     <CopyFileToFolders Include="Data\ForceFields\Teapot.vfd">
       <FileType>Document</FileType>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="Data\Models\Dragon 2.5_fbx.fbx">
+    <CopyFileToFolders Include="Data\ForceFields\am_vecField_star04_32x32x32.fga">
       <FileType>Document</FileType>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="Data\Models\Wolf.fbx">
-      <DeploymentContent>false</DeploymentContent>
+    <CopyFileToFolders Include="Data\Models\stanford-bunny.fbx">
       <FileType>Document</FileType>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </DeploymentContent>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\Blender_Monkey_Suzanne.fbx">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\Blender_Monkey_Suzanne_high_poly.fbx">
+      <FileType>Document</FileType>
     </CopyFileToFolders>
     <None Include="Extern\assimp\.editorconfig" />
     <None Include="Extern\assimp\color4.inl" />

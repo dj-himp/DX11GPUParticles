@@ -23,7 +23,7 @@ namespace DemoParticles
     public:
         
 
-        IParticleEmitter(const DX::DeviceResources* deviceResources, std::string name);
+        IParticleEmitter(const DX::DeviceResources* deviceResources, std::string name, EmitterType type);
         virtual ~IParticleEmitter();
 
         virtual void createDeviceDependentResources() = 0;
@@ -42,5 +42,6 @@ namespace DemoParticles
 
         std::string m_name;
         bool m_enabled = true;
+        EmitterType m_type;
     };
 }

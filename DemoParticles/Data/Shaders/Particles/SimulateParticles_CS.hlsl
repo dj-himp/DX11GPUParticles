@@ -144,8 +144,11 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             float3 forceFieldUV = mul(float4(p.position.xyz, 1.0), forceFieldWorld2Volume).xyz;
             float4 force = forceFieldTexture.SampleLevel(linearSampler, forceFieldUV, 0).xyzw;
             //force = mul(float4(force, 0.0), forceFieldVolume2World).xyz;
-            particleForce.xyz += force.xyz * forceFieldForceScale * -force.w;
+            //particleForce.xyz += force.xyz * forceFieldForceScale * -force.w;
             //forceFieldVelocity.xyz = force * forceFieldForceScale;
+
+            //assume it's a velocity field
+            p.velocity.xyz = force.xyz * force.w * forceFieldForceScale;
 
         }
 

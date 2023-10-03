@@ -8,7 +8,7 @@ using namespace DirectX::SimpleMath;
 namespace DemoParticles
 {
     ParticleEmitterAppendBuffer::ParticleEmitterAppendBuffer(const DX::DeviceResources* deviceResources, std::string name)
-        : IParticleEmitter(deviceResources, name)
+        : IParticleEmitter(deviceResources, name, EmitterType::ET_AppendBuffer)
     {
         //m_emitterConstantBufferData.maxSpawn = 500000;
         m_emitterConstantBufferData.particleOrientation = 0;
@@ -84,32 +84,34 @@ namespace DemoParticles
 
     void ParticleEmitterAppendBuffer::save(json& file)
     {
-        file["Emitters"]["AppendBuffer"]["Enabled"] = m_enabled;
-        file["Emitters"]["AppendBuffer"]["Max Spawn"] = m_emitterConstantBufferData.maxSpawn;
-        //file["Emitters"]["AppendBuffer"]["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
-        file["Emitters"]["AppendBuffer"]["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
-        file["Emitters"]["AppendBuffer"]["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
-        file["Emitters"]["AppendBuffer"]["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
-        file["Emitters"]["AppendBuffer"]["Mass"] = m_emitterConstantBufferData.particlesMass;
-        file["Emitters"]["AppendBuffer"]["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
-        file["Emitters"]["AppendBuffer"]["Size start"] = m_emitterConstantBufferData.particleSizeStart;
-        file["Emitters"]["AppendBuffer"]["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
+        file["Type"] = m_type;
+        file["Name"] = m_name;
+        file["Enabled"] = m_enabled;
+        file["Max Spawn"] = m_emitterConstantBufferData.maxSpawn;
+        //file["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
+        file["Particles orientation"] = m_emitterConstantBufferData.particleOrientation;
+        file["Base speed"] = m_emitterConstantBufferData.particlesBaseSpeed;
+        file["LifeSpan"] = m_emitterConstantBufferData.particlesLifeSpan;
+        file["Mass"] = m_emitterConstantBufferData.particlesMass;
+        file["Color"] = { m_emitterConstantBufferData.color.R(), m_emitterConstantBufferData.color.G(), m_emitterConstantBufferData.color.B(), m_emitterConstantBufferData.color.A() };
+        file["Size start"] = m_emitterConstantBufferData.particleSizeStart;
+        file["Size end"] = m_emitterConstantBufferData.particleSizeEnd;
     }
 
     void ParticleEmitterAppendBuffer::load(json& file)
     {
-        m_enabled = file["Emitters"]["AppendBuffer"]["Enabled"];
-        m_emitterConstantBufferData.maxSpawn = file["Emitters"]["AppendBuffer"]["Max Spawn"];
+        m_enabled =                                                                         file["Enabled"];
+        m_emitterConstantBufferData.maxSpawn =                                              file["Max Spawn"];
         //std::vector<float> position = file["Emitters"]["AppendBuffer"]["Position"];
         //m_emitterConstantBufferData.position = Vector4(&position[0]);
-        m_emitterConstantBufferData.particleOrientation = file["Emitters"]["AppendBuffer"]["Particles orientation"];
-        m_emitterConstantBufferData.particlesBaseSpeed = file["Emitters"]["AppendBuffer"]["Base speed"];
-        m_emitterConstantBufferData.particlesLifeSpan = file["Emitters"]["AppendBuffer"]["LifeSpan"];
-        m_emitterConstantBufferData.particlesMass = file["Emitters"]["AppendBuffer"]["Mass"];
-        std::vector<float> color = file["Emitters"]["AppendBuffer"]["Color"];
+        m_emitterConstantBufferData.particleOrientation =                                   file["Particles orientation"];
+        m_emitterConstantBufferData.particlesBaseSpeed =                                    file["Base speed"];
+        m_emitterConstantBufferData.particlesLifeSpan =                                     file["LifeSpan"];
+        m_emitterConstantBufferData.particlesMass =                                         file["Mass"];
+        std::vector<float> color =                                                          file["Color"];
         m_emitterConstantBufferData.color = Vector4(&color[0]);
-        m_emitterConstantBufferData.particleSizeStart = file["Emitters"]["AppendBuffer"]["Size start"];
-        m_emitterConstantBufferData.particleSizeEnd = file["Emitters"]["AppendBuffer"]["Size end"];
+        m_emitterConstantBufferData.particleSizeStart =                                     file["Size start"];
+        m_emitterConstantBufferData.particleSizeEnd =                                       file["Size end"];
     }
 
     std::string ParticleEmitterAppendBuffer::toString()
