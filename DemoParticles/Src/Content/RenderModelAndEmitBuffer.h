@@ -37,7 +37,7 @@ namespace DemoParticles
         std::unique_ptr<Model> m_model;
         std::unique_ptr<Camera> m_camera;
 
-        DirectX::SimpleMath::Matrix m_world;
+        glm::mat4 m_world;
 
         DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3(0.0f);
 

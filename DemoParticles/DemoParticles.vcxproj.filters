@@ -55,9 +55,6 @@
     <Filter Include="Extern\assimp">
       <UniqueIdentifier>{befc79af-c0cb-4cd5-94bd-e6d0b02717f6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Extern\Json">
-      <UniqueIdentifier>{91bf0f00-04fc-4889-9ebd-7e2cc285214f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Extern\choreograph">
       <UniqueIdentifier>{f11edd2a-b11d-40ca-af30-46d5939dee96}</UniqueIdentifier>
     </Filter>
@@ -496,9 +493,6 @@
     </ClInclude>
     <ClInclude Include="Extern\assimp\version.h">
       <Filter>Extern\assimp</Filter>
-    </ClInclude>
-    <ClInclude Include="Extern\Json\json.hpp">
-      <Filter>Extern\Json</Filter>
     </ClInclude>
     <ClInclude Include="Extern\imgui\ImGuizmo.h">
       <Filter>Extern\imgui</Filter>

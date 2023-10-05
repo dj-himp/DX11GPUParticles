@@ -14,7 +14,7 @@ namespace DemoParticles
     {
         float yaw = 0.0f;
         float pitch = 0.0f;
-        init(Vector3(-2.0f, 2.0f, 5.0f), yaw, pitch, 0.0f, (float)m_deviceResources->GetOutputWidth() / m_deviceResources->GetOutputHeight(), DirectX::XM_PI / 4.0f);
+        init(glm::vec3(-2.0f, 2.0f, 5.0f), yaw, pitch, 0.0f, (float)m_deviceResources->GetOutputWidth() / m_deviceResources->GetOutputHeight(), DirectX::XM_PI / 4.0f);
     }
 
     //needed to use forward declaration of a unique_ptr : 
@@ -23,7 +23,7 @@ namespace DemoParticles
     {
     }
 
-    void CameraControllerFPS::init(DirectX::SimpleMath::Vector3 position, float yaw, float pitch, float roll, float aspectRatio, float fov /*= 60.0f*/, float nearPlane /*= 0.1f*/, float farPlane /*= 1000.0f*/)
+    void CameraControllerFPS::init(glm::vec3 position, float yaw, float pitch, float roll, float aspectRatio, float fov /*= 60.0f*/, float nearPlane /*= 0.1f*/, float farPlane /*= 1000.0f*/)
     {
         m_camera = std::make_unique<Camera>(position, yaw, pitch, roll, aspectRatio, fov, nearPlane, farPlane);
     }
@@ -41,7 +41,7 @@ namespace DemoParticles
             m_movementSpeed *= 2.0f;
         }
 
-        Vector3 movement(0.0f);
+        glm::vec3 movement(0.0f);
 
         bool hasMoved = false;
         if (InputManager::isKeyDown(Keyboard::Z))

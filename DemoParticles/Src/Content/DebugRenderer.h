@@ -28,7 +28,7 @@ namespace DemoParticles
        
         void render();
 
-        void pushBackModel(std::unique_ptr<Model> model, DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::Identity);
+        void pushBackModel(std::unique_ptr<Model> model, glm::mat4 world = glm::mat4());
 
     private:
 
@@ -39,9 +39,9 @@ namespace DemoParticles
         struct DebugModel
         {
             std::unique_ptr<Model> m_model;
-            DirectX::SimpleMath::Matrix m_world;
+            glm::mat4 m_world;
 
-            DebugModel(std::unique_ptr<Model> model, DirectX::SimpleMath::Matrix world)
+            DebugModel(std::unique_ptr<Model> model, glm::mat4 world)
             {
                 m_model = std::move(model);
                 m_world = world;

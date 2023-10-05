@@ -137,7 +137,8 @@ namespace DemoParticles
 
         //Z rotation is temporary as I need to know why the model is upside down
         //m_world = Matrix::CreateScale(0.001f) * Matrix::CreateRotationX(0.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
-        m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(-DirectX::XM_PI / 2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        //m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(-DirectX::XM_PI / 2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        m_world = glm::mat4();
     }
 
     void RenderModelAndEmitBuffer::createWindowSizeDependentResources()
@@ -154,7 +155,7 @@ namespace DemoParticles
     {
         //assert(camera);
 
-        XMStoreFloat4x4(&m_constantBufferData.world, m_world.Transpose());
+        m_constantBufferData.world = m_world;
 
         float rnd = (1 - (rand() % 2)) / 2.0f;
         m_modelToEmitConstantBufferData.offsetDensity = m_offsetDensity * rnd * m_scaleDensity;

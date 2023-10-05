@@ -5,18 +5,18 @@ namespace DemoParticles
     class Camera
     {
     public:
-        Camera(DirectX::SimpleMath::Vector3 position, float yaw, float pitch, float roll, float aspectRatio, float fov = 60.0f, float nearPlane = 0.1f, float farPlane = 1000.0f);
+        Camera(glm::vec3 position, float yaw, float pitch, float roll, float aspectRatio, float fov = 60.0f, float nearPlane = 0.1f, float farPlane = 1000.0f);
 
-        void setPosition(DirectX::SimpleMath::Vector3 position);
-        void movePositionAbsolute(DirectX::SimpleMath::Vector3 movement);
-        void movePositionRelative(DirectX::SimpleMath::Vector3 movement);
-        DirectX::SimpleMath::Vector3 getPosition() { return m_position; }
+        void setPosition(glm::vec3 position);
+        void movePositionAbsolute(glm::vec3 movement);
+        void movePositionRelative(glm::vec3 movement);
+        glm::vec3 getPosition() { return m_position; }
 
-        void setForward(DirectX::SimpleMath::Vector3 forward);
-        DirectX::SimpleMath::Vector3 getForward() { return m_forward; }
+        void setForward(glm::vec3 forward);
+        glm::vec3 getForward() { return m_forward; }
 
-        DirectX::SimpleMath::Vector3 getRight() { return m_right; }
-        DirectX::SimpleMath::Vector3 getUp() { return m_up; }
+        glm::vec3 getRight() { return m_right; }
+        glm::vec3 getUp() { return m_up; }
 
         void setFov(float fov);
         float getFov() { return m_fov; }
@@ -28,21 +28,21 @@ namespace DemoParticles
 
         void rotate(float yaw, float pitch);
 
-        DirectX::SimpleMath::Matrix getView() { return m_view; }
-        DirectX::SimpleMath::Matrix getProjection() { return m_projection; }
-        DirectX::SimpleMath::Matrix getViewProjection() { return m_view * m_projection; }
+        glm::mat4 getView() { return m_view; }
+        glm::mat4 getProjection() { return m_projection; }
+        glm::mat4 getViewProjection() { return m_view * m_projection; }
 
-        std::vector<DirectX::SimpleMath::Vector3> getFrustrumCorners();
+        std::vector<glm::vec3> getFrustrumCorners();
 
     private:
 
         void updateView();
         void updateProjection();
 
-        DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
-        DirectX::SimpleMath::Vector3 m_forward = DirectX::SimpleMath::Vector3(0.0f, 0.0f, -1.0f);
-        DirectX::SimpleMath::Vector3 m_right = DirectX::SimpleMath::Vector3(1.0f, 0.0f, 0.0f);
-        DirectX::SimpleMath::Vector3 m_up = DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f);
+        glm::vec3 m_position = glm::vec3(0.0f, 0.0f, 0.0f);
+        glm::vec3 m_forward = glm::vec3(0.0f, 0.0f, -1.0f);
+        glm::vec3 m_right = glm::vec3(1.0f, 0.0f, 0.0f);
+        glm::vec3 m_up = glm::vec3(0.0f, 1.0f, 0.0f);
 
         float m_yaw = 0.0f;
         float m_pitch = 0.0f;
@@ -54,8 +54,8 @@ namespace DemoParticles
         float m_nearPlane = 0.1f;
         float m_farPlane = 1000.0f;
 
-        DirectX::SimpleMath::Matrix m_world; //camera world
-        DirectX::SimpleMath::Matrix m_view; //inverse of camera world
-        DirectX::SimpleMath::Matrix m_projection;
+        glm::mat4 m_world; //camera world
+        glm::mat4 m_view; //inverse of camera world
+        glm::mat4 m_projection;
     };
 }

@@ -5,18 +5,18 @@ namespace DemoParticles
     //__declspec(align(16))
     struct SceneConstantBuffer
     {
-        DirectX::SimpleMath::Matrix view;
-        DirectX::SimpleMath::Matrix projection;
-        DirectX::SimpleMath::Matrix viewProj;
+        glm::mat4 view;
+        glm::mat4 projection;
+        glm::mat4 viewProj;
 
-        DirectX::SimpleMath::Vector4 camPosition;
-        DirectX::SimpleMath::Vector4 camDirection;
+        glm::vec4 camPosition;
+        glm::vec4 camDirection;
 
-        DirectX::SimpleMath::Vector4 frustumCorner[4];
+        glm::vec4 frustumCorner[4];
 
-        DirectX::SimpleMath::Vector4 sunDirection;
-        DirectX::SimpleMath::Vector4 sunColor; // w is diffuse power
-        DirectX::SimpleMath::Vector4 sunSpecColor; // w is specPower
+        glm::vec4 sunDirection;
+        glm::vec4 sunColor; // w is diffuse power
+        glm::vec4 sunSpecColor; // w is specPower
         float sceneAmbientPower;
 
         //put non float4 at the end
@@ -34,7 +34,7 @@ namespace DemoParticles
 
     struct WorldConstantBuffer
     {
-        DirectX::SimpleMath::Matrix world;
+        glm::mat4 world;
     };
     
     struct EmitterSphereConstantBuffer

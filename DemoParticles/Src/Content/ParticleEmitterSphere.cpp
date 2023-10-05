@@ -175,14 +175,14 @@ namespace DemoParticles
 
                 if (!useScaleForPartitioning)
                 {
-                    ImGuizmo::Manipulate(&camera->getView().Transpose().m[0][0], &camera->getProjection().Transpose().m[0][0], m_guizmoOperation, m_guizmoMode, m_worldf, nullptr, /*snap*/nullptr);
+                    ImGuizmo::Manipulate(&camera->getView()[0][0], &camera->getProjection()[0][0], m_guizmoOperation, m_guizmoMode, m_worldf, nullptr, /*snap*/nullptr);
                     ImGuizmo::DecomposeMatrixToComponentsRadians(m_worldf, (float*)&m_emitterConstantBufferData.position, (float*)&m_rotation[0], (float*)&m_emitterConstantBufferData.scale);
                     m_emitterConstantBufferData.rotation = Matrix::CreateRotationX(m_rotation[0]) * Matrix::CreateRotationY(m_rotation[1]) * Matrix::CreateRotationZ(m_rotation[2]);
                     m_emitterConstantBufferData.rotation = m_emitterConstantBufferData.rotation.Transpose();
                 }
                 else
                 {
-                    ImGuizmo::Manipulate(&camera->getView().Transpose().m[0][0], &camera->getProjection().Transpose().m[0][0], m_guizmoOperation, m_guizmoMode, m_fakeWorldf, nullptr, nullptr);
+                    ImGuizmo::Manipulate(&camera->getView()[0][0], &camera->getProjection()[0][0], m_guizmoOperation, m_guizmoMode, m_fakeWorldf, nullptr, nullptr);
                     ImGuizmo::DecomposeMatrixToComponentsRadians(m_fakeWorldf, p, r, (float*)&m_emitterConstantBufferData.partitioning);
                 }
             }

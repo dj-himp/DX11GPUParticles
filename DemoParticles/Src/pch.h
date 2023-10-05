@@ -42,6 +42,11 @@
 #include <DirectXMath.h>
 #include <DirectXColors.h>
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
+
+
 #include <algorithm>
 #include <exception>
 #include <memory>

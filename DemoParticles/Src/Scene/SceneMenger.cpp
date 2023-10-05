@@ -140,25 +140,23 @@ namespace DemoParticles
 
     void SceneMenger::update(DX::StepTimer const& timer, Camera* camera /*= nullptr*/)
     {
-        m_sceneConstantBufferData.view = camera->getView().Transpose();
-        m_sceneConstantBufferData.projection = camera->getProjection().Transpose();
-        Matrix viewProj = camera->getView() * camera->getProjection();
-        m_sceneConstantBufferData.viewProj = viewProj.Transpose();
+        m_sceneConstantBufferData.view = camera->getView();
+        m_sceneConstantBufferData.projection = camera->getProjection();
+        glm::mat4 viewProj = camera->getView() * camera->getProjection();
+        m_sceneConstantBufferData.viewProj = viewProj;
         
-        std::vector<Vector3> corners = camera->getFrustrumCorners();
-        m_sceneConstantBufferData.frustumCorner[0] = DX::toVector4(corners[4]);
-        m_sceneConstantBufferData.frustumCorner[1] = DX::toVector4(corners[5]);
-        m_sceneConstantBufferData.frustumCorner[2] = DX::toVector4(corners[6]);
-        m_sceneConstantBufferData.frustumCorner[3] = DX::toVector4(corners[7]);
+        std::vector<glm::vec3> corners = camera->getFrustrumCorners();
+        m_sceneConstantBufferData.frustumCorner[0] = glm::vec4(corners[4], 1.0f);
+        m_sceneConstantBufferData.frustumCorner[1] = glm::vec4(corners[5], 1.0f);
+        m_sceneConstantBufferData.frustumCorner[2] = glm::vec4(corners[6], 1.0f);
+        m_sceneConstantBufferData.frustumCorner[3] = glm::vec4(corners[7], 1.0f);
         
-        m_sceneConstantBufferData.camPosition = DX::toVector4(camera->getPosition());
-        m_sceneConstantBufferData.camDirection = DX::toVector4(camera->getForward());
+        m_sceneConstantBufferData.camPosition = glm::vec4(camera->getPosition(), 1.0f);
+        m_sceneConstantBufferData.camDirection = glm::vec4(camera->getForward(), 1.0f);
 
-        Vector4 sunDirection = Vector4(0.5f, -0.5f, -0.5f, 1.0f);
-        sunDirection.Normalize();
-        m_sceneConstantBufferData.sunDirection = sunDirection;
-        m_sceneConstantBufferData.sunColor = Vector4(1.0f, 0.6f, 0.05f, 3.0f);
-        m_sceneConstantBufferData.sunSpecColor = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+        m_sceneConstantBufferData.sunDirection = glm::normalize(glm::vec4(0.5f, -0.5f, -0.5f, 1.0f));
+        m_sceneConstantBufferData.sunColor = glm::vec4(1.0f, 0.6f, 0.05f, 3.0f);
+        m_sceneConstantBufferData.sunSpecColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         m_sceneConstantBufferData.sceneAmbientPower = 0.1f;
 
         m_sceneConstantBufferData.time = (float)timer.GetTotalSeconds();

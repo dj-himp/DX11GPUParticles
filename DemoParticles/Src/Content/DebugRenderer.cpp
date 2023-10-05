@@ -62,7 +62,7 @@ namespace DemoParticles
     {
         for (auto& debugModel : m_models)
         {
-            m_constantBufferData.world = debugModel.m_world.Transpose();
+            m_constantBufferData.world = debugModel.m_world;
             renderDebugModel(debugModel);
         }
     }
@@ -105,7 +105,7 @@ namespace DemoParticles
         }
     }
 
-    void DebugRenderer::pushBackModel(std::unique_ptr<Model> model, DirectX::SimpleMath::Matrix world /*= DirectX::SimpleMath::Matrix::Identity*/)
+    void DebugRenderer::pushBackModel(std::unique_ptr<Model> model, glm::mat4 world /*= DirectX::SimpleMath::Matrix::Identity*/)
     {
         /*DebugModel debugModel;
         debugModel.m_model = std::move(model);

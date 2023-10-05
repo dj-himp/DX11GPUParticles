@@ -826,7 +826,8 @@ namespace DemoParticles
         //debug render
         for (UINT i = 0; i < m_simulateParticlesBufferData.nbAttractors; ++i)
         {
-            Matrix world = Matrix::CreateTranslation(Vector3(m_attractorList[i].position.x, m_attractorList[i].position.y, m_attractorList[i].position.z));
+            //Matrix world = Matrix::CreateTranslation(Vector3(m_attractorList[i].position.x, m_attractorList[i].position.y, m_attractorList[i].position.z));
+            glm::mat4 world = glm::mat4();
             DebugRenderer::instance().pushBackModel(MeshFactory::getInstance().createAxis(), world);
         }
     }
