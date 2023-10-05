@@ -43,5 +43,9 @@ namespace DemoParticles
         std::string m_name;
         bool m_enabled = true;
         EmitterType m_type;
+        int m_guizmoUniqueID;
+
+    private:
+        static inline int guizmoUniqueIDGenerator = 0;
     };
 }

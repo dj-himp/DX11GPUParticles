@@ -146,6 +146,9 @@ namespace DemoParticles
                     m_guizmoMode = ImGuizmo::WORLD;
                 }
 
+                
+                ImGuizmo::SetID(m_guizmoUniqueID);
+
                 ImGuiIO& io = ImGui::GetIO();
                 ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 
@@ -153,7 +156,7 @@ namespace DemoParticles
                 //memcpy(m_projectionf, &camera->getProjection().Transpose().m[0][0], sizeof(m_projectionf));
 
                 //ImGuizmo::Manipulate(m_viewf, m_projectionf, guizmoOperation, guizmoMode, m_worldf, nullptr, snap);
-                ImGuizmo::Manipulate(&camera->getView().Transpose().m[0][0], &camera->getProjection().Transpose().m[0][0], m_guizmoOperation, m_guizmoMode, m_worldf, nullptr, m_guizmoOperation == ImGuizmo::TRANSLATE ? /*snap*/nullptr : angleSnap);
+                ImGuizmo::Manipulate(&camera->getView().m[0][0], &camera->getProjection().m[0][0], m_guizmoOperation, m_guizmoMode, m_worldf, nullptr, m_guizmoOperation == ImGuizmo::TRANSLATE ? /*snap*/nullptr : angleSnap);
 
                 ImGuizmo::DecomposeMatrixToComponentsRadians(m_worldf, (float*)&m_emitterConstantBufferData.position, (float*)&m_emitterRotation, scale);
 

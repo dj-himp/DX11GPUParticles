@@ -8,6 +8,7 @@ namespace DemoParticles
         : m_deviceResources(deviceResources)
         , m_name(name)
         , m_type(type)
+        , m_guizmoUniqueID(guizmoUniqueIDGenerator++)
     {
 
     }

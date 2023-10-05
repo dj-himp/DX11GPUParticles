@@ -179,6 +179,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Extern\imgui\GraphEditor.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Extern\imgui\ImCurveEdit.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -188,6 +192,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Extern\imgui\ImGuizmo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Extern\imgui\imgui_tables.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -472,11 +480,12 @@
     <ClInclude Include="Extern\choreograph\TimelineItem.h" />
     <ClInclude Include="Extern\choreograph\TimelineOptions.hpp" />
     <ClInclude Include="Extern\choreograph\TimeType.h" />
+    <ClInclude Include="Extern\imgui\GraphEditor.h" />
     <ClInclude Include="Extern\imgui\ImCurveEdit.h" />
     <ClInclude Include="Extern\imgui\ImGradient.h" />
     <ClInclude Include="Extern\imgui\ImGuizmo.h" />
-    <ClInclude Include="Extern\imgui\imgui_user.h" />
     <ClInclude Include="Extern\imgui\ImSequencer.h" />
+    <ClInclude Include="Extern\imgui\ImZoomSlider.h" />
     <ClInclude Include="Extern\Json\json.hpp" />
     <ClInclude Include="Src\Common\GeometryShader.h" />
     <ClInclude Include="Src\Common\GpuProfiler.h" />
@@ -668,10 +677,6 @@
     <None Include="Extern\assimp\vector2.inl" />
     <None Include="Extern\assimp\vector3.inl" />
     <None Include="packages.config" />
-    <None Include="Extern\imgui\imgui_user.inl">
-      <FileType>Document</FileType>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Data\Textures\CatMac__C.png" />
