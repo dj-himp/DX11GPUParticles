@@ -184,7 +184,7 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
             //factor 0 -> 50
             //particleForce.xyz += curlNoiseFactor * curlNoise(p.position.xyz * dt * curlScale);
             //particleForce.xyz += BitangentNoise4D(float4(p.position.xyz/* * curlCoefficient*/, time));
-            particleForce.xyz += curlNoiseFactor * (curlNoise(p.position.xyz * dt * curlScale) - p.velocity.xyz);
+            particleForce.xyz += curlNoiseFactor * (curlNoise(p.position.xyz * time * curlScale) - p.velocity.xyz);
 
         }
         
