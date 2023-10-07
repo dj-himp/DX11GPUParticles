@@ -42,6 +42,6 @@ namespace DemoParticles
           0.f, 0.f, 0.f, 1.f };
 
         ImGuizmo::OPERATION m_guizmoOperation = ImGuizmo::TRANSLATE;
-        ImGuizmo::MODE m_guizmoMode = ImGuizmo::WORLD;
+        ImGuizmo::MODE m_guizmoMode = ImGuizmo::LOCAL;
     };
 }

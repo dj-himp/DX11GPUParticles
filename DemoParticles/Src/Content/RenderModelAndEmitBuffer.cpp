@@ -23,7 +23,7 @@ namespace DemoParticles
     {
         m_modelToEmitConstantBufferData.scaleDensity = DirectX::SimpleMath::Vector2(1.0f, 1.0f);
         m_modelToEmitConstantBufferData.offsetDensity = DirectX::SimpleMath::Vector2(0.0f, 0.0f);
-        m_scaleDensity = DirectX::SimpleMath::Vector2(0.005f, 0.005f);
+        m_scaleDensity = DirectX::SimpleMath::Vector2(0.05f, 0.05f);
         m_offsetDensity = DirectX::SimpleMath::Vector2(0.0f, 0.0f);
         srand(time(NULL));
     }
@@ -34,7 +34,7 @@ namespace DemoParticles
         //m_model = m_modelLoader->load("stanford-bunny.fbx");
         //m_model = m_modelLoader->load("cube.dae");
         m_model = m_modelLoader->load("Blender_Monkey_Suzanne.fbx");
-        //m_model = m_modelLoader->load("Wolf.fbx");
+        
 
         m_modelVS = std::make_unique<VertexShader>(m_deviceResources);
         m_modelVS->load(L"RenderModelAndEmit_VS.cso", m_model->getInputElements());
@@ -136,8 +136,8 @@ namespace DemoParticles
 
 
         //Z rotation is temporary as I need to know why the model is upside down
-        //m_world = Matrix::CreateScale(0.001f) * Matrix::CreateRotationX(0.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(DirectX::XM_PI) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
-        m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(-DirectX::XM_PI / 2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(-DirectX::XM_PI / 2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+       // m_world = Matrix::CreateScale(0.1f) * Matrix::CreateRotationX(-DirectX::XM_PI / 2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
     }
 
     void RenderModelAndEmitBuffer::createWindowSizeDependentResources()
@@ -154,7 +154,7 @@ namespace DemoParticles
     {
         //assert(camera);
 
-        XMStoreFloat4x4(&m_constantBufferData.world, m_world.Transpose());
+        m_constantBufferData.world = m_world.Transpose();
 
         float rnd = (1 - (rand() % 2)) / 2.0f;
         m_modelToEmitConstantBufferData.offsetDensity = m_offsetDensity * rnd * m_scaleDensity;
@@ -183,8 +183,6 @@ namespace DemoParticles
         ID3D11UnorderedAccessView* uavs[] = { m_particleUAV.Get(), m_indirectDispatchArgsUAV.Get() };
         m_modelPS->setUAVs(2, 2, uavs, initialCounts);
 
-        //only first model for t-rex because all the same
-        //int i = 0;
         for (int i = 0; i < m_model->getMeshCount(); ++i)
         {
             UINT stride = (UINT)m_model->getVertexStride();//sizeof(VertexObject);
@@ -229,7 +227,9 @@ namespace DemoParticles
 
     void RenderModelAndEmitBuffer::RenderImGui(Camera* camera)
     {
-        ImGui::DragFloat2("Scale density", (float*)&m_scaleDensity, 0.01f, 0.01f, 10.0f);
-        ImGui::DragFloat2("Offset density", (float*)&m_offsetDensity, 0.01f, 0.01f, 10.0f);
+        ImGui::DragFloat("Scale density", (float*)&m_scaleDensity.x, 0.01f, 0.01f, 10.0f);
+        m_scaleDensity.y = m_scaleDensity.x;
+        ImGui::DragFloat("Offset density", (float*)&m_offsetDensity.x, 0.01f, 0.01f, 10.0f);
+        m_offsetDensity.y = m_offsetDensity.x;
     }
 }

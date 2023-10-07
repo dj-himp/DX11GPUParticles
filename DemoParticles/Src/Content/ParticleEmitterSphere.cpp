@@ -170,6 +170,16 @@ namespace DemoParticles
 
             if (guizmoHidden == false)
             {
+                if (ImGui::RadioButton("Local", m_guizmoMode == ImGuizmo::LOCAL))
+                {
+                    m_guizmoMode = ImGuizmo::LOCAL;
+                }
+                ImGui::SameLine();
+                if (ImGui::RadioButton("World", m_guizmoMode == ImGuizmo::WORLD))
+                {
+                    m_guizmoMode = ImGuizmo::WORLD;
+                }
+
                 ImGuizmo::SetID(m_guizmoUniqueID);
 
                 ImGuiIO& io = ImGui::GetIO();
