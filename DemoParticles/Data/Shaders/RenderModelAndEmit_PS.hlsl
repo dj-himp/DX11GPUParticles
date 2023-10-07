@@ -28,6 +28,7 @@ PixelShaderOutput main(PixelShaderInput input)
     {
 #ifdef DEBUG_EMIT
         output.Color = float4(normalize(0.5 * input.normal + 0.5).xyz, 1.0);
+        return output;
 #else
         Particle p = (Particle)0;
         p.position = input.worldPos;

@@ -35,7 +35,7 @@ void calculateUV(float3 v0, float3 v1, float3 v2, float3 triNormal, out float2 u
     }
     nx = normalize(nx); //normalize the result of cross
 
-    float ny = cross(nx, triNormal);
+    float3 ny = cross(nx, triNormal);
     ny = normalize(ny); //normalize the result of cross
 
     uv0.x = dot(v0, nx);
@@ -52,15 +52,9 @@ void main(triangle GeometryShaderInput input[3], inout TriangleStream<PixelShade
     rng_state = wang_hash(rngSeed + primID);
 
     float3 faceNormal = normalize(cross(input[2].worldPos - input[0].worldPos, input[2].worldPos - input[1].worldPos));
-    //float3 faceNormal = normalize(cross(input[1].worldPos - input[0].worldPos, input[2].worldPos - input[0].worldPos));
     
     float2 uv[3];
     calculateUV(input[0].worldPos, input[1].worldPos, input[2].worldPos, faceNormal, uv[0], uv[1], uv[2]);
-
-
-    //float2 scaleDensity = float2(0.03, 0.03);
-    //float rnd = rand_xorshift_normalized();
-    //float2 offsetDensity = float2(rnd, rnd) * scaleDensity;
 
     //for(int i=0;i<3;++i)
     //so it's not backface culled (don't know why I should do that yet) PRobably the normal is calculated with wrong winding
@@ -68,8 +62,8 @@ void main(triangle GeometryShaderInput input[3], inout TriangleStream<PixelShade
     {
         PixelShaderInput output;
         output.worldPos = input[i].worldPos;
-        //output.Position = float4((input[i].Position.xy + offset) * scaleDensity, 0.0, 1.0);
-        output.Position = float4((uv[i] + offsetDensity) * scaleDensity, 0.0, 1.0);
+        //output.Position = float4((input[i].Position.xy + offsetDensity) * scaleDensity, 0.0, 1.0);
+        output.Position = float4((uv[i] + offsetDensity/* + primID*0.1*/) * scaleDensity, 0.0, 1.0);
         output.uv = input[i].uv;
         output.normal = faceNormal;
         output.unfoldFlag = 1;
