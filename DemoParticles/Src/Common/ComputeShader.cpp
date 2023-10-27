@@ -13,15 +13,15 @@ namespace DemoParticles
 
     void ComputeShader::load(const std::wstring& computeFilename)
     {
-        ID3DBlob* cs_blob;
-        D3DReadFileToBlob(computeFilename.c_str(), &cs_blob);
+        Microsoft::WRL::ComPtr<ID3DBlob> cs_blob;
+        D3DReadFileToBlob(computeFilename.c_str(), cs_blob.GetAddressOf());
         
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateComputeShader(
                 cs_blob->GetBufferPointer(),
                 cs_blob->GetBufferSize(),
                 nullptr,
-                &m_computeShader
+                m_computeShader.GetAddressOf()
             )
         );
 

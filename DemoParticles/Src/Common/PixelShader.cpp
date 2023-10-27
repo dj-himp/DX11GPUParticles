@@ -11,15 +11,15 @@ namespace DemoParticles
 
     void PixelShader::load(const std::wstring& pixelFilename)
     {
-        ID3DBlob* ps_blob;
-        D3DReadFileToBlob(pixelFilename.c_str(), &ps_blob);
+        Microsoft::WRL::ComPtr<ID3DBlob> ps_blob;
+        D3DReadFileToBlob(pixelFilename.c_str(), ps_blob.GetAddressOf());
 
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreatePixelShader(
                 ps_blob->GetBufferPointer(),
                 ps_blob->GetBufferSize(),
                 nullptr,
-                &m_pixelShader
+                m_pixelShader.GetAddressOf()
             )
         );
 

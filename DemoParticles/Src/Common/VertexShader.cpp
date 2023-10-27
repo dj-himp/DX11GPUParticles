@@ -11,9 +11,9 @@ namespace DemoParticles
 
     void VertexShader::load(const std::wstring& vertexFilename, const std::vector<D3D11_INPUT_ELEMENT_DESC>& vertexDesc)
     {
-        ID3DBlob* vs_blob;
+        Microsoft::WRL::ComPtr<ID3DBlob> vs_blob;
         DX::ThrowIfFailed(
-            D3DReadFileToBlob(vertexFilename.c_str(), &vs_blob)
+            D3DReadFileToBlob(vertexFilename.c_str(), vs_blob.GetAddressOf())
         );
 
         DX::ThrowIfFailed(
@@ -21,7 +21,7 @@ namespace DemoParticles
                 vs_blob->GetBufferPointer(),
                 vs_blob->GetBufferSize(),
                 nullptr,
-                &m_vertexShader
+                m_vertexShader.GetAddressOf()
             )
         );
 
