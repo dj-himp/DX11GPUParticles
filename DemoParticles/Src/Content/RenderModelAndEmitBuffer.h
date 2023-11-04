@@ -64,5 +64,8 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector2 m_scaleDensity;
         DirectX::SimpleMath::Vector2 m_offsetDensity;
 
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_diffuseTextureSRV;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_ilumTextureSRV;
+
     };
 }

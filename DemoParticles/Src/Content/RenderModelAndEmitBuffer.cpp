@@ -34,7 +34,19 @@ namespace DemoParticles
         //m_model = m_modelLoader->load("stanford-bunny.fbx");
         //m_model = m_modelLoader->load("cube.dae");
         m_model = m_modelLoader->load("Blender_Monkey_Suzanne.fbx");
-        
+        m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(-DirectX::XM_PI / 2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+
+        //m_model = m_modelLoader->load("Motion_Move.DAE");
+        //m_model = m_modelLoader->load("Hand_rigged.fbx");
+        //m_world = Matrix::CreateScale(1.0f) * Matrix::CreateRotationX(DirectX::XM_PI) * Matrix::CreateRotationY(0.0f) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+
+        DX::ThrowIfFailed(
+            CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"soldierAHighDIFF.dds", nullptr, m_diffuseTextureSRV.GetAddressOf())
+        );
+
+        DX::ThrowIfFailed(
+            CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"soldierAHighILUM.dds", nullptr, m_ilumTextureSRV.GetAddressOf())
+        );
 
         m_modelVS = std::make_unique<VertexShader>(m_deviceResources);
         m_modelVS->load(L"RenderModelAndEmit_VS.cso", m_model->getInputElements());
@@ -46,7 +58,7 @@ namespace DemoParticles
         m_modelGS->load(L"RenderModelAndEmit_GS.cso");
 
         m_modelResetArgsCS = std::make_unique<ComputeShader>(m_deviceResources);
-        m_modelResetArgsCS->load(L"RenderModelAndEmitInit_CS.cso");
+        m_modelResetArgsCS->load(L"ResetIndirectComputeArgs1D_CS.cso");
 
         m_modelInitArgsCS = std::make_unique<ComputeShader>(m_deviceResources);
         m_modelInitArgsCS->load(L"InitIndirectComputeArgs1D_CS.cso");
@@ -136,7 +148,7 @@ namespace DemoParticles
 
 
         //Z rotation is temporary as I need to know why the model is upside down
-        m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(-DirectX::XM_PI / 2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        //m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(-DirectX::XM_PI / 2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
        // m_world = Matrix::CreateScale(0.1f) * Matrix::CreateRotationX(-DirectX::XM_PI / 2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
     }
 
@@ -203,6 +215,9 @@ namespace DemoParticles
 
 
             context->PSSetShader(m_modelPS->getPixelShader(), nullptr, 0);
+            context->PSSetSamplers(0, 1, RenderStatesHelper::LinearWrap().GetAddressOf());
+            context->PSSetShaderResources(0, 1, m_diffuseTextureSRV.GetAddressOf());
+            context->PSSetShaderResources(1, 1, m_ilumTextureSRV.GetAddressOf());
 
             context->DrawIndexed(m_model->getMesh(i)->getIndexCount(), 0, 0);
 

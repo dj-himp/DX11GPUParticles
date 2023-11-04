@@ -82,6 +82,7 @@
 #include "Json/json.hpp"
 #include "Gui/Sequencer.h"
 #include "choreograph/Choreograph.h"
+#include "Model/AssimpToDX.h"
 
 #include <DDSTextureLoader.h>
 

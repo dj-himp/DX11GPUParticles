@@ -18,6 +18,7 @@ struct VertexShaderInput
 struct GeometryShaderInput
 {
     float4 Position : SV_POSITION;
+    float4 color : COLOR;
     float2 uv : TEXCOORD0;
     float3 normal :TEXCOORD1;
     float4 worldPos: TEXCOORD2;
@@ -35,6 +36,7 @@ GeometryShaderInput main(VertexShaderInput input)
     output.normal = mul(float4(input.normal, 1.0), world);
     output.uv = input.texCoord;
     output.worldPos = mul(float4(input.Position, 1.0), world);
+    output.color = input.Color;
 
     return output;
 }

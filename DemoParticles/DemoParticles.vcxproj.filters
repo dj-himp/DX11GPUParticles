@@ -225,6 +225,12 @@
     <ClCompile Include="Src\Content\ParticleEmitterAppendBuffer.cpp">
       <Filter>Src\Content</Filter>
     </ClCompile>
+    <ClCompile Include="Extern\imgui\GraphEditor.cpp">
+      <Filter>Extern\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Extern\imgui\imgui_tables.cpp">
+      <Filter>Extern\imgui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\DeviceResources.h">
@@ -515,9 +521,6 @@
     <ClInclude Include="Src\Gui\Sequencer.h">
       <Filter>Src\Gui</Filter>
     </ClInclude>
-    <ClInclude Include="Extern\imgui\imgui_user.h">
-      <Filter>Extern\imgui</Filter>
-    </ClInclude>
     <ClInclude Include="Extern\choreograph\Choreograph.h">
       <Filter>Extern\choreograph</Filter>
     </ClInclude>
@@ -605,6 +608,15 @@
     <ClInclude Include="Src\Content\ParticleEmitterAppendBuffer.h">
       <Filter>Src\Content</Filter>
     </ClInclude>
+    <ClInclude Include="Extern\imgui\GraphEditor.h">
+      <Filter>Extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\imgui\ImZoomSlider.h">
+      <Filter>Extern\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Model\AssimpToDX.h">
+      <Filter>Src\Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -634,9 +646,6 @@
     </None>
     <None Include="Extern\assimp\vector3.inl">
       <Filter>Extern\assimp</Filter>
-    </None>
-    <None Include="Extern\imgui\imgui_user.inl">
-      <Filter>Extern\imgui</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -765,7 +774,7 @@
     <FxCompile Include="Data\Shaders\RenderModelAndEmit_VS.hlsl">
       <Filter>Data\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Data\Shaders\RenderModelAndEmitInit_CS.hlsl">
+    <FxCompile Include="Data\Shaders\ResetIndirectComputeArgs1D_CS.hlsl">
       <Filter>Data\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Data\Shaders\Particles\EmitParticlesFromAppendBuffer_CS.hlsl">
@@ -895,6 +904,45 @@
       <Filter>Data\Models</Filter>
     </CopyFileToFolders>
     <CopyFileToFolders Include="Data\Models\Blender_Monkey_Suzanne_high_poly.fbx">
+      <Filter>Data\Models</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\soldierAHigh.DAE">
+      <Filter>Data\Models</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\Motion_Move.DAE">
+      <Filter>Data\Models</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Textures\soldierAHigh_G_DIFF.dds">
+      <Filter>Data\Textures</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Textures\soldierAHighDIFF.dds">
+      <Filter>Data\Textures</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Textures\soldierAHighILUM.dds">
+      <Filter>Data\Textures</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Textures\soldierAHighNORM.dds">
+      <Filter>Data\Textures</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Textures\soldierAHighSPEC.dds">
+      <Filter>Data\Textures</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\cat.blend">
+      <Filter>Data\Models</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\cat.dae">
+      <Filter>Data\Models</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\cat.fbx">
+      <Filter>Data\Models</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\Hand_rigged.fbx">
+      <Filter>Data\Models</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\magician.X">
+      <Filter>Data\Models</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\Glasse_Walk_Cycle.fbx">
       <Filter>Data\Models</Filter>
     </CopyFileToFolders>
   </ItemGroup>

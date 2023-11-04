@@ -10,6 +10,7 @@ cbuffer modelToEmitConstantBuffer : register(b1)
 struct GeometryShaderInput
 {
     float4 Position : SV_POSITION;
+    float4 color : COLOR;
     float2 uv : TEXCOORD0;
     float3 normal :TEXCOORD1;
     float4 worldPos: TEXCOORD2;
@@ -18,6 +19,7 @@ struct GeometryShaderInput
 struct PixelShaderInput
 {
     float4 Position : SV_POSITION;
+    float4 color : COLOR;
     float2 uv : TEXCOORD0;
     float3 normal : TEXCOORD1;
     float4 worldPos : TEXCOORD2;
@@ -66,6 +68,7 @@ void main(triangle GeometryShaderInput input[3], inout TriangleStream<PixelShade
         output.Position = float4((uv[i] + offsetDensity/* + primID*0.1*/) * scaleDensity, 0.0, 1.0);
         output.uv = input[i].uv;
         output.normal = faceNormal;
+        output.color = input[i].color;
         output.unfoldFlag = 1;
         OutStream.Append(output);
     }
@@ -80,6 +83,7 @@ void main(triangle GeometryShaderInput input[3], inout TriangleStream<PixelShade
         output.Position = mul(float4(input[i].worldPos.xyz, 1.0), viewProj);
         output.uv = input[i].uv;
         output.normal = input[i].normal;
+        output.color = input[i].color;
         output.unfoldFlag = 0;
         OutStream.Append(output);
     }
