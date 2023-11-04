@@ -33,9 +33,24 @@ namespace DemoParticles
         m_modelLoader = std::make_unique<ModelLoader>(m_deviceResources);
         //m_model = m_modelLoader->load("stanford-bunny.fbx");
         //m_model = m_modelLoader->load("cube.dae");
-        m_model = m_modelLoader->load("Blender_Monkey_Suzanne.fbx");
+        //m_model = m_modelLoader->load("Blender_Monkey_Suzanne.fbx");        
+        //m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(-DirectX::XM_PI / 2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
         
+        //m_model = m_modelLoader->load("cat.fbx");
+        //m_world = Matrix::CreateScale(1.0f) * Matrix::CreateRotationX(0.0f) * Matrix::CreateRotationY(0.0f) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
 
+        m_model = m_modelLoader->load("Motion_Move.DAE");
+        //m_model = m_modelLoader->load("Hand_rigged.fbx");
+        m_world = Matrix::CreateScale(1.0f) * Matrix::CreateRotationX(DirectX::XM_PI) * Matrix::CreateRotationY(0.0f) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        
+        DX::ThrowIfFailed(
+            CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"soldierAHighDIFF.dds", nullptr, m_diffuseTextureSRV.GetAddressOf())
+        );
+
+        DX::ThrowIfFailed(
+            CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"soldierAHighILUM.dds", nullptr, m_ilumTextureSRV.GetAddressOf())
+        );
+        
         m_modelVS = std::make_unique<VertexShader>(m_deviceResources);
         m_modelVS->load(L"RenderModelAndEmit_VS.cso", m_model->getInputElements());
 
@@ -46,7 +61,7 @@ namespace DemoParticles
         m_modelGS->load(L"RenderModelAndEmit_GS.cso");
 
         m_modelResetArgsCS = std::make_unique<ComputeShader>(m_deviceResources);
-        m_modelResetArgsCS->load(L"RenderModelAndEmitInit_CS.cso");
+        m_modelResetArgsCS->load(L"ResetIndirectComputeArgs1D_CS.cso");
 
         m_modelInitArgsCS = std::make_unique<ComputeShader>(m_deviceResources);
         m_modelInitArgsCS->load(L"InitIndirectComputeArgs1D_CS.cso");
@@ -72,7 +87,16 @@ namespace DemoParticles
             )
         );
 
-        int maxParticles = 1000000; //TEMP
+        CD3D11_BUFFER_DESC skinnedConstantBufferDesc(sizeof(m_skinnedConstantBufferData), D3D11_BIND_CONSTANT_BUFFER);
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(
+                &skinnedConstantBufferDesc,
+                nullptr,
+                &m_skinnedConstantBuffer
+            )
+        );
+
+        int maxParticles = ParticlesGlobals::g_maxParticles; //TEMP
         CD3D11_BUFFER_DESC particlesBufferDesc;
         particlesBufferDesc.Usage = D3D11_USAGE_DEFAULT;
         particlesBufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
@@ -135,9 +159,7 @@ namespace DemoParticles
         m_deviceResources->GetD3DDeviceContext()->UpdateSubresource1(m_indirectDispatchArgsConstantBuffer.Get(), 0, NULL, &m_indirectDispatchArgsConstantBufferData, 0, 0, 0);
 
 
-        //Z rotation is temporary as I need to know why the model is upside down
-        m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(-DirectX::XM_PI / 2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
-       // m_world = Matrix::CreateScale(0.1f) * Matrix::CreateRotationX(-DirectX::XM_PI / 2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        
     }
 
     void RenderModelAndEmitBuffer::createWindowSizeDependentResources()
@@ -159,6 +181,13 @@ namespace DemoParticles
         float rnd = (1 - (rand() % 2)) / 2.0f;
         m_modelToEmitConstantBufferData.offsetDensity = m_offsetDensity * rnd * m_scaleDensity;
         m_modelToEmitConstantBufferData.scaleDensity = m_scaleDensity;
+
+        std::vector<Matrix> transforms = m_model->getAnimator()->getTransforms(timer.GetElapsedSeconds());
+        for (int i = 0; i < transforms.size(); ++i)
+        {
+            m_skinnedConstantBufferData.boneTransforms[i] = transforms[i];
+        }
+        
     }
 
     void RenderModelAndEmitBuffer::render()
@@ -177,6 +206,7 @@ namespace DemoParticles
         //render mesh + add particles to append buffer
         context->UpdateSubresource1(m_constantBuffer.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
         context->UpdateSubresource1(m_modelToEmitConstantBuffer.Get(), 0, NULL, &m_modelToEmitConstantBufferData, 0, 0, 0);
+        context->UpdateSubresource1(m_skinnedConstantBuffer.Get(), 0, NULL, &m_skinnedConstantBufferData, 0, 0, 0);
         
         //begin at 2 because we have 1 RT&Depth and UAVs slot start after RTs
         UINT initialCounts[] = { 0, (UINT)-1 };
@@ -195,6 +225,7 @@ namespace DemoParticles
 
             context->VSSetShader(m_modelVS->getVertexShader(), nullptr, 0);
             context->VSSetConstantBuffers(1, 1, m_constantBuffer.GetAddressOf());
+            context->VSSetConstantBuffers(2, 1, m_skinnedConstantBuffer.GetAddressOf());
             
             context->GSSetShader(m_modelGS->getGeometryShader(), nullptr, 0);
             context->GSSetConstantBuffers(1, 1, m_modelToEmitConstantBuffer.GetAddressOf());
@@ -203,6 +234,9 @@ namespace DemoParticles
 
 
             context->PSSetShader(m_modelPS->getPixelShader(), nullptr, 0);
+            context->PSSetSamplers(0, 1, RenderStatesHelper::LinearWrap().GetAddressOf());
+            context->PSSetShaderResources(0, 1, m_diffuseTextureSRV.GetAddressOf());
+            context->PSSetShaderResources(1, 1, m_ilumTextureSRV.GetAddressOf());
 
             context->DrawIndexed(m_model->getMesh(i)->getIndexCount(), 0, 0);
 

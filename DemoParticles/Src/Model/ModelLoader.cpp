@@ -3,6 +3,7 @@
 
 #include "Model.h"
 #include "ModelMesh.h"
+#include "ModelAnimator.h"
 #include "..\Content\ShaderStructures.h"
 
 #include <assimp/scene.h>
@@ -33,35 +34,31 @@ namespace DemoParticles
             assert(0);
         }
 
-        Matrix transform = Matrix::Identity;
-        AddVertexData(model, scene, scene->mRootNode, transform, createSRV);
+        model->getAnimator()->init(scene);
+
+        AddVertexData(model, scene, createSRV);
 
 
         return std::move(model);
     }
 
     //Create meshes and add vertex and index buffers
-    void ModelLoader::AddVertexData(std::unique_ptr<Model>& model, const aiScene* scene, const aiNode* node, Matrix& transform, const bool createSRV)
+    void ModelLoader::AddVertexData(std::unique_ptr<Model>& model, const aiScene* scene, const bool createSRV)
     {
-        Matrix previousTransform = transform;
-        transform = previousTransform * FromMatrix(node->mTransformation);
-
-        //also calculate inverse transpose matrix for normal/tangent/bitagent transformation
-        Matrix invTranspose = transform;
-        invTranspose.Invert();
-        invTranspose.Transpose();
-
         
-        for (unsigned int meshId = 0; meshId < node->mNumMeshes; ++meshId)
+        unsigned int startMeshVertexId = 0;
+
+        for (unsigned int meshId = 0; meshId < scene->mNumMeshes; ++meshId)
         {
             //get a mesh from the scene
-            aiMesh* mesh = scene->mMeshes[node->mMeshes[meshId]];
+            aiMesh* mesh = scene->mMeshes[meshId];
 
             //create new mesh to add to model
             std::unique_ptr<ModelMesh>& modelMesh = model->AddMesh();
 
             //if mesh has a material extract the diffuse texture, if present
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+
             if (material != nullptr && material->GetTextureCount(aiTextureType_DIFFUSE) > 0)
             {
                 aiString texturePath;
@@ -82,6 +79,7 @@ namespace DemoParticles
             bool hasNormals = mesh->HasNormals();
             bool hasTangents = mesh->HasTangentsAndBitangents();
             bool hasBitangents = hasTangents;
+            bool hasBones = mesh->HasBones();
 
             //create vertex element list 
             /*static const D3D11_INPUT_ELEMENT_DESC vertexElements[] = 
@@ -114,6 +112,14 @@ namespace DemoParticles
             vertexElements.push_back({ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
             vertexSize += sizeof(Vector2);
 
+            
+            vertexElements.push_back({ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+            vertexSize += sizeof(Vector4);
+
+            vertexElements.push_back({ "BLENDINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+            vertexSize += sizeof(uint8_t) * 4;
+
+            
             model->setInputElements(vertexElements);
             model->setVertexStride(sizeof(VertexObject));
 
@@ -146,39 +152,74 @@ namespace DemoParticles
                 assert(0);
             }
 
+            std::map<int, std::vector<aiVertexWeight>> vertToBoneWeight;
+            for(int boneId=0;boneId<mesh->mNumBones;++boneId)
+            {
+                aiBone* bone = mesh->mBones[boneId];
+                int boneIndex = model->getAnimator()->getBoneIndex(std::string(bone->mName.C_Str()));
+                // bone weights are recorded per bone in assimp, with each bone containing a list of the vertices influenced by it
+                // we really want the reverse mapping, i.e. lookup the vertexID and get the bone id and weight
+                // We'll support up to 4 bones per vertex, so we need a list of weights for each vertex
+                for(int i=0;i<bone->mNumWeights;++i)
+                {
+                    aiVertexWeight weight = bone->mWeights[i];
+                    vertToBoneWeight[/*startMeshVertexId +*/ weight.mVertexId].emplace_back(boneIndex, weight.mWeight);
+                    
+                }
+            }
+            
+
             //create data stream for vertices
             std::vector<VertexObject> vertices(mesh->mNumVertices);
             for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
             {
                 //add position, after transforming it with accumulated node transform
                 {
-                    Vector3 pos = FromVector(positions[i]);
-                    vertices[i].position = Vector3::Transform(pos, transform);
-                    //vertices[i].position = pos;
+                    vertices[i].position = AssimpToDX::FromVector(positions[i]);
                 }
 
                 if (hasColors)
                 {
-                    vertices[i].color = FromColor(mesh->mColors[0][i]);
+                    vertices[i].color = AssimpToDX::FromColor(mesh->mColors[0][i]);
                 }
                 if (hasNormals)
                 {
-                    Vector3 normal = FromVector(normals[i]);
-                    vertices[i].normal = Vector3::Transform(normal, invTranspose);
+                    vertices[i].normal = AssimpToDX::FromVector(normals[i]);
                 }
                 if (hasTangents)
                 {
-                    Vector3 tangent = FromVector(tangents[i]);
-                    vertices[i].tangent = Vector3::Transform(tangent, invTranspose);
+                    vertices[i].tangent = AssimpToDX::FromVector(tangents[i]);
                 }
                 if (hasBitangents)
-                {
-                    Vector3 biTangent = FromVector(biTangents[i]);
-                    vertices[i].bitangent = Vector3::Transform(biTangent, invTranspose);
+                {                   
+                    vertices[i].bitangent = AssimpToDX::FromVector(biTangents[i]);
                 }
                 if (hasTexCoords)
                 {
                     vertices[i].uv = Vector2(texCoords[i].x, 1 - texCoords[i].y);
+                }
+                if (hasBones)
+                {
+
+                    vertices[i].blendWeight = Vector4(0.0f);
+                    
+                    float* blendWeights = (float*)&vertices[i].blendWeight;
+                    for (int j = 0; j < vertToBoneWeight[i].size(); ++j)
+                    {
+                        blendWeights[j] = vertToBoneWeight[i][j].mWeight;
+                        vertices[i].boneIndices[j] = (uint8_t)vertToBoneWeight[i][j].mVertexId;
+                    }
+                    
+                    /*vertices[i].blendWeight.x = vertToBoneWeight[i][0].mWeight;
+                    vertices[i].blendWeight.y = vertToBoneWeight[i][1].mWeight;
+                    vertices[i].blendWeight.z = vertToBoneWeight[i][2].mWeight;
+                    vertices[i].blendWeight.w = vertToBoneWeight[i][3].mWeight;
+
+                    vertices[i].boneIndices[0] = vertToBoneWeight[i][0].mVertexId;
+                    vertices[i].boneIndices[1] = vertToBoneWeight[i][1].mVertexId;
+                    vertices[i].boneIndices[2] = vertToBoneWeight[i][2].mVertexId;
+                    vertices[i].boneIndices[3] = vertToBoneWeight[i][3].mVertexId;
+                    */
                 }
             }
 
@@ -307,19 +348,13 @@ namespace DemoParticles
                 modelMesh->setindexSRV(indexSRV);
 
             }
-        }
 
-        //if node has more children process them as well
-        for (unsigned int i = 0; i < node->mNumChildren; ++i)
-        {
-            AddVertexData(model, scene, node->mChildren[i], transform, createSRV);
+            startMeshVertexId = mesh->mNumVertices;
         }
-
-        transform = previousTransform;
     }
 
     //determine the number of elements in the vertex
-    int ModelLoader::GetNoofInputElements(aiMesh* mesh)
+    /*int ModelLoader::GetNoofInputElements(aiMesh* mesh)
     {
 
         bool hasTexCoords = mesh->HasTextureCoords(0);
@@ -346,47 +381,5 @@ namespace DemoParticles
             noofElements++;
 
         return noofElements;
-    }
-
-    //some Assimp to SimpleMath conversion helpers
-    Matrix ModelLoader::FromMatrix(aiMatrix4x4 mat)
-    {
-        Matrix m;
-        m.m[0][0] = mat.a1;
-        m.m[0][1] = mat.a2;
-        m.m[0][2] = mat.a3;
-        m.m[0][3] = mat.a4;
-        m.m[1][0] = mat.b1;
-        m.m[1][1] = mat.b2;
-        m.m[1][2] = mat.b3;
-        m.m[1][3] = mat.b4;
-        m.m[2][0] = mat.c1;
-        m.m[2][1] = mat.c2;
-        m.m[2][2] = mat.c3;
-        m.m[2][3] = mat.c4;
-        m.m[3][0] = mat.d1;
-        m.m[3][1] = mat.d2;
-        m.m[3][2] = mat.d3;
-        m.m[3][3] = mat.d4;
-        return m;
-    }
-
-    Vector3 ModelLoader::FromVector(aiVector3D vec)
-    {
-        Vector3 v;
-        v.x = vec.x;
-        v.y = vec.y;
-        v.z = vec.z;
-        return v;
-    }
-
-    Color ModelLoader::FromColor(aiColor4D color)
-    {
-        Color c;
-        c.R((byte)(color.r * 255));
-        c.G((byte)(color.g * 255));
-        c.B((byte)(color.b * 255));
-        c.A((byte)(color.a * 255));
-        return c;
-    }
+    }*/
 }

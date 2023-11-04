@@ -6,15 +6,8 @@ namespace DemoParticles
     Model::Model(const DX::DeviceResources* deviceResources)
         : m_deviceResources(deviceResources)
     {
-
+        m_animator = std::make_unique<ModelAnimator>();
     }
-
-    //AssimpModel::~AssimpModel() = default;
-
-    /*void AssimpModel::AddMesh(std::unique_ptr<ModelMesh> mesh)
-    {
-        m_meshes.push_back(mesh);
-    }*/
 
     std::unique_ptr<ModelMesh>& Model::AddMesh()
     {

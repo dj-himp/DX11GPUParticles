@@ -13,6 +13,7 @@ namespace DemoParticles
     class RenderParticles;
     class RenderForceField;
     class RenderModelAndEmitBuffer;
+    class RenderModel;
 
     class SceneMenger : public IScene
     {
@@ -35,11 +36,11 @@ namespace DemoParticles
         int getCurrentParticlesCount();
     private:
 
-        std::unique_ptr<MengerRenderer> m_mengerRenderer;
+        //std::unique_ptr<MengerRenderer> m_mengerRenderer;
         std::unique_ptr<BakeModelParticles> m_bakeModelParticles;
         std::unique_ptr<RenderFullscreenQuad> m_fullScreenQuad;
         std::unique_ptr<RenderParticles> m_renderParticles;
-        
+        std::unique_ptr<RenderModel> m_renderModel;
 
 
         std::unique_ptr<RenderTarget> m_rtBakePositions;

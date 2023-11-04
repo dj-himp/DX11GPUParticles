@@ -1,6 +1,8 @@
 #pragma once
 #include "ModelMesh.h"
 
+#include "ModelAnimator.h"
+
 namespace DemoParticles
 {
 
@@ -33,6 +35,8 @@ namespace DemoParticles
         const size_t getMeshCount() { return m_meshes.size(); }
         const std::unique_ptr<ModelMesh>& getMesh(int index) { return m_meshes[index]; }
 
+        std::unique_ptr<ModelAnimator>& getAnimator() { return m_animator; }
+
     private:
         const DX::DeviceResources* m_deviceResources;
 
@@ -44,5 +48,7 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector3 m_aaBoxMin;
         DirectX::SimpleMath::Vector3 m_aaBoxMax;
         DirectX::SimpleMath::Vector3 m_aaBoxCentre;
+
+        std::unique_ptr<ModelAnimator> m_animator;
     };
 }

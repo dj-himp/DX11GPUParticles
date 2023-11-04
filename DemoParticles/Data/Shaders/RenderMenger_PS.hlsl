@@ -1,4 +1,5 @@
 #include "Globals.h"
+#include "Particles/ParticlesGlobals.h"
 
 struct PixelShaderInput
 {
@@ -464,6 +465,9 @@ struct PixelShaderOutput
     float4 color : SV_TARGET;
 };
 
+AppendStructuredBuffer<Particle> particleBuffer : register(u2); //start at u2 because u0 & u1 are render target and depth see OMSetRenderTargetsAndUnorderedAccessViews
+RWBuffer<uint> indirectDispatchArgs : register(u3);
+
 PixelShaderOutput main(PixelShaderInput input)
 {
 
@@ -555,7 +559,19 @@ PixelShaderOutput main(PixelShaderInput input)
         }
 
         output.color = float4(color, 1.0);
+        
+        //if (obj.w == 1.0)
+        {
+            Particle p = (Particle)0;
+            p.position = float4(pos, 1.0);
+            p.color = float4(color, 1.0);
+            p.normal = float4(normal, 1.0);
+            particleBuffer.Append(p);
 
+            InterlockedAdd(indirectDispatchArgs[0], 1);
+        
+            discard;
+        }
     }
 
     color = lerp(color, glowColor, obj.x);

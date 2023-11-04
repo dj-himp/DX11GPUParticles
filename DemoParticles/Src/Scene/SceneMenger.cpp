@@ -10,6 +10,7 @@
 #include "Content/RenderParticles.h"
 #include "Common/ComputeShader.h"
 #include "Common/InputManager.h"
+#include "Content/RenderModel.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -19,10 +20,11 @@ namespace DemoParticles
     SceneMenger::SceneMenger(const DX::DeviceResources* deviceResources)
         : IScene(deviceResources)
     {
-        m_mengerRenderer = std::make_unique<MengerRenderer>(deviceResources);
+        //m_mengerRenderer = std::make_unique<MengerRenderer>(deviceResources);
         m_bakeModelParticles = std::make_unique<BakeModelParticles>(deviceResources);
         m_fullScreenQuad = std::make_unique<RenderFullscreenQuad>(deviceResources);
         m_renderParticles = std::make_unique<RenderParticles>(deviceResources);
+        m_renderModel = std::make_unique<RenderModel>(deviceResources);
     }
 
     SceneMenger::~SceneMenger()
@@ -109,11 +111,11 @@ namespace DemoParticles
         m_renderParticles->setBakedIndirectArgs(m_indirectComputeArgsBuffer);
         m_renderParticles->setBakedParticleUAV(m_bakedUAV);
 
-        m_mengerRenderer->createDeviceDependentResources();
+        //m_mengerRenderer->createDeviceDependentResources();
         m_bakeModelParticles->createDeviceDependentResources();
         m_fullScreenQuad->createDeviceDependentResources();
         m_renderParticles->createDeviceDependentResources();
-       
+        m_renderModel->createDeviceDependentResources();
     }
 
     void SceneMenger::createWindowSizeDependentResources()
@@ -126,16 +128,16 @@ namespace DemoParticles
         Matrix posScale = Matrix::CreateTranslation(0.0f, 0.0f, 0.0f) * Matrix::CreateScale(0.5f, 0.5f, 1.0f);
         m_fullScreenQuad->setPosScale(posScale);
 
-        m_mengerRenderer->createWindowSizeDependentResources();
+        //m_mengerRenderer->createWindowSizeDependentResources();
         m_bakeModelParticles->createWindowSizeDependentResources();
         m_fullScreenQuad->createWindowSizeDependentResources();
         m_renderParticles->createWindowSizeDependentResources();
-
+        m_renderModel->createWindowSizeDependentResources();
     }
 
     void SceneMenger::releaseDeviceDependentResources()
     {
-        m_mengerRenderer->releaseDeviceDependentResources();
+        //m_mengerRenderer->releaseDeviceDependentResources();
     }
 
     void SceneMenger::update(DX::StepTimer const& timer, Camera* camera /*= nullptr*/)
@@ -177,10 +179,11 @@ namespace DemoParticles
         m_sceneConstantBufferData.rngSeed = (float)std::rand();
 
 
-        m_mengerRenderer->update(timer, camera);
+        //m_mengerRenderer->update(timer, camera);
         m_bakeModelParticles->update(timer);
         m_fullScreenQuad->update(timer);
         m_renderParticles->update(timer, camera);
+        m_renderModel->update(timer, camera);
     }
 
     void SceneMenger::render()
@@ -268,6 +271,8 @@ namespace DemoParticles
         //m_fullScreenQuad->setTexture(m_computePackParticle->getRenderTarget(0)->getShaderResourceView());
         //m_fullScreenQuad->setTexture(m_rtBakePositions->getShaderResourceView().Get());
         //m_fullScreenQuad->render();
+
+        m_renderModel->render();
     }
 
     void SceneMenger::RenderImGui(Camera* camera)

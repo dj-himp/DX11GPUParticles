@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "Model/Model.h" //TO DO maybe remove this reference
+
 namespace DemoParticles
 {
     //__declspec(align(16))
@@ -190,6 +192,11 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector2 offsetDensity;
     };
 
+    struct SkinnedConstantBuffer
+    {
+        DirectX::SimpleMath::Matrix boneTransforms[96];
+    };
+
     struct Particle
     {
         DirectX::SimpleMath::Vector4 position;
@@ -250,5 +257,7 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector3 tangent;
         DirectX::SimpleMath::Vector3 bitangent;
         DirectX::SimpleMath::Vector2 uv;
+        DirectX::SimpleMath::Vector4 blendWeight;
+        uint8_t                      boneIndices[4];
     };
 }

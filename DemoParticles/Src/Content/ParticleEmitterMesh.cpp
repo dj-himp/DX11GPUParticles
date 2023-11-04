@@ -30,7 +30,9 @@ namespace DemoParticles
         //m_model = m_modelLoader->load("CatMac.fbx");
         //m_model = m_modelLoader->load("TrexByJoel3d.fbx", true);
         //m_model = m_modelLoader->load("deer.fbx");
-        m_model = m_modelLoader->load("Wolf.fbx", true);
+        m_model = m_modelLoader->load("Blender_Monkey_Suzanne.fbx", true);
+        m_scale = Vector3(0.01f);
+        m_rotation.y = -DirectX::XM_PI / 2.0f;
 
         m_emitParticles = std::make_unique<ComputeShader>(m_deviceResources);
         m_emitParticles->load(L"EmitParticlesMesh_CS.cso");

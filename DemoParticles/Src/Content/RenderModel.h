@@ -26,8 +26,6 @@ namespace DemoParticles
 
     private:
 
-        void updateConstantBuffer();
-
         std::unique_ptr<ModelLoader> m_modelLoader; //TODO make a singleton or simple object not pointer
         std::unique_ptr<Model> m_model;
         std::unique_ptr<Camera> m_camera;
@@ -37,6 +35,10 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector3 m_position = DirectX::SimpleMath::Vector3(0.0f);
 
         WorldConstantBuffer m_constantBufferData;
+
+        SkinnedConstantBuffer m_skinnedConstantBufferData;
+        Microsoft::WRL::ComPtr<ID3D11Buffer> m_skinnedConstantBuffer;
+
         std::unique_ptr<VertexShader> m_modelVS;
         std::unique_ptr<PixelShader> m_modelPS;
     };

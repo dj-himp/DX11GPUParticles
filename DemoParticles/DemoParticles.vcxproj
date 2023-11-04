@@ -513,6 +513,7 @@
     <ClInclude Include="Src\Common\ComputeShader.h" />
     <ClInclude Include="Src\GlobalSettings.h" />
     <ClInclude Include="Src\Gui\Sequencer.h" />
+    <ClInclude Include="Src\Model\AssimpToDX.h" />
     <ClInclude Include="Src\Scene\SceneMenger.h" />
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\Camera\CameraControllerFPS.h" />
@@ -667,6 +668,30 @@
     <CopyFileToFolders Include="Data\Models\Blender_Monkey_Suzanne_high_poly.fbx">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\Motion_Move.DAE">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\soldierAHigh.DAE">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\cat.blend">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\cat.dae">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\cat.fbx">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\Hand_rigged.fbx">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\magician.X">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\Glasse_Walk_Cycle.fbx">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <None Include="Extern\assimp\.editorconfig" />
     <None Include="Extern\assimp\color4.inl" />
     <None Include="Extern\assimp\config.h.in" />
@@ -680,6 +705,11 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Data\Textures\CatMac__C.png" />
+    <CopyFileToFolders Include="Data\Textures\soldierAHighDIFF.dds" />
+    <CopyFileToFolders Include="Data\Textures\soldierAHighILUM.dds" />
+    <CopyFileToFolders Include="Data\Textures\soldierAHighNORM.dds" />
+    <CopyFileToFolders Include="Data\Textures\soldierAHighSPEC.dds" />
+    <CopyFileToFolders Include="Data\Textures\soldierAHigh_G_DIFF.dds" />
     <ImageContentTask Include="Data\Textures\noisy-texture-256x256.png">
       <Compress Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">None</Compress>
       <GeneratePremultipliedAlpha Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GeneratePremultipliedAlpha>
@@ -881,7 +911,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="Data\Shaders\RenderModelAndEmitInit_CS.hlsl">
+    <FxCompile Include="Data\Shaders\ResetIndirectComputeArgs1D_CS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>

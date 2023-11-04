@@ -35,6 +35,11 @@ namespace DemoParticles
 
         std::unique_ptr<ModelLoader> m_modelLoader; //TODO make a singleton or simple object not pointer
         std::unique_ptr<Model> m_model;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_diffuseTextureSRV;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_ilumTextureSRV;
+        
+        
+        
         std::unique_ptr<Camera> m_camera;
 
         DirectX::SimpleMath::Matrix m_world;
@@ -61,8 +66,14 @@ namespace DemoParticles
         ModelToEmitConstantBuffer m_modelToEmitConstantBufferData;
         Microsoft::WRL::ComPtr<ID3D11Buffer> m_modelToEmitConstantBuffer;
 
+        SkinnedConstantBuffer m_skinnedConstantBufferData;
+        Microsoft::WRL::ComPtr<ID3D11Buffer> m_skinnedConstantBuffer;
+
         DirectX::SimpleMath::Vector2 m_scaleDensity;
         DirectX::SimpleMath::Vector2 m_offsetDensity;
+
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_diffuseTextureSRV;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_ilumTextureSRV;
 
     };
 }
