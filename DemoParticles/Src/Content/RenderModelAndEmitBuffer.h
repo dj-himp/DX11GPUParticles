@@ -35,8 +35,6 @@ namespace DemoParticles
 
         std::unique_ptr<ModelLoader> m_modelLoader; //TODO make a singleton or simple object not pointer
         std::unique_ptr<Model> m_model;
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_diffuseTextureSRV;
-        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_ilumTextureSRV;
         
         
         

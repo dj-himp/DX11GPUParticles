@@ -25,8 +25,8 @@ namespace DemoParticles
         //m_model = m_modelLoader->load("CatMac.fbx");
         //m_model = m_modelLoader->load("deer.fbx");
         //m_model = m_modelLoader->load("Motion_Move.DAE");
-        m_model = m_modelLoader->load("Hand_rigged.fbx");
-        //m_model = m_modelLoader->load("magician.X");
+        //m_model = m_modelLoader->load("Hand_rigged.fbx");
+        m_model = m_modelLoader->load("magician.X");
 
         m_modelVS = std::make_unique<VertexShader>(m_deviceResources);
         m_modelVS->load(L"RenderModel_VS.cso", m_model->getInputElements());
@@ -53,7 +53,7 @@ namespace DemoParticles
         );
 
         //Z rotation is temporary as I need to know why the model is upside down
-        m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(-DirectX::XM_PI/2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(0.0f/*-DirectX::XM_PI/2.0f*/) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
     }
 
     void RenderModel::createWindowSizeDependentResources()
@@ -72,9 +72,21 @@ namespace DemoParticles
 
         m_constantBufferData.world = m_world.Transpose();
 
-        std::vector<Matrix> transforms = m_model->getAnimator()->getTransforms(timer.GetElapsedSeconds());
+        //TO DO Move it to model.h/cpp
+        std::vector<Matrix> transforms = m_model->getAnimator()->getTransforms(timer.GetTotalSeconds());
         for (int i = 0; i < transforms.size(); ++i)
         {
+            /*std::string s = "";
+            for (int a = 0; a < 4; ++a)
+            {
+                for (int b = 0; b < 4; ++b)
+                {
+                    s += std::to_string(transforms[i].m[a][b]);
+                    s += ";";
+                }
+            }
+            DebugUtils::log(s);
+            */
             m_skinnedConstantBufferData.boneTransforms[i] = transforms[i];// .Transpose(); //normally allready transposed in loading
         }
     }
@@ -100,7 +112,11 @@ namespace DemoParticles
             context->VSSetConstantBuffers(1, 1, m_constantBuffer.GetAddressOf());
             context->VSSetConstantBuffers(2, 1, m_skinnedConstantBuffer.GetAddressOf());
 
-            context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
+            //context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
+            context->RSSetState(RenderStatesHelper::CullClockwise().Get());
+            const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
+            context->OMSetBlendState(RenderStatesHelper::Opaque().Get(), blendFactor, 0xffffffff);
+            context->OMSetDepthStencilState(RenderStatesHelper::DepthDefault().Get(), 0);
 
             context->PSSetShader(m_modelPS->getPixelShader(), nullptr, 0);
 

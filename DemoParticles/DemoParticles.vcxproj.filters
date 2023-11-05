@@ -231,6 +231,15 @@
     <ClCompile Include="Extern\imgui\imgui_tables.cpp">
       <Filter>Extern\imgui</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Model\ModelAnimator.cpp">
+      <Filter>Src\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Model\AnimEvaluator.cpp">
+      <Filter>Src\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Model\Bone.cpp">
+      <Filter>Src\Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Common\DeviceResources.h">
@@ -615,6 +624,15 @@
       <Filter>Extern\imgui</Filter>
     </ClInclude>
     <ClInclude Include="Src\Model\AssimpToDX.h">
+      <Filter>Src\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Model\ModelAnimator.h">
+      <Filter>Src\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Model\AnimEvaluator.h">
+      <Filter>Src\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Model\Bone.h">
       <Filter>Src\Model</Filter>
     </ClInclude>
   </ItemGroup>

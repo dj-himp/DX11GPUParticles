@@ -34,16 +34,17 @@ namespace DemoParticles
             assert(0);
         }
 
+        //init skeleton first to have all info to create vertex buffer
         model->getAnimator()->init(scene);
 
-        AddVertexData(model, scene, createSRV);
+        LoadMeshes(model, scene, createSRV);
 
 
         return std::move(model);
     }
 
     //Create meshes and add vertex and index buffers
-    void ModelLoader::AddVertexData(std::unique_ptr<Model>& model, const aiScene* scene, const bool createSRV)
+    void ModelLoader::LoadMeshes(std::unique_ptr<Model>& model, const aiScene* scene, const bool createSRV)
     {
         
         unsigned int startMeshVertexId = 0;
@@ -156,6 +157,8 @@ namespace DemoParticles
             for(int boneId=0;boneId<mesh->mNumBones;++boneId)
             {
                 aiBone* bone = mesh->mBones[boneId];
+
+                // ????? MAYBE USELESS SINCE std::vector in c++ instead of list in C# ??????
                 int boneIndex = model->getAnimator()->getBoneIndex(std::string(bone->mName.C_Str()));
                 // bone weights are recorded per bone in assimp, with each bone containing a list of the vertices influenced by it
                 // we really want the reverse mapping, i.e. lookup the vertexID and get the bone id and weight

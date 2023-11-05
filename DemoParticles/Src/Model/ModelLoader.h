@@ -20,7 +20,7 @@ namespace DemoParticles
 
     private:
 
-        void AddVertexData(std::unique_ptr<Model>& model, const aiScene* scene, const bool createSRV);
+        void LoadMeshes(std::unique_ptr<Model>& model, const aiScene* scene, const bool createSRV);
         void InitMesh(std::unique_ptr<Model>& model, const aiScene* scene, const bool createSRV);
         int GetNoofInputElements(aiMesh* mesh);
 

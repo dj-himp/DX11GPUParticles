@@ -48,51 +48,44 @@ namespace DemoParticles
                 m_bonesToIndex[found->first] = m_bones.size() - 1;
             }
             
-            /*std::for_each(m_bonesByName.begin(), m_bonesByName.end(), [&](BoneMap::value_type& item)
-                {
-                    for (int k = 0; k < mesh->mNumBones; ++k)
-                    {
-                        std::string boneName = std::string(mesh->mBones[k]->mName.C_Str());
-                        if (boneName != item.second->m_name && boneName.rfind("Bone", 0) == 0)
-                        {
-                            item.second->m_offset = item.second->m_parent->m_offset;
-                            m_bones.push_back(item.second.get());
-                            std::ptrdiff_t index = std::distance(m_bones.begin(), std::find(m_bones.begin(), m_bones.end(), item.second.get()));
-                            m_bonesToIndex[item.first] = index;
-                        }
-                    }
-                    
-                });*/
 
-            //version chatGPT
-            for (const auto& entry : m_bonesByName) 
-            {
-                const std::string& bone = entry.first;
-                Bone* boneInfo = entry.second.get();
-
-                if (boneInfo->m_parent)
-                {
-                    Bone* parentBoneInfo = m_bonesByName[boneInfo->m_parent->m_name].get();
-
-                    if (std::all_of(m_bones.begin(), m_bones.end(), [&](const Bone* b1)
-                        {
-                            return b1->m_name != bone && b1->m_name != parentBoneInfo->m_name;
-                        }) 
-                    && bone.find("Bone") == 0)
-                    {
-                        boneInfo->m_offset = parentBoneInfo->m_offset;
-                        m_bones.push_back(boneInfo);
-                        m_bonesToIndex[bone] = m_bones.size() - 1;
-                    }
-                }
-            }
-
+            
+            //NOT WORKING ??
+            
             //b : all bones where mesh.bones.name != m_bonesByName.keys && startWith "Bone"
             /*foreach(var bone in _bonesByName.Keys.Where(b = > mesh1.Bones.All(b1 = > b1.Name != b) && b.StartsWith("Bone"))) {
                 _bonesByName[bone].Offset = _bonesByName[bone].Parent.Offset;
                 _bones.Add(_bonesByName[bone]);
                 _bonesToIndex[bone] = _bones.IndexOf(_bonesByName[bone]);
             }*/
+            
+            for (const auto& entry : m_bonesByName) 
+            {
+                const std::string& boneName = entry.first;
+                Bone* boneInfo = entry.second.get();
+                if (boneName.find("Bone") != 0)
+                {
+                    continue;
+                }
+                bool found = true;
+                for (int j = 0; j < mesh->mNumBones; ++j)
+                {
+                    std::string bname = std::string(mesh->mBones[j]->mName.C_Str());
+                    if (bname == boneName)
+                    {
+                        found = false;
+                        break;
+                    }
+                }
+                if(!found)
+                    continue;
+
+                boneInfo->m_offset = boneInfo->m_parent->m_offset;
+                m_bones.push_back(boneInfo);
+                m_bonesToIndex[boneName] = m_bones.size() - 1;
+            }
+
+            
         }
         extractAnimations(scene);
         const float timestep = 1.0f / 30.0f;
@@ -151,7 +144,7 @@ namespace DemoParticles
         internalNode->m_parent = parent;
                 
         if (internalNode->m_name == "") {
-            internalNode->m_name = "foo" + m_i++;
+            internalNode->m_name = std::string("foo") + std::to_string(m_i++);
         }
 
         

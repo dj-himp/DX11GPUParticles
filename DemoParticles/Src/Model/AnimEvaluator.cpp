@@ -124,7 +124,7 @@ namespace DemoParticles
                 }
                 if (diffTime > 0)
                 {
-                    float factor = (float)((time - key.mTime) / diffTime);
+                    float factor = (time - key.mTime) / diffTime;
                     aiQuaternion::Interpolate(pRot, key.mValue, nextKey.mValue, factor);
                 }
                 else {
@@ -178,7 +178,7 @@ namespace DemoParticles
         if (!m_playAnimationForward) {
             percent = (percent - 1.0f) * -1.0f;
         }
-        int frameIndexAt = (int)(m_transforms.size() * percent);
+        int frameIndexAt = (int)((float)m_transforms.size() * percent);
         return frameIndexAt;
     }
 

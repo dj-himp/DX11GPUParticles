@@ -21,7 +21,7 @@ namespace DemoParticles
         : IScene(deviceResources)
     {
         //m_mengerRenderer = std::make_unique<MengerRenderer>(deviceResources);
-        m_bakeModelParticles = std::make_unique<BakeModelParticles>(deviceResources);
+        //m_bakeModelParticles = std::make_unique<BakeModelParticles>(deviceResources);
         m_fullScreenQuad = std::make_unique<RenderFullscreenQuad>(deviceResources);
         m_renderParticles = std::make_unique<RenderParticles>(deviceResources);
         m_renderModel = std::make_unique<RenderModel>(deviceResources);
@@ -112,7 +112,7 @@ namespace DemoParticles
         m_renderParticles->setBakedParticleUAV(m_bakedUAV);
 
         //m_mengerRenderer->createDeviceDependentResources();
-        m_bakeModelParticles->createDeviceDependentResources();
+        //m_bakeModelParticles->createDeviceDependentResources();
         m_fullScreenQuad->createDeviceDependentResources();
         m_renderParticles->createDeviceDependentResources();
         m_renderModel->createDeviceDependentResources();
@@ -129,7 +129,7 @@ namespace DemoParticles
         m_fullScreenQuad->setPosScale(posScale);
 
         //m_mengerRenderer->createWindowSizeDependentResources();
-        m_bakeModelParticles->createWindowSizeDependentResources();
+        //m_bakeModelParticles->createWindowSizeDependentResources();
         m_fullScreenQuad->createWindowSizeDependentResources();
         m_renderParticles->createWindowSizeDependentResources();
         m_renderModel->createWindowSizeDependentResources();
@@ -180,7 +180,7 @@ namespace DemoParticles
 
 
         //m_mengerRenderer->update(timer, camera);
-        m_bakeModelParticles->update(timer);
+        //m_bakeModelParticles->update(timer);
         m_fullScreenQuad->update(timer);
         m_renderParticles->update(timer, camera);
         m_renderModel->update(timer, camera);
@@ -212,7 +212,7 @@ namespace DemoParticles
             context->ClearRenderTargetView(renderTargets[0], Colors::Transparent);
             context->ClearRenderTargetView(renderTargets[1], Colors::Transparent);
 
-            m_bakeModelParticles->render();
+            //m_bakeModelParticles->render();
 
             D3D11_VIEWPORT viewport = m_deviceResources->GetScreenViewport();
             context->RSSetViewports(1, &viewport);

@@ -286,6 +286,9 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
     </ClCompile>
+    <ClCompile Include="Src\Model\AnimEvaluator.cpp" />
+    <ClCompile Include="Src\Model\Bone.cpp" />
+    <ClCompile Include="Src\Model\ModelAnimator.cpp" />
     <ClCompile Include="Src\Scene\SceneMenger.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
@@ -513,7 +516,10 @@
     <ClInclude Include="Src\Common\ComputeShader.h" />
     <ClInclude Include="Src\GlobalSettings.h" />
     <ClInclude Include="Src\Gui\Sequencer.h" />
+    <ClInclude Include="Src\Model\AnimEvaluator.h" />
     <ClInclude Include="Src\Model\AssimpToDX.h" />
+    <ClInclude Include="Src\Model\Bone.h" />
+    <ClInclude Include="Src\Model\ModelAnimator.h" />
     <ClInclude Include="Src\Scene\SceneMenger.h" />
     <ClInclude Include="Src\Camera\Camera.h" />
     <ClInclude Include="Src\Camera\CameraControllerFPS.h" />
