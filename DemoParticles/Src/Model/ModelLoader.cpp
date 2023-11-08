@@ -33,29 +33,19 @@ namespace DemoParticles
             assert(0);
         }
 
-        Matrix transform = Matrix::Identity;
-        AddVertexData(model, scene, scene->mRootNode, transform, createSRV);
+        loadMeshes(model, scene, createSRV);
 
 
         return std::move(model);
     }
 
     //Create meshes and add vertex and index buffers
-    void ModelLoader::AddVertexData(std::unique_ptr<Model>& model, const aiScene* scene, const aiNode* node, Matrix& transform, const bool createSRV)
+    void ModelLoader::loadMeshes(std::unique_ptr<Model>& model, const aiScene* scene, const bool createSRV)
     {
-        Matrix previousTransform = transform;
-        transform = previousTransform * FromMatrix(node->mTransformation);
-
-        //also calculate inverse transpose matrix for normal/tangent/bitagent transformation
-        Matrix invTranspose = transform;
-        invTranspose.Invert();
-        invTranspose.Transpose();
-
-        
-        for (unsigned int meshId = 0; meshId < node->mNumMeshes; ++meshId)
+        for (unsigned int meshId = 0; meshId < scene->mNumMeshes; ++meshId)
         {
             //get a mesh from the scene
-            aiMesh* mesh = scene->mMeshes[node->mMeshes[meshId]];
+            aiMesh* mesh = scene->mMeshes[meshId];
 
             //create new mesh to add to model
             std::unique_ptr<ModelMesh>& modelMesh = model->AddMesh();
@@ -152,9 +142,7 @@ namespace DemoParticles
             {
                 //add position, after transforming it with accumulated node transform
                 {
-                    Vector3 pos = FromVector(positions[i]);
-                    vertices[i].position = Vector3::Transform(pos, transform);
-                    //vertices[i].position = pos;
+                    vertices[i].position = FromVector(positions[i]);
                 }
 
                 if (hasColors)
@@ -163,18 +151,15 @@ namespace DemoParticles
                 }
                 if (hasNormals)
                 {
-                    Vector3 normal = FromVector(normals[i]);
-                    vertices[i].normal = Vector3::Transform(normal, invTranspose);
+                    vertices[i].normal = FromVector(normals[i]);
                 }
                 if (hasTangents)
                 {
-                    Vector3 tangent = FromVector(tangents[i]);
-                    vertices[i].tangent = Vector3::Transform(tangent, invTranspose);
+                    vertices[i].tangent = FromVector(tangents[i]);
                 }
                 if (hasBitangents)
                 {
-                    Vector3 biTangent = FromVector(biTangents[i]);
-                    vertices[i].bitangent = Vector3::Transform(biTangent, invTranspose);
+                    vertices[i].bitangent = FromVector(biTangents[i]);
                 }
                 if (hasTexCoords)
                 {
@@ -309,13 +294,6 @@ namespace DemoParticles
             }
         }
 
-        //if node has more children process them as well
-        for (unsigned int i = 0; i < node->mNumChildren; ++i)
-        {
-            AddVertexData(model, scene, node->mChildren[i], transform, createSRV);
-        }
-
-        transform = previousTransform;
     }
 
     //determine the number of elements in the vertex
