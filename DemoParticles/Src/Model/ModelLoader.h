@@ -5,6 +5,7 @@
 struct aiScene;
 struct aiNode;
 struct aiMesh;
+struct aiBone;
 
 namespace DemoParticles
 {    
@@ -21,6 +22,9 @@ namespace DemoParticles
     private:
 
         void loadMeshes(std::unique_ptr<Model>& model, const aiScene* scene, const bool createSRV);
+        void loadMeshBones(std::unique_ptr<Model>& model, const aiMesh* mesh);
+        int getBoneID(std::unique_ptr<Model>& model, const aiBone* bone);
+
         int GetNoofInputElements(aiMesh* mesh);
 
         const DX::DeviceResources* m_deviceResources;

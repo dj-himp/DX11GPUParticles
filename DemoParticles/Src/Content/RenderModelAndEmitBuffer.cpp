@@ -33,12 +33,12 @@ namespace DemoParticles
         m_modelLoader = std::make_unique<ModelLoader>(m_deviceResources);
         //m_model = m_modelLoader->load("stanford-bunny.fbx");
         //m_model = m_modelLoader->load("cube.dae");
-        m_model = m_modelLoader->load("Blender_Monkey_Suzanne.fbx");
-        m_world = Matrix::CreateScale(1.0f) * Matrix::CreateRotationX(-DirectX::XM_PI / 2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        //m_model = m_modelLoader->load("Blender_Monkey_Suzanne.fbx");
+        //m_world = Matrix::CreateScale(1.0f) * Matrix::CreateRotationX(-DirectX::XM_PI / 2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
 
-        //m_model = m_modelLoader->load("Motion_Move.DAE");
+        m_model = m_modelLoader->load("Motion_Move.DAE");
         //m_model = m_modelLoader->load("Hand_rigged.fbx");
-        //m_world = Matrix::CreateScale(1.0f) * Matrix::CreateRotationX(DirectX::XM_PI) * Matrix::CreateRotationY(0.0f) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        m_world = Matrix::CreateScale(1.0f) * Matrix::CreateRotationX(DirectX::XM_PI) * Matrix::CreateRotationY(0.0f) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
 
         DX::ThrowIfFailed(
             CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"soldierAHighDIFF.dds", nullptr, m_diffuseTextureSRV.GetAddressOf())

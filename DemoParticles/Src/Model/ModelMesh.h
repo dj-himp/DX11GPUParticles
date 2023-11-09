@@ -34,6 +34,9 @@ namespace DemoParticles
         void setIndexCount(int indexCount) { m_indexCount = indexCount; }
         int getIndexCount() { return m_indexCount; }
 
+        int getBaseVertex() const { return m_baseVertex; }
+        void setBaseVertex(int val) { m_baseVertex = val; }
+
     private:
         const DX::DeviceResources* m_deviceResources;
 
@@ -50,5 +53,7 @@ namespace DemoParticles
         int m_vertexCount;
         int m_primitiveCount;
         int m_indexCount;
+
+        int m_baseVertex; //first vertex of the mesh (as offset for bonesID)
     };
 }

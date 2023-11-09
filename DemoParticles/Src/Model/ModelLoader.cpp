@@ -7,6 +7,7 @@
 
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <assimp/mesh.h>
 
 using namespace DirectX::SimpleMath;
 
@@ -42,6 +43,8 @@ namespace DemoParticles
     //Create meshes and add vertex and index buffers
     void ModelLoader::loadMeshes(std::unique_ptr<Model>& model, const aiScene* scene, const bool createSRV)
     {
+        int baseVertex = 0;
+
         for (unsigned int meshId = 0; meshId < scene->mNumMeshes; ++meshId)
         {
             //get a mesh from the scene
@@ -49,6 +52,8 @@ namespace DemoParticles
 
             //create new mesh to add to model
             std::unique_ptr<ModelMesh>& modelMesh = model->AddMesh();
+
+            loadMeshBones(model, mesh);
 
             //if mesh has a material extract the diffuse texture, if present
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -135,6 +140,9 @@ namespace DemoParticles
                 //ModelLoader::AddVertexData(): Unknown primitive type
                 assert(0);
             }
+
+            modelMesh->setBaseVertex(baseVertex);
+            baseVertex += mesh->mNumVertices;
 
             //create data stream for vertices
             std::vector<VertexObject> vertices(mesh->mNumVertices);
@@ -294,6 +302,48 @@ namespace DemoParticles
             }
         }
 
+    }
+
+    void ModelLoader::loadMeshBones(std::unique_ptr<Model>& model, const aiMesh* mesh)
+    {
+        for (int i = 0; i < mesh->mNumBones; ++i)
+        {
+            const aiBone* bone = mesh->mBones[i];
+
+            int boneId = getBoneID(model, bone);
+
+            if (boneId == model->m_boneInfo.size()) {
+                Model::BoneInfo bi(FromMatrix(bone->mOffsetMatrix));
+                // bi.OffsetMatrix.Print();
+                model->m_boneInfo.push_back(bi);
+            }
+
+            for (int j = 0; j < bone->mNumWeights; j++) {
+                const aiVertexWeight& vw = bone->mWeights[j];
+                int globalVertexID = model->getMesh(model->getMeshCount() - 1)->getBaseVertex() + bone->mWeights[j].mVertexId;
+                // printf("%d: %d %f\n",i, pBone->mWeights[i].mVertexId, vw.mWeight);
+                model->m_Bones[globalVertexID].AddBoneData(boneId, vw.mWeight);
+            }
+
+            //MarkRequiredNodesForBone(pBone);
+        }
+    }
+
+    int ModelLoader::getBoneID(std::unique_ptr<Model>& model, const aiBone* bone)
+    {
+        int boneIndex = 0;
+        std::string boneName(bone->mName.C_Str());
+
+        if (model->m_boneNameToIndexMap.find(boneName) == model->m_boneNameToIndexMap.end()) {
+            // Allocate an index for a new bone
+            boneIndex = (int)model->m_boneNameToIndexMap.size();
+            model->m_boneNameToIndexMap[boneName] = boneIndex;
+        }
+        else {
+            boneIndex = model->m_boneNameToIndexMap[boneName];
+        }
+
+        return boneIndex;
     }
 
     //determine the number of elements in the vertex
