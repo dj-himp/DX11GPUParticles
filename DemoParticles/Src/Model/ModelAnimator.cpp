@@ -16,8 +16,6 @@ namespace DemoParticles
 
     ModelAnimator::~ModelAnimator() = default;
 
-    //ModelAnimator::~ModelAnimator() = default;
-
     void ModelAnimator::init(const aiScene* scene)
     {
         if (!scene->HasAnimations()) {
@@ -36,9 +34,9 @@ namespace DemoParticles
                 auto found = m_bonesByName.find(std::string(bone->mName.C_Str()));
                 if (found == m_bonesByName.end()) continue;
 
-                //bool skip = (from t in _bones let bname = bone.Name where t.Name == bname select t).Any();
+                //bool skip = (from t in _bones let bname = bone.Name where t.Name == bname select t).Any();)
                 //bool skip = std::find_if(m_bones.begin(), m_bones.end(), [&](Bone* b) { return b->m_name == std::string(bone->mName.C_Str()); }) != m_bones.end();
-                bool skip = std::any_of(m_bones.begin(), m_bones.end(), [&](const Bone* b) { return b->m_name == bone->mName.C_Str(); });
+                bool skip = std::any_of(m_bones.begin(), m_bones.end(), [&](const Bone* b) { return b->m_name == std::string(bone->mName.C_Str()); });
                 if (skip) continue;
 
                 //found.Offset = Matrix.Transpose(bone.OffsetMatrix.ToMatrix());
@@ -59,19 +57,19 @@ namespace DemoParticles
                 _bonesToIndex[bone] = _bones.IndexOf(_bonesByName[bone]);
             }*/
             
-            for (const auto& entry : m_bonesByName) 
+            /*for (const auto& entry : m_bonesByName)
             {
-                const std::string& boneName = entry.first;
+                const std::string& b = entry.first;
                 Bone* boneInfo = entry.second.get();
-                if (boneName.find("Bone") != 0)
+                if (b.find("Bone") != 0)
                 {
                     continue;
                 }
                 bool found = true;
                 for (int j = 0; j < mesh->mNumBones; ++j)
                 {
-                    std::string bname = std::string(mesh->mBones[j]->mName.C_Str());
-                    if (bname == boneName)
+                    std::string b1 = std::string(mesh->mBones[j]->mName.C_Str());
+                    if (b1 == b)
                     {
                         found = false;
                         break;
@@ -82,8 +80,8 @@ namespace DemoParticles
 
                 boneInfo->m_offset = boneInfo->m_parent->m_offset;
                 m_bones.push_back(boneInfo);
-                m_bonesToIndex[boneName] = m_bones.size() - 1;
-            }
+                m_bonesToIndex[b] = m_bones.size() - 1;
+            }*/
 
             
         }

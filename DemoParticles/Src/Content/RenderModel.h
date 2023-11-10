@@ -24,6 +24,9 @@ namespace DemoParticles
         void update(DX::StepTimer const& timer, Camera* camera = nullptr) override;
         void render() override;
 
+
+        void RenderImGui(Camera* camera) override;
+
     private:
 
         std::unique_ptr<ModelLoader> m_modelLoader; //TODO make a singleton or simple object not pointer
@@ -41,5 +44,16 @@ namespace DemoParticles
 
         std::unique_ptr<VertexShader> m_modelVS;
         std::unique_ptr<PixelShader> m_modelPS;
+
+        //TEMP
+        struct DebugBoneCS
+        {
+            int boneID = 0;
+
+            int pad[3];
+        };
+
+        DebugBoneCS m_debugBoneConstantBufferData;
+        Microsoft::WRL::ComPtr<ID3D11Buffer> m_debugBoneConstantBuffer;
     };
 }

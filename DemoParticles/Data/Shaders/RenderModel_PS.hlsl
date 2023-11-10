@@ -1,4 +1,11 @@
 
+cbuffer renderModelPSConstantBuffer : register(b1)
+{
+    int currentBoneID;
+
+    int pad[3];
+}
+
 struct PixelShaderInput
 {
     float4 Position : SV_POSITION;
@@ -23,12 +30,10 @@ PixelShaderOutput main(PixelShaderInput input)
 
     //output.Color = diffuseTexture.Sample(LinearSampler, input.UVs);    
 
-    //int boneID = 10;
-    int boneID = 18;
     bool found = false;
     for(int i=0;i<4;++i)
     {
-        if(input.boneIndices[i] == boneID)
+        if(input.boneIndices[i] == currentBoneID)
         {
             if(input.blendWeight[i] >= 0.7)
                 output.Color = float4(1.0, 0.0, 0.0, 1.0) * input.blendWeight[i];

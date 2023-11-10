@@ -52,8 +52,17 @@ namespace DemoParticles
             )
         );
 
+        CD3D11_BUFFER_DESC debugConstantBufferDesc(sizeof(m_debugBoneConstantBufferData), D3D11_BIND_CONSTANT_BUFFER);
+        DX::ThrowIfFailed(
+            m_deviceResources->GetD3DDevice()->CreateBuffer(
+                &debugConstantBufferDesc,
+                nullptr,
+                &m_debugBoneConstantBuffer
+            )
+        );
+
         //Z rotation is temporary as I need to know why the model is upside down
-        m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(0.0f/*-DirectX::XM_PI/2.0f*/) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(-DirectX::XM_PI/2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
     }
 
     void RenderModel::createWindowSizeDependentResources()
@@ -97,6 +106,7 @@ namespace DemoParticles
         
         context->UpdateSubresource1(m_constantBuffer.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
         context->UpdateSubresource1(m_skinnedConstantBuffer.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
+        context->UpdateSubresource1(m_debugBoneConstantBuffer.Get(), 0, NULL, &m_debugBoneConstantBufferData, 0, 0, 0);
         
         for (int i = 0; i < m_model->getMeshCount(); ++i)
         {
@@ -119,9 +129,15 @@ namespace DemoParticles
             context->OMSetDepthStencilState(RenderStatesHelper::DepthDefault().Get(), 0);
 
             context->PSSetShader(m_modelPS->getPixelShader(), nullptr, 0);
+            context->PSSetConstantBuffers(1, 1, m_debugBoneConstantBuffer.GetAddressOf());
 
             context->DrawIndexed(m_model->getMesh(i)->getIndexCount(), 0, 0);
         }
+    }
+
+    void RenderModel::RenderImGui(Camera* camera)
+    {
+        ImGui::DragInt("debug bone ID", &m_debugBoneConstantBufferData.boneID);
     }
 
 }
