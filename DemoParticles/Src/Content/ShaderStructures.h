@@ -80,7 +80,8 @@ namespace DemoParticles
     struct EmitterCubeConstantBuffer
     {
         DirectX::SimpleMath::Matrix world;
-        DirectX::SimpleMath::Color color;
+        DirectX::SimpleMath::Color colorStart;
+        DirectX::SimpleMath::Color colorEnd;
 
         UINT maxSpawn;
         UINT particleOrientation;
