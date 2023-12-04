@@ -96,7 +96,8 @@ namespace DemoParticles
 
     struct EmitterFromBufferConstantBuffer
     {
-        DirectX::SimpleMath::Color color;
+        DirectX::SimpleMath::Color colorStart;
+        DirectX::SimpleMath::Color colorEnd;
 
         UINT maxSpawn;
         UINT particleOrientation;
@@ -196,6 +197,8 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector4 normal;
         DirectX::SimpleMath::Vector4 velocity;
         DirectX::SimpleMath::Color color;
+        DirectX::SimpleMath::Color colorStart;
+        DirectX::SimpleMath::Color colorEnd;
 
         float lifeSpan;
         float age;

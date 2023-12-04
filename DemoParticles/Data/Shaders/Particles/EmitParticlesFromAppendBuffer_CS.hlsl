@@ -3,7 +3,8 @@
 
 cbuffer emitterConstantBuffer : register(b4)
 {
-    float4 color;
+    float4 colorStart;
+    float4 colorEnd;
     
     uint emitterMaxSpawn;
     uint particleOrientation;
@@ -40,7 +41,9 @@ void main(uint3 id : SV_DispatchThreadID)
         p.mass = particlesMass;
 
         p.orientation = particleOrientation;
-        p.color = color;
+        p.colorStart = colorStart;
+        p.colorEnd = colorEnd;
+
         p.sizeStart = particleSizeStart;
         p.sizeEnd = particleSizeEnd;
         

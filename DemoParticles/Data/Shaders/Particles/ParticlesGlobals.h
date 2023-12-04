@@ -5,6 +5,8 @@ struct Particle
     float4 normal;
     float4 velocity;
     float4 color;
+    float4 colorStart;
+    float4 colorEnd;
 
     float lifeSpan;
     float age;
