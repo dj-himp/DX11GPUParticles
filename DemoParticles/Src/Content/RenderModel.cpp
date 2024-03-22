@@ -62,7 +62,7 @@ namespace DemoParticles
         );
 
         //Z rotation is temporary as I need to know why the model is upside down
-        m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(-DirectX::XM_PI/2.0f) * Matrix::CreateRotationY(0.0f/*DirectX::XM_PI / 2.0f*/) * Matrix::CreateRotationZ(0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(DirectX::XM_PI/2.0f) * Matrix::CreateRotationY(DirectX::XM_PI / 2.0f) * Matrix::CreateRotationZ(0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
     }
 
     void RenderModel::createWindowSizeDependentResources()
@@ -97,6 +97,7 @@ namespace DemoParticles
             DebugUtils::log(s);
             */
             m_skinnedConstantBufferData.boneTransforms[i] = transforms[i];// .Transpose(); //normally allready transposed in loading
+            //m_skinnedConstantBufferData.boneTransforms[i] = Matrix::Identity;
         }
     }
 
@@ -105,7 +106,7 @@ namespace DemoParticles
         auto context = m_deviceResources->GetD3DDeviceContext();
         
         context->UpdateSubresource1(m_constantBuffer.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
-        context->UpdateSubresource1(m_skinnedConstantBuffer.Get(), 0, NULL, &m_constantBufferData, 0, 0, 0);
+        context->UpdateSubresource1(m_skinnedConstantBuffer.Get(), 0, NULL, &m_skinnedConstantBufferData, 0, 0, 0);
         context->UpdateSubresource1(m_debugBoneConstantBuffer.Get(), 0, NULL, &m_debugBoneConstantBufferData, 0, 0, 0);
         
         for (int i = 0; i < m_model->getMeshCount(); ++i)
