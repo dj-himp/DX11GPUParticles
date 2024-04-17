@@ -710,6 +710,8 @@
     <CopyFileToFolders Include="Data\Textures\soldierAHighNORM.dds" />
     <CopyFileToFolders Include="Data\Textures\soldierAHighSPEC.dds" />
     <CopyFileToFolders Include="Data\Textures\soldierAHigh_G_DIFF.dds" />
+    <ImageContentTask Include="Data\Textures\Particles\smoke.png" />
+    <ImageContentTask Include="Data\Textures\Particles\Particle.png" />
     <ImageContentTask Include="Data\Textures\noisy-texture-256x256.png">
       <Compress Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">None</Compress>
       <GeneratePremultipliedAlpha Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GeneratePremultipliedAlpha>

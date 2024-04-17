@@ -47,6 +47,7 @@ namespace DemoParticles
         void addEmitter(EmitterType type, std::string name);
 
         void initForceField();
+        void initTextures();
         void updateForceField();
         void renderForceField();
 
@@ -159,5 +160,9 @@ namespace DemoParticles
 
         std::unique_ptr<RenderModelAndEmitBuffer> m_modelToEmit;
         bool m_modelToEmitEnabled = false;
+        
+
+        Microsoft::WRL::ComPtr<ID3D11Resource>              m_particleTexture1;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_particleTexture1SRV;
     };
 }

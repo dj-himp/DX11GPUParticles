@@ -64,6 +64,9 @@
     <Filter Include="Data\ForceFields\Pack_01">
       <UniqueIdentifier>{92d518d4-5f65-4923-ab61-d4b7f94eef76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Data\Textures\Particles">
+      <UniqueIdentifier>{3a492b47-1555-4e2a-b9d6-46ba1464c63e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\App.cpp">
@@ -949,6 +952,12 @@
   <ItemGroup>
     <ImageContentTask Include="Data\Textures\noisy-texture-256x256.png">
       <Filter>Data\Textures</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Data\Textures\Particles\Particle.png">
+      <Filter>Data\Textures\Particles</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Data\Textures\Particles\smoke.png">
+      <Filter>Data\Textures\Particles</Filter>
     </ImageContentTask>
   </ItemGroup>
 </Project>
