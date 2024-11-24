@@ -23,6 +23,9 @@ float sdLine(float2 p, float2 a, float2 b)
     return length(pa - ba * h);
 }
 
+SamplerState textureClampSampler : register(s0);
+Texture2D diffuseTexture1 : register(t0);
+
 PixelShaderOutput main(PixelShaderInput input)
 {
     PixelShaderOutput output;
@@ -49,10 +52,12 @@ PixelShaderOutput main(PixelShaderInput input)
     output.color.a = 1.0;//input.Color.a;
     */
 
-    output.color = input.Color;
+    float4 diffuseColor = diffuseTexture1.Sample(textureClampSampler, input.uv);
+    output.color = input.Color * diffuseColor;
 
-    float len = length(input.oPosition - input.center);
-    output.color.a = output.color.a * (1.0 - smoothstep(0.0, input.radius, len));
+
+    //float len = length(input.oPosition - input.center);
+    //output.color.a = output.color.a * (1.0 - smoothstep(0.0, input.radius, len));
 
     /*float thickness = 0.115;
     float blurness = 5.0;

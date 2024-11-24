@@ -14,6 +14,7 @@ namespace DemoParticles
 
         void load(const std::wstring& pixelFilename);
         void setUAVs(int slot, int count, ID3D11UnorderedAccessView* uavs[], UINT initialCount[] = nullptr);
+        void setSRV(int slot, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView);
 
         ID3D11PixelShader* getPixelShader() { return m_pixelShader.Get(); }
 

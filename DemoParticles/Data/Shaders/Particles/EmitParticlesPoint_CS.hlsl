@@ -9,6 +9,7 @@ cbuffer emitterConstantBuffer : register(b4)
     float4 emitterPosition;
     float4 colorStart;
     float4 colorEnd;
+    float4 uvSprite;
     
     uint emitterMaxSpawn;
     float emitterConeColatitude;
@@ -40,6 +41,8 @@ void main(uint3 id : SV_DispatchThreadID)
         
         p.position = emitterPosition;
         p.position.w = 1.0;
+
+        p.uvSprite = uvSprite;
 
         float colatitude = (0.5 - rand_xorshift_normalized()) * emitterConeColatitude;
         float longitude = (0.5 - rand_xorshift_normalized()) * emitterConeLongitude;

@@ -374,8 +374,8 @@ void Game::RenderImGui()
     if (ImGui::CollapsingHeader("Globals"))
     {
         ImGui::Checkbox("Disable culling", &ParticlesGlobals::g_cullNone);
-        const char* items[] = { "Opaque", "NonPremultiplied", "Additive" };
-        ImGui::Combo("Blend Mode", &ParticlesGlobals::g_blendMode, items, 3);
+        const char* items[] = { "Opaque", "NonPremultiplied", "Additive", "Alpha"};
+        ImGui::Combo("Blend Mode", &ParticlesGlobals::g_blendMode, items, 4);
 
         const char* shapeItems[] = { "Point", "Line" };
         ImGui::Combo("Shape", &ParticlesGlobals::g_particleShape, shapeItems, 2);

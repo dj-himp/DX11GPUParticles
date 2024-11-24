@@ -293,6 +293,7 @@ namespace DemoParticles
 
         //initAttractors();
         initForceField();
+        initTextures();
 
         m_modelToEmit->createDeviceDependentResources();
     }
@@ -411,6 +412,8 @@ namespace DemoParticles
         }
 
         context->PSSetShader(m_renderParticlePS->getPixelShader(), nullptr, 0);
+        
+        
 
         ID3D11Buffer* nullVertexBuffer = nullptr;
         UINT stride = 0;
@@ -423,7 +426,7 @@ namespace DemoParticles
         context->VSSetShaderResources(0, ARRAYSIZE(vertexShaderSRVs), vertexShaderSRVs);
         context->VSSetConstantBuffers(3, 1, m_aliveListCountConstantBuffer.GetAddressOf());
 
-        const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
+        const float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
         switch (ParticlesGlobals::g_blendMode)
         {
         case 0:
@@ -438,6 +441,10 @@ namespace DemoParticles
             context->OMSetBlendState(RenderStatesHelper::Additive().Get(), blendFactor, 0xffffffff);
             context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
             break;
+        case 3:
+            context->OMSetBlendState(RenderStatesHelper::AlphaBlend().Get(), blendFactor, 0xffffffff);
+            context->OMSetDepthStencilState(RenderStatesHelper::DepthDefault().Get(), 0);
+            break;
         default:
             break;
         }
@@ -448,7 +455,12 @@ namespace DemoParticles
         else
             context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
 
+        context->PSSetSamplers(0, 1, RenderStatesHelper::LinearClamp().GetAddressOf());
+        m_renderParticlePS->setSRV(0, m_particleTexture1SRV);
+
         context->DrawInstancedIndirect(m_indirectDrawArgsBuffer.Get(), 0);
+
+        m_renderParticlePS->setSRV(0, nullptr);
 
         ZeroMemory(vertexShaderSRVs, sizeof(vertexShaderSRVs));
         context->VSSetShaderResources(0, ARRAYSIZE(vertexShaderSRVs), vertexShaderSRVs);
@@ -990,6 +1002,17 @@ namespace DemoParticles
             m_renderForceFieldPS = std::make_unique<PixelShader>(m_deviceResources);
             m_renderForceFieldPS->load(L"RenderForceField_PS.cso");
         }
+    }
+
+    void RenderParticles::initTextures()
+    {
+        DX::ThrowIfFailed(
+            //CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"Particle.dds", &m_particleTexture1, &m_particleTexture1SRV)
+            //CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"smoke.dds", &m_particleTexture1, &m_particleTexture1SRV)
+            //CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"particlesSheet.dds", &m_particleTexture1, &m_particleTexture1SRV)
+            CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"particlesSheetPerso.dds", &m_particleTexture1, &m_particleTexture1SRV)
+            //CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"smokePerso.dds", &m_particleTexture1, &m_particleTexture1SRV)
+        );  
     }
 
     void RenderParticles::updateForceField()
