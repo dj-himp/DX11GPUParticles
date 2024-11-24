@@ -42,7 +42,8 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector4 position;
         DirectX::SimpleMath::Vector4 scale;
         DirectX::SimpleMath::Vector4 partitioning;
-        DirectX::SimpleMath::Color color;
+        DirectX::SimpleMath::Color colorStart;
+        DirectX::SimpleMath::Color colorEnd;
         DirectX::SimpleMath::Matrix rotation;
 
         UINT maxSpawn;
@@ -61,7 +62,8 @@ namespace DemoParticles
     {
         DirectX::SimpleMath::Matrix rotation;
         DirectX::SimpleMath::Vector4 position;
-        DirectX::SimpleMath::Color color;
+        DirectX::SimpleMath::Color colorStart;
+        DirectX::SimpleMath::Color colorEnd;
 
         UINT maxSpawn;
         float coneColatitude;

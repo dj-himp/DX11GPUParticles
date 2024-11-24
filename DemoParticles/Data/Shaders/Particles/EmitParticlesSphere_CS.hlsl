@@ -8,7 +8,8 @@ cbuffer emitterConstantBuffer : register(b4)
     float4 emitterPosition;
     float4 emitterScale;
     float4 emitterPartitioning; //don't know how to name that but influence repartition inside the volume (making cool effects)
-    float4 color;
+    float4 colorStart;
+    float4 colorEnd;
     float4x4 emitterRotation;
     
     uint emitterMaxSpawn;
@@ -48,12 +49,13 @@ void main(uint3 id : SV_DispatchThreadID)
         //p.velocity = particlesBaseSpeed * normalize(float4(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, 0.0));
         p.velocity = particlesBaseSpeed * normalize(float4(position - emitterPosition, 0.0));
         
-        p.lifeSpan = particlesLifeSpan * rand_xorshift_normalized();
+        p.lifeSpan = particlesLifeSpan;
         p.age = abs(p.lifeSpan); //abs() so if lifetime is infinite ( < 0.0) it's still has a life
         p.mass = particlesMass;
 
         p.orientation = particleOrientation;
-        p.color = color;
+        p.colorStart = colorStart;
+        p.colorEnd = colorEnd;
         p.sizeStart = particleSizeStart;
         p.sizeEnd = particleSizeEnd;
         

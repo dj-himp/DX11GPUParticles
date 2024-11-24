@@ -208,9 +208,7 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
 
         p.position.xyz += p.velocity.xyz * dt;
 
-        //p.color.xyz = normalize(lerp(p.colorStart.xyz, p.colorEnd.xyz, 1.0 - p.age / p.lifeSpan));
-        float r = p.age / p.lifeSpan;
-        p.color.xyz = normalize(p.colorStart.xyz * (1.0 - r) + p.colorEnd.xyz * r);
+        p.color.xyz = normalize(lerp(p.colorStart.xyz, p.colorEnd.xyz, 1.0 - p.age / p.lifeSpan));
         p.color.w = 1.0;
 
         //kill particles inside attractors killzone (if killZoneRadius >= 0.0)

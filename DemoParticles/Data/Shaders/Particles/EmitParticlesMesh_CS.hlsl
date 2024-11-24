@@ -78,7 +78,7 @@ void main(uint3 id : SV_DispatchThreadID)
         p.velocity = float4(particlesBaseSpeed * meshVertices[index0].normal, 0.0);
         //p.velocity = float4(rand_xorshift_normalized(), rand_xorshift_normalized(), rand_xorshift_normalized(), 0.0);
         
-        p.lifeSpan = particlesLifeSpan * rand_xorshift_normalized();
+        p.lifeSpan = particlesLifeSpan;
         p.age = abs(p.lifeSpan); //abs() so if lifetime is infinite ( < 0.0) it's still has a life
         p.mass = particlesMass;
 
