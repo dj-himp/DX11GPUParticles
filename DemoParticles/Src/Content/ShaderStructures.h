@@ -62,6 +62,7 @@ namespace DemoParticles
         DirectX::SimpleMath::Matrix rotation;
         DirectX::SimpleMath::Vector4 position;
         DirectX::SimpleMath::Color color;
+        DirectX::SimpleMath::Vector4 uvSprite;
 
         UINT maxSpawn;
         float coneColatitude;
@@ -196,6 +197,7 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector4 normal;
         DirectX::SimpleMath::Vector4 velocity;
         DirectX::SimpleMath::Color color;
+        DirectX::SimpleMath::Vector4 uvSprite;
 
         float lifeSpan;
         float age;

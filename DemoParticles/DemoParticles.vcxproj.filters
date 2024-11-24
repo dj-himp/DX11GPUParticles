@@ -959,5 +959,16 @@
     <ImageContentTask Include="Data\Textures\Particles\smoke.png">
       <Filter>Data\Textures\Particles</Filter>
     </ImageContentTask>
+    <ImageContentTask Include="Data\Textures\Particles\9.png" />
+    <ImageContentTask Include="Data\Textures\Particles\circle_05.png" />
+    <ImageContentTask Include="Data\Textures\Particles\particlesSheet.jpg">
+      <Filter>Data\Textures\Particles</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Data\Textures\Particles\particlesSheetPerso.png">
+      <Filter>Data\Textures\Particles</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Data\Textures\Particles\smokePerso.png">
+      <Filter>Data\Textures\Particles</Filter>
+    </ImageContentTask>
   </ItemGroup>
 </Project>

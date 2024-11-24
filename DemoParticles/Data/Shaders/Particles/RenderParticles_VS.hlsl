@@ -13,6 +13,7 @@ struct GeometryShaderInput
     float3 velocity : TEXCOORD3;
     uint   orientation : TEXCOORD4;
     float  size : TEXCOORD5;
+    float4 uvSprite : TEXCOORD6; //x,y for x,y and zw for size
 };
 
 GeometryShaderInput main(uint vertexId : SV_VertexID)
@@ -37,5 +38,7 @@ GeometryShaderInput main(uint vertexId : SV_VertexID)
     //output.size = p.sizeStart + alpha * (p.sizeEnd - p.sizeStart);
     output.size = p.sizeStart + alpha * (p.sizeEnd - p.sizeStart);
     
+    output.uvSprite = p.uvSprite;
+
     return output;
 }
