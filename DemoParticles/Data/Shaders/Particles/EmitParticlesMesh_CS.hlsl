@@ -6,8 +6,10 @@
 cbuffer emitterMeshConstantBuffer : register(b4)
 {
     float4x4 world;
-    float4 color;
-    
+    float4 colorStart;
+    float4 colorEnd;
+    float4 uvSprite;
+
     uint emitterMaxSpawn;
     uint particleOrientation;
     float particlesBaseSpeed;
@@ -48,6 +50,8 @@ void main(uint3 id : SV_DispatchThreadID)
 
         Particle p = (Particle)0;
 
+        p.uvSprite = uvSprite;
+
         //uint nbVertices;
         //uint stride;
         //meshVertices.GetDimensions(nbVertices, stride);
@@ -83,7 +87,8 @@ void main(uint3 id : SV_DispatchThreadID)
         p.mass = particlesMass;
 
         p.orientation = particleOrientation;
-        p.color = color;
+        p.colorStart = colorStart;
+        p.colorEnd = colorEnd;
         p.sizeStart = particleSizeStart;
         p.sizeEnd = particleSizeEnd;
         

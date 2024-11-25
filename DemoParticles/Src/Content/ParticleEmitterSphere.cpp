@@ -4,6 +4,7 @@
 #include "../Common/ComputeShader.h"
 #include "../Camera/Camera.h"
 
+using namespace DirectX;
 using namespace DirectX::SimpleMath;
 using namespace choreograph;
 
@@ -25,6 +26,11 @@ namespace DemoParticles
         m_emitterConstantBufferData.colorEnd = Color(1.0f, 0.0f, 0.0f, 1.0f);
         m_emitterConstantBufferData.particleSizeStart = 0.01f;
         m_emitterConstantBufferData.particleSizeEnd = 0.0f;
+
+        //m_emitterConstantBufferData.uvSprite = DirectX::SimpleMath::Vector4(1.0f / 480.0f, 1.0f / 480.0f, 80.0f/480.0f - 1.0f / 480.0f, 80.0f/480.0f - 1.0f / 480.0f);
+        m_emitterConstantBufferData.uvSprite = DirectX::SimpleMath::Vector4(0.0f, 0.0f, 512.0f / 2048.0f, 512.0f / 2048.0f);
+        //m_emitterConstantBufferData.uvSprite = DirectX::SimpleMath::Vector4(512.0f / 2048.0f, 0.0f, 512.0f / 2048.0f, 512.0f / 2048.0f);
+        //m_emitterConstantBufferData.uvSprite = DirectX::SimpleMath::Vector4(0.0f, 0.0f, 1.0f, 1.0f);
     }
 
     void ParticleEmitterSphere::createDeviceDependentResources()
@@ -35,6 +41,14 @@ namespace DemoParticles
         CD3D11_BUFFER_DESC emitterConstantBufferDesc(sizeof(EmitterSphereConstantBuffer), D3D11_BIND_CONSTANT_BUFFER);
         DX::ThrowIfFailed(
             m_deviceResources->GetD3DDevice()->CreateBuffer(&emitterConstantBufferDesc, nullptr, &m_emitterConstantBuffer)
+        );
+
+        DX::ThrowIfFailed(
+            //CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"Particle.dds", &m_particleTexture1, &m_particleTexture1SRV)
+            //CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"smoke.dds", &m_particleTexture1, &m_particleTexture1SRV)
+            //CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"particlesSheet.dds", &m_particleTexture1, &m_particleTexture1SRV)
+            CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"particlesSheetPerso.dds", &m_particleTexture1, &m_particleTexture1SRV)
+            //CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"smokePerso.dds", &m_particleTexture1, &m_particleTexture1SRV)
         );
     }
 
@@ -96,6 +110,14 @@ namespace DemoParticles
         if (ImGui::TreeNode(toString().c_str()))
         {
             ImGui::Checkbox("Enabled", &m_enabled);
+            ImGui::DragInt("uv X", &m_uvTileX, 1, 0, 2);
+            ImGui::DragInt("uv y", &m_uvTileY, 1, 0, 0);
+
+            //m_emitterConstantBufferData.uvSprite = DirectX::SimpleMath::Vector4(uvTileX * 80.0f / 480.0f + 1.0f / 480.0f, uvTileY * 80.0f / 480.0f + 1.0f / 480.0f, 80.0f / 480.0f - 1.0f / 480.0f, 80.0f / 480.0f - 1.0f / 480.0f);
+            m_emitterConstantBufferData.uvSprite = DirectX::SimpleMath::Vector4(m_uvTileX * 512.0f / 2048.0f, m_uvTileY * 512.0f / 2048.0f, 512.0f / 2048.0f, 512.0f / 2048.0f);
+            //m_emitterConstantBufferData.uvSprite = DirectX::SimpleMath::Vector4(0.0, 0.0, 1.0, 1.0);
+            ImGui::Image((ImTextureID)m_particleTexture1SRV.Get(), ImVec2(64.0f, 64.0f), ImVec2(m_emitterConstantBufferData.uvSprite.x, m_emitterConstantBufferData.uvSprite.y), ImVec2(m_emitterConstantBufferData.uvSprite.x + m_emitterConstantBufferData.uvSprite.z, m_emitterConstantBufferData.uvSprite.y + m_emitterConstantBufferData.uvSprite.w));
+
             //ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1, 0, 10000000);
             ImGui::DragFloat("Emission Rate", (float*)&m_emissionRate, 1.0f, 0.0f, 10000000.0f);
             const char* orientationItems[] = { "Billboard", "Backed Normal", "Direction" };
@@ -210,6 +232,8 @@ namespace DemoParticles
         file["Type"] = m_type;
         file["Name"] = m_name;
         file["Enabled"] = m_enabled;
+        file["uvTileX"] = m_uvTileX;
+        file["uvTileY"] = m_uvTileY;
         file["EmissionRate"] = m_emissionRate;
         file["Position"] = { m_emitterConstantBufferData.position.x, m_emitterConstantBufferData.position.y, m_emitterConstantBufferData.position.z, m_emitterConstantBufferData.position.w };
         file["Scale"] = { m_emitterConstantBufferData.scale.x, m_emitterConstantBufferData.scale.y, m_emitterConstantBufferData.scale.z, m_emitterConstantBufferData.scale.w };
@@ -228,6 +252,8 @@ namespace DemoParticles
     void ParticleEmitterSphere::load(json& file)
     {
         m_enabled =                                                                         file["Enabled"];
+        m_uvTileX =                                                                         file["uvTileX"];
+        m_uvTileY =                                                                         file["uvTileY"];
         m_emissionRate =                                                                    file["EmissionRate"];
         std::vector<float> position =                                                       file["Position"];
         m_emitterConstantBufferData.position = Vector4(&position[0]);

@@ -44,6 +44,7 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector4 partitioning;
         DirectX::SimpleMath::Color colorStart;
         DirectX::SimpleMath::Color colorEnd;
+        DirectX::SimpleMath::Vector4 uvSprite;
         DirectX::SimpleMath::Matrix rotation;
 
         UINT maxSpawn;
@@ -85,6 +86,7 @@ namespace DemoParticles
         DirectX::SimpleMath::Matrix world;
         DirectX::SimpleMath::Color colorStart;
         DirectX::SimpleMath::Color colorEnd;
+        DirectX::SimpleMath::Vector4 uvSprite;
 
         UINT maxSpawn;
         UINT particleOrientation;
@@ -102,6 +104,7 @@ namespace DemoParticles
     {
         DirectX::SimpleMath::Color colorStart;
         DirectX::SimpleMath::Color colorEnd;
+        DirectX::SimpleMath::Vector4 uvSprite;
 
         UINT maxSpawn;
         UINT particleOrientation;
@@ -118,7 +121,9 @@ namespace DemoParticles
     struct EmitterMeshConstantBuffer
     {
         DirectX::SimpleMath::Matrix world;
-        DirectX::SimpleMath::Color color;
+        DirectX::SimpleMath::Color colorStart;
+        DirectX::SimpleMath::Color colorEnd;
+        DirectX::SimpleMath::Vector4 uvSprite;
 
         UINT maxSpawn;
         UINT particleOrientation;

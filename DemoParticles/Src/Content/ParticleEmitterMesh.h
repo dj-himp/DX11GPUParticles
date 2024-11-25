@@ -53,5 +53,10 @@ namespace DemoParticles
         ImGuizmo::MODE m_guizmoMode = ImGuizmo::WORLD;
 
         int m_currentMeshPart = 0;
+
+        Microsoft::WRL::ComPtr<ID3D11Resource>              m_particleTexture1;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_particleTexture1SRV;
+        int m_uvTileX = 0;
+        int m_uvTileY = 0;
     };
 }

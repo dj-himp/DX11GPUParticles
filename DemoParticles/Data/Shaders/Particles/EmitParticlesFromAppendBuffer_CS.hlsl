@@ -5,7 +5,8 @@ cbuffer emitterConstantBuffer : register(b4)
 {
     float4 colorStart;
     float4 colorEnd;
-    
+    float4 uvSprite;
+
     uint emitterMaxSpawn;
     uint particleOrientation;
     float particlesBaseSpeed;
@@ -30,6 +31,8 @@ void main(uint3 id : SV_DispatchThreadID)
     if(id.x < nbDeadParticles && id.x < emitterMaxSpawn)
     {
         Particle p = particlesToAppend.Consume();
+
+        p.uvSprite = uvSprite;
 
         //p.velocity = bp.normal * 0.01f;
         //useless at the moment

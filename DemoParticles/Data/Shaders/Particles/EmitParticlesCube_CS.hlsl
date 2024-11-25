@@ -8,7 +8,8 @@ cbuffer emitterCubeConstantBuffer : register(b4)
     float4x4 world;
     float4 colorStart;
     float4 colorEnd;
-    
+    float4 uvSprite;
+
     uint emitterMaxSpawn;
     uint particleOrientation;
     float particlesBaseSpeed;
@@ -38,6 +39,8 @@ void main(uint3 id : SV_DispatchThreadID)
         
         p.position = float4(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, 1.0);
         p.position = mul(p.position, world);
+
+        p.uvSprite = uvSprite;
 
         //useless for the moment
         p.velocity = particlesBaseSpeed * float4(0.0, 0.0, 0.0, 0.0);
