@@ -8,16 +8,14 @@ using namespace DirectX::SimpleMath;
 
 namespace DemoParticles
 {
-    ParticleAttractor::ParticleAttractor(const DX::DeviceResources* deviceResources, std::string name)
-        : m_deviceResources(deviceResources)
-        , m_name(name)
+    ParticleAttractor::ParticleAttractor(std::string name)
+        : m_name(name)
     {
-        
-    }
-
-    void ParticleAttractor::createDeviceDependentResources()
-    {
-        
+        m_attractorParam.enabled = true;
+        m_attractorParam.position = DirectX::SimpleMath::Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+        m_attractorParam.gravity = 10.0f;
+        m_attractorParam.mass = 5.0f;
+        m_attractorParam.killZoneRadius = 0.5f;
     }
 
     void ParticleAttractor::update(DX::StepTimer const& timer)
@@ -25,69 +23,75 @@ namespace DemoParticles
 
     }
 
-    void ParticleAttractor::apply(float maxParticles, Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>   indirectDrawArgsUAV, Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView>   particleUAV)
-    {
-        if (!m_enabled)
-        {
-            return;
-        }
-    }
-
     void ParticleAttractor::RenderImGui(Camera* camera)
     {
-        /*if (ImGui::TreeNode(toString().c_str()))
+        if (ImGui::TreeNode(toString().c_str()))
         {
-            ImGui::Checkbox("Enabled", &m_enabled);
-            ImGui::DragFloat("Gravity", &m_attractorConstantBufferData.gravity, 0.1f, 0.1f, 100.0f);
-            ImGui::DragFloat("Mass", &m_attractorConstantBufferData.mass, 0.1f, 0.1f, 100.0f);
-            ..ImGui::DragFloat("KillZone radius", &m_attractorConstantBufferData.killZoneRadius, 0.1f, 0.1f, 100.0f);
+            ImGui::Checkbox("Enabled", &m_attractorParam.enabled);
+            ImGui::DragFloat("Gravity", &m_attractorParam.gravity, 0.1f, 0.1f, 100.0f);
+            ImGui::DragFloat("Mass", &m_attractorParam.mass, 0.1f, 0.1f, 100.0f);
+            ImGui::DragFloat("KillZone radius", &m_attractorParam.killZoneRadius, 0.1f, 0.1f, 100.0f);
 
             float scale[3];
             float rotation[3];
-            ImGuizmo::DecomposeMatrixToComponents(m_worldf, (float*)&m_attractorConstantBufferData.position, rotation, scale);
-            ImGui::DragFloat3("Position", (float*)&m_attractorConstantBufferData.position, 0.01f);
-            ImGuizmo::RecomposeMatrixFromComponents((float*)&m_attractorConstantBufferData.position, rotation, scale, m_worldf);
+            ImGuizmo::DecomposeMatrixToComponents(m_worldf, (float*)&m_attractorParam.position, rotation, scale);
+            ImGui::DragFloat3("Position", (float*)&m_attractorParam.position, 0.01f);
+            ImGuizmo::RecomposeMatrixFromComponents((float*)&m_attractorParam.position, rotation, scale, m_worldf);
 
-            static bool guizmoHidden = true;
-            if (!m_enabled)
+            if (!m_attractorParam.enabled)
             {
-                guizmoHidden = true;
+                m_guizmoHidden = true;
             }
 
-            if (ImGui::RadioButton("None", guizmoHidden))
+            if (ImGui::RadioButton("None", m_guizmoHidden))
             {
-                guizmoHidden = true;
+                m_guizmoHidden = true;
             }
             ImGui::SameLine();
 
             static float snap[3] = { 0.1f, 0.1f, 0.1f };
-            if (ImGui::RadioButton("Translate", m_guizmoOperation == ImGuizmo::TRANSLATE && guizmoHidden == false))
+            if (ImGui::RadioButton("Translate", m_guizmoOperation == ImGuizmo::TRANSLATE && m_guizmoHidden == false))
             {
                 m_guizmoOperation = ImGuizmo::TRANSLATE;
-                guizmoHidden = false;
+                m_guizmoHidden = false;
             }
 
-            if (guizmoHidden == false)
+            if (m_guizmoHidden == false)
             {
                 ImGuiIO& io = ImGui::GetIO();
                 ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 
                 ImGuizmo::Manipulate(&camera->getView().m[0][0], &camera->getProjection().m[0][0], m_guizmoOperation, m_guizmoMode, m_worldf, nullptr, nullptr);
-                ImGuizmo::DecomposeMatrixToComponentsRadians(m_worldf, (float*)&m_attractorConstantBufferData.position, rotation, scale);
+                ImGuizmo::DecomposeMatrixToComponentsRadians(m_worldf, (float*)&m_attractorParam.position, rotation, scale);
             }
 
             ImGui::TreePop();
-        }*/
+        }
     }
 
     void ParticleAttractor::save(json& file)
     {
-
+		file["Name"] = m_name;
+		file["Enabled"] = m_attractorParam.enabled;
+        file["Position"] = { m_attractorParam.position.x, m_attractorParam.position.y, m_attractorParam.position.z };
+        file["Gravity"] = m_attractorParam.gravity;
+        file["Mass"] = m_attractorParam.mass;
+        file["KillZoneRadius"] = m_attractorParam.killZoneRadius;
     }
 
     void ParticleAttractor::load(json& file)
     {
+        m_name = file["Name"];
+        m_attractorParam.enabled = file["Enabled"];
+		std::vector<float> position = file["Position"];
+        m_attractorParam.position = Vector4(position[0], position[1], position[2], 1.0f);
+        m_attractorParam.gravity = file["Gravity"];
+        m_attractorParam.mass = file["Mass"];
+        m_attractorParam.killZoneRadius = file["KillZoneRadius"];
 
+		DirectX::SimpleMath::Vector3 scale = DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
+		DirectX::SimpleMath::Vector3 rotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
+        ImGuizmo::RecomposeMatrixFromComponents((float*)&m_attractorParam.position, (float*)&rotation, (float*)&scale, m_worldf);
     }
 
     std::string ParticleAttractor::toString()

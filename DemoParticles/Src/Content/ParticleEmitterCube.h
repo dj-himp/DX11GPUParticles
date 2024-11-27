@@ -41,6 +41,7 @@ namespace DemoParticles
           0.f, 0.f, 1.f, 0.f,
           0.f, 0.f, 0.f, 1.f };
 
+        bool m_guizmoHidden = true;
         ImGuizmo::OPERATION m_guizmoOperation = ImGuizmo::TRANSLATE;
         ImGuizmo::MODE m_guizmoMode = ImGuizmo::LOCAL;
 

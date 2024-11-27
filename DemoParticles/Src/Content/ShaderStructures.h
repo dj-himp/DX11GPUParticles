@@ -224,15 +224,14 @@ namespace DemoParticles
         float index; //index in the particle buffer
     };
 
-#define MAX_ATTRACTORS 4
+#define MAX_ATTRACTORS 10
     struct Attractor
     {
         DirectX::SimpleMath::Vector4 position;
+        bool enabled;
         float gravity;
         float mass;
         float killZoneRadius;
-
-        UINT padding[1];
     };
 
     // Used to send per-vertex data to the vertex shader.

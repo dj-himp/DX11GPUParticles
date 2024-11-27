@@ -147,52 +147,51 @@ namespace DemoParticles
             ImGui::DragFloat3("Partitioning", (float*)&m_emitterConstantBufferData.partitioning, 0.01f);
             ImGuizmo::RecomposeMatrixFromComponents((float*)&m_emitterConstantBufferData.position, (float*)&r, (float*)&m_emitterConstantBufferData.partitioning, m_fakeWorldf);
 
-            static bool guizmoHidden = true;
             if (!m_enabled)
             {
-                guizmoHidden = true;
+                m_guizmoHidden = true;
             }
 
             static bool useScaleForPartitioning;
 
-            if (ImGui::RadioButton("None", guizmoHidden))
+            if (ImGui::RadioButton("None", m_guizmoHidden))
             {
-                guizmoHidden = true;
+                m_guizmoHidden = true;
             }
             ImGui::SameLine();
 
             static float snap[3] = { 0.1f, 0.1f, 0.1f };
-            if (ImGui::RadioButton("Translate", m_guizmoOperation == ImGuizmo::TRANSLATE && useScaleForPartitioning == false && guizmoHidden == false))
+            if (ImGui::RadioButton("Translate", m_guizmoOperation == ImGuizmo::TRANSLATE && useScaleForPartitioning == false && m_guizmoHidden == false))
             {
                 m_guizmoOperation = ImGuizmo::TRANSLATE;
                 useScaleForPartitioning = false;
-                guizmoHidden = false;
+                m_guizmoHidden = false;
             }
             ImGui::SameLine();
-            if (ImGui::RadioButton("Scale", m_guizmoOperation == ImGuizmo::SCALE && useScaleForPartitioning == false && guizmoHidden == false))
+            if (ImGui::RadioButton("Scale", m_guizmoOperation == ImGuizmo::SCALE && useScaleForPartitioning == false && m_guizmoHidden == false))
             {
                 m_guizmoOperation = ImGuizmo::SCALE;
                 useScaleForPartitioning = false;
-                guizmoHidden = false;
+                m_guizmoHidden = false;
             }
             
             ImGui::SameLine();
-            if (ImGui::RadioButton("Rotation", m_guizmoOperation == ImGuizmo::ROTATE && useScaleForPartitioning == false && guizmoHidden == false))
+            if (ImGui::RadioButton("Rotation", m_guizmoOperation == ImGuizmo::ROTATE && useScaleForPartitioning == false && m_guizmoHidden == false))
             {
                 m_guizmoOperation = ImGuizmo::ROTATE;
                 useScaleForPartitioning = false;
-                guizmoHidden = false;
+                m_guizmoHidden = false;
             }
 
             ImGui::SameLine();
-            if (ImGui::RadioButton("Partitioning", useScaleForPartitioning == true && guizmoHidden == false))
+            if (ImGui::RadioButton("Partitioning", useScaleForPartitioning == true && m_guizmoHidden == false))
             {
                 m_guizmoOperation = ImGuizmo::SCALE;
                 useScaleForPartitioning = true;
-                guizmoHidden = false;
+                m_guizmoHidden = false;
             }
 
-            if (guizmoHidden == false)
+            if (m_guizmoHidden == false)
             {
                 if (ImGui::RadioButton("Local", m_guizmoMode == ImGuizmo::LOCAL))
                 {

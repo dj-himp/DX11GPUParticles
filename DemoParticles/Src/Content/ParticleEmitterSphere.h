@@ -46,6 +46,7 @@ namespace DemoParticles
 
         std::vector<float> m_rotation = { 0.0f, 0.0f, 0.0f };
 
+        bool m_guizmoHidden = true;
         ImGuizmo::OPERATION m_guizmoOperation = ImGuizmo::TRANSLATE;
         ImGuizmo::MODE m_guizmoMode = ImGuizmo::WORLD;
 

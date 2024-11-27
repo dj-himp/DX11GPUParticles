@@ -136,39 +136,38 @@ namespace DemoParticles
             ImGui::DragFloat3("Rotation", (float*)&m_rotation, 0.01f);
             ImGuizmo::RecomposeMatrixFromComponents((float*)&m_position, (float*)&m_rotation, (float*)&m_scale, m_worldf);
 
-            static bool guizmoHidden = true;
             if (!m_enabled)
             {
-                guizmoHidden = true;
+                m_guizmoHidden = true;
             }
 
-            if (ImGui::RadioButton("None", guizmoHidden))
+            if (ImGui::RadioButton("None", m_guizmoHidden))
             {
-                guizmoHidden = true;
+                m_guizmoHidden = true;
             }
             ImGui::SameLine();
 
             static float snap[3] = { 0.1f, 0.1f, 0.1f };
-            if (ImGui::RadioButton("Translate", m_guizmoOperation == ImGuizmo::TRANSLATE && guizmoHidden == false))
+            if (ImGui::RadioButton("Translate", m_guizmoOperation == ImGuizmo::TRANSLATE && m_guizmoHidden == false))
             {
                 m_guizmoOperation = ImGuizmo::TRANSLATE;
-                guizmoHidden = false;
+                m_guizmoHidden = false;
             }
             ImGui::SameLine();
-            if (ImGui::RadioButton("Scale", m_guizmoOperation == ImGuizmo::SCALE && guizmoHidden == false))
+            if (ImGui::RadioButton("Scale", m_guizmoOperation == ImGuizmo::SCALE && m_guizmoHidden == false))
             {
                 m_guizmoOperation = ImGuizmo::SCALE;
-                guizmoHidden = false;
+                m_guizmoHidden = false;
             }
 
             ImGui::SameLine();
-            if (ImGui::RadioButton("Rotation", m_guizmoOperation == ImGuizmo::ROTATE && guizmoHidden == false))
+            if (ImGui::RadioButton("Rotation", m_guizmoOperation == ImGuizmo::ROTATE && m_guizmoHidden == false))
             {
                 m_guizmoOperation = ImGuizmo::ROTATE;
-                guizmoHidden = false;
+                m_guizmoHidden = false;
             }
 
-            if (guizmoHidden == false)
+            if (m_guizmoHidden == false)
             {
                 if (ImGui::RadioButton("Local", m_guizmoMode == ImGuizmo::LOCAL))
                 {

@@ -35,11 +35,10 @@ cbuffer simulateParticlesConstantBuffer : register(b4)
 struct Attractor
 {
     float4 position;
+    bool enabled;
     float gravity;
     float mass;
     float killZoneRadius;
-
-    uint attractorPadding;
 };
 
 struct ForceField
