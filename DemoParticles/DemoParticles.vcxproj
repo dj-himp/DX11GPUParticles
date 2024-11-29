@@ -121,7 +121,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>d2d1.lib;d3d11.lib;dxgi.lib;windowscodecs.lib;dwrite.lib;assimp-vc140-mt.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d2d1.lib;d3d11.lib;dxgi.lib;windowscodecs.lib;dwrite.lib;assimp-vc140-mt.lib;dxguid.lib;nfd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -487,6 +487,7 @@
     <ClInclude Include="Extern\imgui\ImSequencer.h" />
     <ClInclude Include="Extern\imgui\ImZoomSlider.h" />
     <ClInclude Include="Extern\Json\json.hpp" />
+    <ClInclude Include="Extern\nfd\nfd.h" />
     <ClInclude Include="Src\Common\GeometryShader.h" />
     <ClInclude Include="Src\Common\GpuProfiler.h" />
     <ClInclude Include="Src\Common\PixelShader.h" />

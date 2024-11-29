@@ -67,6 +67,9 @@
     <Filter Include="Data\Textures\Particles">
       <UniqueIdentifier>{3a492b47-1555-4e2a-b9d6-46ba1464c63e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Extern\nfd">
+      <UniqueIdentifier>{d6ade0f1-c83f-4fff-be67-1ba1ae75bdc8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\App.cpp">
@@ -619,6 +622,9 @@
     </ClInclude>
     <ClInclude Include="Src\Model\AssimpToDX.h">
       <Filter>Src\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Extern\nfd\nfd.h">
+      <Filter>Extern\nfd</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

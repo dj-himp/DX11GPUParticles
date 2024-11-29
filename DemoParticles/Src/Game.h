@@ -59,7 +59,11 @@ private:
 
     void RenderImGui();
     void save();
+    void saveAs();
     void load();
+    void loadPrevious();
+
+    std::filesystem::path m_currentSave = "";
 
     // Device resources.
     std::unique_ptr<DX::DeviceResources>    m_deviceResources;

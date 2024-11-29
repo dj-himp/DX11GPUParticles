@@ -1200,12 +1200,14 @@ namespace DemoParticles
     void RenderParticles::load(json& file)
     {
 
+        m_particleEmitters.clear();
         for (auto json : file["Emitters"])
         {
             addEmitter(json["Type"], json["Name"]);
             m_particleEmitters.back()->load(json);
         }
 
+        m_attractorList.clear();
 		for (auto json : file["Attractors"])
 		{
 			addAttractor(json["Name"]);
