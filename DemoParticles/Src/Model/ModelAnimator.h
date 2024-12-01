@@ -33,6 +33,7 @@ namespace DemoParticles
 
         std::vector<DirectX::SimpleMath::Matrix> getTransforms(float dt) { return m_animations[m_currentAnimationIndex]->getTransforms(dt); }
 
+        void setAnimationIndex(int animIndex);
     private:
         void release();
 
@@ -40,7 +41,7 @@ namespace DemoParticles
         Bone* createBoneTree(aiNode* node, Bone* parent);
         void calculateBoneToWorldTransform(Bone* child);
         void extractAnimations(const aiScene* scene);
-        void setAnimationIndex(int animIndex);
+        //void setAnimationIndex(int animIndex);
         void calculate(float dt);
         void updateTransforms(Bone* node);
         

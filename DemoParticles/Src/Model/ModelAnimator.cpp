@@ -40,7 +40,7 @@ namespace DemoParticles
                 if (skip) continue;
 
                 //found.Offset = Matrix.Transpose(bone.OffsetMatrix.ToMatrix());
-                found->second->m_offset = AssimpToDX::FromMatrix(bone->mOffsetMatrix);
+                found->second->m_offset = AssimpToDX::FromMatrix(bone->mOffsetMatrix.Transpose());
                 m_bones.push_back(found->second.get());
                 //m_bonesToIndex[found->first] = m_bones.IndexOf(found);
                 m_bonesToIndex[found->first] = m_bones.size() - 1;
