@@ -176,8 +176,7 @@ namespace DemoParticles
 			// Interpolate scaling and generate scaling transformation matrix
 			aiVector3D Scaling;
 			CalcInterpolatedScaling(Scaling, AnimationTimeTicks, pNodeAnim);
-			DirectX::SimpleMath::Matrix ScalingM;
-			DirectX::SimpleMath::Matrix::CreateScale(Scaling.x, Scaling.y, Scaling.z);
+			DirectX::SimpleMath::Matrix ScalingM = DirectX::SimpleMath::Matrix::CreateScale(Scaling.x, Scaling.y, Scaling.z);
 
 			// Interpolate rotation and generate rotation transformation matrix
 			aiQuaternion RotationQ;
@@ -192,11 +191,12 @@ namespace DemoParticles
 
 			// Combine the above transformations
 			//NodeTransformation = TranslationM * RotationM * ScalingM;
-			NodeTransformation = ScalingM * RotationM *TranslationM;
+			NodeTransformation = ScalingM * RotationM * TranslationM;
 		}
 		
 
-		DirectX::SimpleMath::Matrix GlobalTransformation = ParentTransform * NodeTransformation;
+		//DirectX::SimpleMath::Matrix GlobalTransformation = ParentTransform * NodeTransformation;
+		DirectX::SimpleMath::Matrix GlobalTransformation = NodeTransformation * ParentTransform;
 
 		if (m_boneNameToIndexMap.find(NodeName) != m_boneNameToIndexMap.end()) {
 			int BoneIndex = m_boneNameToIndexMap[NodeName];
