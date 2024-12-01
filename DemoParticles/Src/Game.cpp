@@ -81,7 +81,7 @@ void Game::Initialize(HWND window, int width, int height)
     DebugRenderer::instance().pushBackModel(MeshFactory::getInstance().createAxis());
     //debugRenderer->pushBackModel(MeshFactory::getInstance().createFrustum(corners));
 
-    //m_renderables.push_back(std::make_unique<RenderModel>(m_deviceResources.get()));
+    m_renderables.push_back(std::make_unique<RenderModel>(m_deviceResources.get()));
     //m_renderables.push_back(std::make_unique<RenderFullscreenQuad>(m_deviceResources.get()));
     //m_renderables.push_back(std::make_unique<MengerRenderer>(m_deviceResources.get()));
     //m_renderables.push_back(std::make_unique<BakeModelParticles>(m_deviceResources.get()));
@@ -287,6 +287,11 @@ void Game::CreateDeviceDependentResources()
     DebugRenderer::instance().createDeviceDependentResources();
 
     m_sceneMenger->createDeviceDependentResources();
+
+	for (auto& renderable : m_renderables)
+	{
+		renderable->createDeviceDependentResources();
+	}
 
     GpuProfiler::instance().init(m_deviceResources.get());
 }

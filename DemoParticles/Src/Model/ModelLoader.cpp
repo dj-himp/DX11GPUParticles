@@ -25,16 +25,19 @@ namespace DemoParticles
 
         //doc said to convert to left handed in the importer if using directX (need to investigate)
         //answer : DirectX convention is left handed but as DirectTK is right handed living it like that
-        const aiScene* scene = m_importer.ReadFile(fileName, aiProcessPreset_TargetRealtime_Quality /*aiProcessPreset_TargetRealtime_Fast*/);
+        model->m_scene = m_importer.ReadFile(fileName, aiProcessPreset_TargetRealtime_Quality /*aiProcessPreset_TargetRealtime_Fast*/);
 
-        if(!scene)
+        if(!model->m_scene)
         {
             std::string error = m_importer.GetErrorString();
             std::cerr << "[ModelLoader] Failed to load " << fileName << " with error : " << m_importer.GetErrorString() << "\n";
             assert(0);
         }
 
-        loadMeshes(model, scene, createSRV);
+		model->m_GlobalInverseTransform = AssimpToDX::FromMatrix(model->m_scene->mRootNode->mTransformation);
+        model->m_GlobalInverseTransform = model->m_GlobalInverseTransform.Invert();
+
+        loadMeshes(model, model->m_scene, createSRV);
 
 
         return std::move(model);
@@ -44,6 +47,7 @@ namespace DemoParticles
     void ModelLoader::loadMeshes(std::unique_ptr<Model>& model, const aiScene* scene, const bool createSRV)
     {
         int baseVertex = 0;
+        int totalVertex = 0;
 
         for (unsigned int meshId = 0; meshId < scene->mNumMeshes; ++meshId)
         {
@@ -52,8 +56,6 @@ namespace DemoParticles
 
             //create new mesh to add to model
             std::unique_ptr<ModelMesh>& modelMesh = model->AddMesh();
-
-            loadMeshBones(model, mesh);
 
             //if mesh has a material extract the diffuse texture, if present
             aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -109,6 +111,12 @@ namespace DemoParticles
             vertexElements.push_back({ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
             vertexSize += sizeof(Vector2);
 
+			vertexElements.push_back({ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+			vertexSize += sizeof(Vector4);
+
+			vertexElements.push_back({ "BLENDINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, vertexSize, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+			vertexSize += sizeof(uint8_t) * 4;
+
             model->setInputElements(vertexElements);
             model->setVertexStride(sizeof(VertexObject));
 
@@ -144,6 +152,10 @@ namespace DemoParticles
             modelMesh->setBaseVertex(baseVertex);
             baseVertex += mesh->mNumVertices;
 
+			totalVertex += mesh->mNumVertices;
+			model->m_Bones.resize(totalVertex);
+			loadMeshBones(model, mesh);
+
             //create data stream for vertices
             std::vector<VertexObject> vertices(mesh->mNumVertices);
             for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
@@ -173,6 +185,16 @@ namespace DemoParticles
                 {
                     vertices[i].uv = Vector2(texCoords[i].x, 1 - texCoords[i].y);
                 }
+
+                vertices[i].blendWeight[0] = model->m_Bones[i].m_weights[0];
+                vertices[i].blendWeight[1] = model->m_Bones[i].m_weights[1];
+                vertices[i].blendWeight[2] = model->m_Bones[i].m_weights[2];
+                vertices[i].blendWeight[3] = model->m_Bones[i].m_weights[3];
+
+				vertices[i].boneIndices[0] = model->m_Bones[i].m_boneIDs[0];
+				vertices[i].boneIndices[1] = model->m_Bones[i].m_boneIDs[1];
+				vertices[i].boneIndices[2] = model->m_Bones[i].m_boneIDs[2];
+				vertices[i].boneIndices[3] = model->m_Bones[i].m_boneIDs[3];
             }
 
             D3D11_BUFFER_DESC vertexBufferDesc;

@@ -36,7 +36,19 @@ namespace DemoParticles
     {
         DirectX::SimpleMath::Matrix world;
     };
+
+    struct DebugConstantBuffer
+    {
+        UINT boneID;
+
+        UINT padding[3];
+    };
     
+	struct SkinnedConstantBuffer
+	{
+		DirectX::SimpleMath::Matrix boneTransforms[96];
+	};
+
     struct EmitterSphereConstantBuffer
     {
         DirectX::SimpleMath::Vector4 position;
@@ -250,5 +262,7 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector3 tangent;
         DirectX::SimpleMath::Vector3 bitangent;
         DirectX::SimpleMath::Vector2 uv;
+		float                        blendWeight[4];
+		uint8_t                      boneIndices[4];
     };
 }

@@ -3,9 +3,14 @@
 
 #define MAX_NUM_BONES_PER_VERTEX 4 
 
+struct aiNode;
+struct aiScene;
+struct aiAnimation;
+struct aiNodeAnim;
+
 namespace DemoParticles
 {
-
+    
     class Model
     {
     public:
@@ -83,6 +88,9 @@ namespace DemoParticles
         std::unique_ptr<ModelMesh>& AddMesh();
         void SetAABox(DirectX::SimpleMath::Vector3 min, DirectX::SimpleMath::Vector3 max);
 
+        void GetBoneTransforms(float TimeInSeconds, std::vector<DirectX::SimpleMath::Matrix>& Transforms);
+        void ReadNodeHierarchy(float AnimationTimeTicks, const aiNode* pNode, const DirectX::SimpleMath::Matrix& ParentTransform);
+        const aiNodeAnim* FindNodeAnim(const aiAnimation* pAnimation, const std::string& NodeName);
         void setInputElements(std::vector<D3D11_INPUT_ELEMENT_DESC> inputElements) { m_inputElements = inputElements; }
         const std::vector<D3D11_INPUT_ELEMENT_DESC> getInputElements() { return m_inputElements; }
 
@@ -92,6 +100,8 @@ namespace DemoParticles
         const size_t getMeshCount() { return m_meshes.size(); }
         const std::unique_ptr<ModelMesh>& getMesh(int index) { return m_meshes[index]; }
 
+        const aiScene* m_scene = nullptr;
+        DirectX::SimpleMath::Matrix m_GlobalInverseTransform;
     private:
         const DX::DeviceResources* m_deviceResources;
 
@@ -103,5 +113,7 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector3 m_aaBoxMin;
         DirectX::SimpleMath::Vector3 m_aaBoxMax;
         DirectX::SimpleMath::Vector3 m_aaBoxCentre;
+
+        
     };
 }

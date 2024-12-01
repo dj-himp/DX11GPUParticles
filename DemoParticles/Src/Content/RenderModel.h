@@ -39,5 +39,10 @@ namespace DemoParticles
         WorldConstantBuffer m_constantBufferData;
         std::unique_ptr<VertexShader> m_modelVS;
         std::unique_ptr<PixelShader> m_modelPS;
+
+        DebugConstantBuffer m_debugConstantBufferData;
+        Microsoft::WRL::ComPtr<ID3D11Buffer> m_debugConstantBuffer;
+        SkinnedConstantBuffer m_skinnedConstantBufferData;
+		Microsoft::WRL::ComPtr<ID3D11Buffer> m_skinnedConstantBuffer;
     };
 }
