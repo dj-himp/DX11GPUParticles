@@ -154,7 +154,7 @@ namespace DemoParticles
             }
 
             // create the combined transformation matrix
-            aiMatrix4x4 mat = aiMatrix4x4(pRot.GetMatrix());
+            /*aiMatrix4x4 mat = aiMatrix4x4(pRot.GetMatrix());
             mat.a1 *= pscale.x; mat.b1 *= pscale.x; mat.c1 *= pscale.x;
             mat.a2 *= pscale.y; mat.b2 *= pscale.y; mat.c2 *= pscale.y;
             mat.a3 *= pscale.z; mat.b3 *= pscale.z; mat.c3 *= pscale.z;
@@ -163,6 +163,13 @@ namespace DemoParticles
             // transpose to get DirectX style matrix
             mat.Transpose();
             bonesByName[channel.m_name]->m_localTransform = AssimpToDX::FromMatrix(mat);
+            */
+            
+            DirectX::SimpleMath::Matrix scale = DirectX::SimpleMath::Matrix::CreateScale(pscale.x, pscale.y, pscale.z);
+            DirectX::SimpleMath::Matrix rotation = DirectX::SimpleMath::Matrix::CreateFromQuaternion(DirectX::SimpleMath::Quaternion(pRot.x, pRot.y, pRot.z, pRot.w));
+            DirectX::SimpleMath::Matrix translation = DirectX::SimpleMath::Matrix::CreateTranslation(position.x, position.y, position.z);
+            bonesByName[channel.m_name]->m_localTransform = scale * rotation * translation;
+
         }
         m_lastTime = time;
     }

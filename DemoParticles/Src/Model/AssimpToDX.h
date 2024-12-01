@@ -6,9 +6,9 @@
 
 namespace AssimpToDX
 {
-    inline DirectX::SimpleMath::Matrix FromMatrix(aiMatrix4x4 mat)
+    inline DirectX::SimpleMath::Matrix FromMatrix(aiMatrix4x4 m)
     {
-        DirectX::SimpleMath::Matrix m;
+        /*DirectX::SimpleMath::Matrix m;
         m.m[0][0] = mat.a1;
         m.m[0][1] = mat.a2;
         m.m[0][2] = mat.a3;
@@ -25,7 +25,13 @@ namespace AssimpToDX
         m.m[3][1] = mat.d2;
         m.m[3][2] = mat.d3;
         m.m[3][3] = mat.d4;
-        return m;
+        return m;*/
+
+        return DirectX::SimpleMath::Matrix
+		    (m.a1, m.a2, m.a3, m.a4,
+			m.b1, m.b2, m.b3, m.b4,
+			m.c1, m.c2, m.c3, m.c4,
+			m.d1, m.d2, m.d3, m.d4);
     }
 
     inline DirectX::SimpleMath::Vector3 FromVector(aiVector3D vec)

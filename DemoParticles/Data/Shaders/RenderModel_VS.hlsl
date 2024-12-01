@@ -46,6 +46,8 @@ PixelShaderInput main(VertexShaderInput input)
     output.Position = mul(output.Position, mul(world, viewProj));
     
 
+    //output.Position = mul(float4(input.Position, 1.0), mul(world, viewProj));
+
     /*float weight0 = input.blendWeight[0];
 	float weight1 = 1.0f - weight0;
 

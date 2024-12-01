@@ -258,6 +258,6 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector3 bitangent;
         DirectX::SimpleMath::Vector2 uv;
         DirectX::SimpleMath::Vector4 blendWeight;
-        uint8_t                      boneIndices[4];
+        BYTE                         boneIndices[4];
     };
 }
