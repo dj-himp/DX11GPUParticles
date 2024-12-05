@@ -6,8 +6,10 @@
 cbuffer emitterCubeConstantBuffer : register(b4)
 {
     float4x4 world;
-    float4 color;
-    
+    float4 colorStart;
+    float4 colorEnd;
+    float4 uvSprite;
+
     uint emitterMaxSpawn;
     uint particleOrientation;
     float particlesBaseSpeed;
@@ -38,16 +40,19 @@ void main(uint3 id : SV_DispatchThreadID)
         p.position = float4(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, 1.0);
         p.position = mul(p.position, world);
 
+        p.uvSprite = uvSprite;
+
         //useless for the moment
         p.velocity = particlesBaseSpeed * float4(0.0, 0.0, 0.0, 0.0);
         //p.velocity = float4(rand_xorshift_normalized(), rand_xorshift_normalized(), rand_xorshift_normalized(), 0.0);
         
-        p.lifeSpan = particlesLifeSpan * rand_xorshift_normalized();
+        p.lifeSpan = particlesLifeSpan;
         p.age = abs(p.lifeSpan); //abs() so if lifetime is infinite ( < 0.0) it's still has a life
         p.mass = particlesMass;
 
         p.orientation = particleOrientation;
-        p.color = color;
+        p.colorStart = colorStart;
+        p.colorEnd = colorEnd;
         p.sizeStart = particleSizeStart;
         p.sizeEnd = particleSizeEnd;
         

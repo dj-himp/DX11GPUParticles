@@ -39,5 +39,10 @@ namespace DemoParticles
 
         float m_emitDelay = 1.0f / 60.0f;
         float m_currentDelay = 0.0f;
+        
+        Microsoft::WRL::ComPtr<ID3D11Resource>              m_particleTexture1;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_particleTexture1SRV;
+        int m_uvTileX = 0;
+        int m_uvTileY = 0;
     };
 }

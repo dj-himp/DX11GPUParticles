@@ -35,11 +35,10 @@ cbuffer simulateParticlesConstantBuffer : register(b4)
 struct Attractor
 {
     float4 position;
+    bool enabled;
     float gravity;
     float mass;
     float killZoneRadius;
-
-    uint attractorPadding;
 };
 
 struct ForceField
@@ -207,6 +206,8 @@ void main(uint3 id : SV_DispatchThreadID, uint groupId : SV_GroupIndex) //SV_Gro
         //p.velocity.xyz = clamp(p.velocity.xyz, float3(-cap, -cap, -cap), float3(cap, cap, cap));
 
         p.position.xyz += p.velocity.xyz * dt;
+
+        p.color = normalize(lerp(p.colorStart, p.colorEnd, 1.0 - p.age / p.lifeSpan));
 
         //kill particles inside attractors killzone (if killZoneRadius >= 0.0)
         for (uint j = 0; j < nbAttractors; ++j)

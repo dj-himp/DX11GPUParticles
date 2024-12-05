@@ -10,6 +10,7 @@ struct GeometryShaderInput
     float3 velocity : TEXCOORD3;
     uint orientation : TEXCOORD4;
     float size : TEXCOORD5;
+    float4 uvSprite : TEXCOORD6; //x,y for x,y and zw for size
 };
 
 struct PixelShaderInput
@@ -85,25 +86,25 @@ void main(point GeometryShaderInput input[1], inout TriangleStream<PixelShaderIn
     // Upper left vertex
     output.oPosition = pos + particleSize * (-right + up);
     output.Position = mul(float4(output.oPosition, 1.0), viewProj);
-    output.uv = float2(0.0, 0.0);
+    output.uv = input[0].uvSprite.xy;
     OutStream.Append(output);
 
     // Bottom left vertex
     output.oPosition = pos + particleSize * (-right - up);
     output.Position = mul(float4(output.oPosition, 1.0), viewProj);
-    output.uv = float2(0.0, 1.0);
+    output.uv = float2(input[0].uvSprite.x, input[0].uvSprite.y + input[0].uvSprite.w);
     OutStream.Append(output);
 
     // Upper right vertex
     output.oPosition = pos + particleSize * (right + up);
     output.Position = mul(float4(output.oPosition, 1.0), viewProj);
-    output.uv = float2(1.0, 0.0);
+    output.uv = float2(input[0].uvSprite.x + input[0].uvSprite.z, input[0].uvSprite.y);
     OutStream.Append(output);
 
     // Bottom right vertex
     output.oPosition = pos + particleSize * (right - up);
     output.Position = mul(float4(output.oPosition, 1.0), viewProj);
-    output.uv = float2(1.0, 1.0);
+    output.uv = input[0].uvSprite.xy + input[0].uvSprite.zw;
     OutStream.Append(output);
 
     OutStream.RestartStrip();

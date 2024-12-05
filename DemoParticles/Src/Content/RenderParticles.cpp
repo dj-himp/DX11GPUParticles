@@ -17,6 +17,7 @@
 #include "ParticleEmitterMesh.h"
 #include "Content/RenderModelAndEmitBuffer.h"
 #include "ParticleEmitterAppendBuffer.h"
+#include "ParticleAttractor.h"
 
 #include <filesystem>
 
@@ -293,6 +294,7 @@ namespace DemoParticles
 
         //initAttractors();
         initForceField();
+        initTextures();
 
         m_modelToEmit->createDeviceDependentResources();
     }
@@ -411,6 +413,8 @@ namespace DemoParticles
         }
 
         context->PSSetShader(m_renderParticlePS->getPixelShader(), nullptr, 0);
+        
+        
 
         ID3D11Buffer* nullVertexBuffer = nullptr;
         UINT stride = 0;
@@ -423,7 +427,7 @@ namespace DemoParticles
         context->VSSetShaderResources(0, ARRAYSIZE(vertexShaderSRVs), vertexShaderSRVs);
         context->VSSetConstantBuffers(3, 1, m_aliveListCountConstantBuffer.GetAddressOf());
 
-        const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
+        const float blendFactor[4] = { 1.f, 1.f, 1.f, 1.f };
         switch (ParticlesGlobals::g_blendMode)
         {
         case 0:
@@ -438,6 +442,10 @@ namespace DemoParticles
             context->OMSetBlendState(RenderStatesHelper::Additive().Get(), blendFactor, 0xffffffff);
             context->OMSetDepthStencilState(RenderStatesHelper::DepthNone().Get(), 0);
             break;
+        case 3:
+            context->OMSetBlendState(RenderStatesHelper::AlphaBlend().Get(), blendFactor, 0xffffffff);
+            context->OMSetDepthStencilState(RenderStatesHelper::DepthDefault().Get(), 0);
+            break;
         default:
             break;
         }
@@ -448,7 +456,12 @@ namespace DemoParticles
         else
             context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
 
+        context->PSSetSamplers(0, 1, RenderStatesHelper::LinearClamp().GetAddressOf());
+        m_renderParticlePS->setSRV(0, m_particleTexture1SRV);
+
         context->DrawInstancedIndirect(m_indirectDrawArgsBuffer.Get(), 0);
+
+        m_renderParticlePS->setSRV(0, nullptr);
 
         ZeroMemory(vertexShaderSRVs, sizeof(vertexShaderSRVs));
         context->VSSetShaderResources(0, ARRAYSIZE(vertexShaderSRVs), vertexShaderSRVs);
@@ -582,7 +595,78 @@ namespace DemoParticles
             
         }
 
-        
+        if (ImGui::CollapsingHeader("Attractors"))
+        {
+            if (m_attractorList.size() < MAX_ATTRACTORS)
+            {
+                if (ImGui::Button("Add"))
+                {
+                    ImGui::OpenPopup("Select attractor name");
+                }
+            }
+
+			if (ImGui::BeginPopupModal("Select attractor name", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				static bool errorName = false;
+				if (errorName)
+				{
+					ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Name already exist");
+				}
+				static char name[10] = "0";
+				ImGui::InputText("Name", name, IM_ARRAYSIZE(name));
+				if (ImGui::Button("OK"))
+				{
+					auto p = [this](auto const& attractor)
+						{
+							return attractor->getName() == name;
+						};
+					if (std::find_if(m_attractorList.begin(), m_attractorList.end(), p) != m_attractorList.end())
+					{
+						errorName = true;
+					}
+					else
+					{
+						ImGui::CloseCurrentPopup();
+                        addAttractor(name);
+						errorName = false;
+					}
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel"))
+				{
+					ImGui::CloseCurrentPopup();
+					errorName = false;
+				}
+				ImGui::EndPopup();
+			}
+
+            ImGui::Separator();
+            for (auto&& attractor : m_attractorList)
+            {
+				if (ImGui::Button(std::string("Delete " + attractor->getName()).c_str()))
+				{
+					m_attractorNameToDelete = attractor->getName();
+					ImGui::OpenPopup("Delete attractor");
+				}
+                attractor->RenderImGui(camera);
+            }
+			if (ImGui::BeginPopupModal("Delete attractor", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				ImGui::Text("Delete %s ? ", m_attractorNameToDelete.c_str());
+				if (ImGui::Button("OK"))
+				{
+					ImGui::CloseCurrentPopup();
+					m_attractorList.erase(std::remove_if(m_attractorList.begin(), m_attractorList.end(), [this](auto const& attractor) { return attractor->getName() == m_attractorNameToDelete; }));
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel"))
+				{
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+
+			}
+        }
 
         if (ImGui::CollapsingHeader("Simulation"))
         {
@@ -738,8 +822,18 @@ namespace DemoParticles
 
 
         //simulation
+        m_simulateParticlesBufferData.nbAttractors = m_attractorList.size();
+        std::vector<Attractor> attractors;
+        for (auto&& attractor : m_attractorList)
+        {
+            attractors.push_back(attractor->getAttractorParam());
+        }
+
         context->UpdateSubresource(m_simulateParticlesBuffer.Get(), 0, nullptr, &m_simulateParticlesBufferData, 0, 0);
-        context->UpdateSubresource(m_attractorsBuffer.Get(), 0, nullptr, &m_attractorList, 0, 0);
+        if (attractors.size() > 0)
+        {
+            context->UpdateSubresource(m_attractorsBuffer.Get(), 0, nullptr, attractors.data(), 0, 0);
+        }
 
         context->CSSetConstantBuffers(4, 1, m_simulateParticlesBuffer.GetAddressOf());
 
@@ -799,7 +893,7 @@ namespace DemoParticles
         m_currentAliveBuffer = (m_currentAliveBuffer + 1) % 2;
    }
 
-    void RenderParticles::initAttractors()
+    /*void RenderParticles::initAttractors()
     {
         m_simulateParticlesBufferData.nbAttractors = 4;
        
@@ -829,7 +923,7 @@ namespace DemoParticles
             Matrix world = Matrix::CreateTranslation(Vector3(m_attractorList[i].position.x, m_attractorList[i].position.y, m_attractorList[i].position.z));
             DebugRenderer::instance().pushBackModel(MeshFactory::getInstance().createAxis(), world);
         }
-    }
+    }*/
 
     void RenderParticles::addEmitter(EmitterType type, std::string name)
     {
@@ -889,7 +983,16 @@ namespace DemoParticles
         }
     }
 
-    void RenderParticles::initForceField()
+	void RenderParticles::addAttractor(std::string name)
+	{
+        if (m_attractorList.size() < MAX_ATTRACTORS)
+        {
+            std::unique_ptr<ParticleAttractor> attractor = std::make_unique<ParticleAttractor>(name);
+            m_attractorList.push_back(std::move(attractor));
+        }
+	}
+
+	void RenderParticles::initForceField()
     {
         std::vector<ForceField>::iterator it = std::find_if(m_forceFieldList.begin(), m_forceFieldList.end(), [&](ForceField ff)->bool { return (m_currentForceField == ff.m_fileName); });
         if (it != m_forceFieldList.end())
@@ -992,6 +1095,17 @@ namespace DemoParticles
         }
     }
 
+    void RenderParticles::initTextures()
+    {
+        DX::ThrowIfFailed(
+            //CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"Particle.dds", &m_particleTexture1, &m_particleTexture1SRV)
+            //CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"smoke.dds", &m_particleTexture1, &m_particleTexture1SRV)
+            //CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"particlesSheet.dds", &m_particleTexture1, &m_particleTexture1SRV)
+            CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"particlesSheetPerso.dds", &m_particleTexture1, &m_particleTexture1SRV)
+            //CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"smokePerso.dds", &m_particleTexture1, &m_particleTexture1SRV)
+        );  
+    }
+
     void RenderParticles::updateForceField()
     {
         m_renderForceFieldConstantBufferData.size = Vector4((float)m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeX, (float)m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeY, (float)m_forceFieldList[m_currentlyLoadedForceField].m_content.sizeZ, 1.0f);
@@ -1052,6 +1166,14 @@ namespace DemoParticles
             file["Emitters"].push_back(emitterJson);
         }
 
+		file["Attractors"] = json::array();
+		for (auto&& attractor : m_attractorList)
+		{
+			json attractorJson;
+            attractor->save(attractorJson);
+			file["Attractors"].push_back(attractorJson);
+		}
+
         file["Simulation"]["Aizama"]["Enabled"] = m_simulateParticlesBufferData.addAizama;
         file["Simulation"]["Aizama"]["AizamaParams1"] = { m_simulateParticlesBufferData.aizamaParams1.x, m_simulateParticlesBufferData.aizamaParams1.y, m_simulateParticlesBufferData.aizamaParams1.z, m_simulateParticlesBufferData.aizamaParams1.w };
         file["Simulation"]["Aizama"]["AizamaParams2"] = { m_simulateParticlesBufferData.aizamaParams2.x, m_simulateParticlesBufferData.aizamaParams2.y, m_simulateParticlesBufferData.aizamaParams2.z, m_simulateParticlesBufferData.aizamaParams2.w };
@@ -1078,11 +1200,19 @@ namespace DemoParticles
     void RenderParticles::load(json& file)
     {
 
+        m_particleEmitters.clear();
         for (auto json : file["Emitters"])
         {
             addEmitter(json["Type"], json["Name"]);
             m_particleEmitters.back()->load(json);
         }
+
+        m_attractorList.clear();
+		for (auto json : file["Attractors"])
+		{
+			addAttractor(json["Name"]);
+			m_attractorList.back()->load(json);
+		}
 
         m_simulateParticlesBufferData.addAizama = file["Simulation"]["Aizama"]["Enabled"];
         std::vector<float> aizamaParams1 = file["Simulation"]["Aizama"]["AizamaParams1"];

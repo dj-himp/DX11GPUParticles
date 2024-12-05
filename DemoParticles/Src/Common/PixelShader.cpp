@@ -45,6 +45,13 @@ namespace DemoParticles
         context->OMSetRenderTargetsAndUnorderedAccessViews(D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL, nullptr, nullptr, slot, count, uavs, initialCount);
     }
 
+    void PixelShader::setSRV(int slot, Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> shaderResourceView)
+    {
+        auto context = m_deviceResources->GetD3DDeviceContext();
+
+        context->PSSetShaderResources(slot, 1, shaderResourceView.GetAddressOf());
+    }
+
     int PixelShader::readCounter(Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> uav)
     {
         auto context = m_deviceResources->GetD3DDeviceContext();

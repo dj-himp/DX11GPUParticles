@@ -17,6 +17,7 @@ namespace DemoParticles
     class SortLib;
     class IParticleEmitter;
     class RenderModelAndEmitBuffer;
+    class ParticleAttractor;
 
     class RenderParticles : public IRenderable
     {
@@ -43,10 +44,12 @@ namespace DemoParticles
         void resetParticles();
         void emitParticles();
         void simulateParticles();
-        void initAttractors();
+        //void initAttractors();
         void addEmitter(EmitterType type, std::string name);
+        void addAttractor(std::string name);
 
         void initForceField();
+        void initTextures();
         void updateForceField();
         void renderForceField();
 
@@ -110,7 +113,7 @@ namespace DemoParticles
         SimulateParticlesConstantBuffer                     m_simulateParticlesBufferData;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_simulateParticlesBuffer;
 
-        Attractor                                           m_attractorList[MAX_ATTRACTORS];
+        std::vector<std::unique_ptr<ParticleAttractor>>     m_attractorList;
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_attractorsBuffer;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_attractorsSRV;
 
@@ -151,6 +154,7 @@ namespace DemoParticles
         bool m_sortParticles = false;
 
         std::string m_emitterNameToDelete;
+        std::string m_attractorNameToDelete;
 
         int m_currentParticlesCount = 0;
         bool m_measureParticlesCount = false;
@@ -159,5 +163,9 @@ namespace DemoParticles
 
         std::unique_ptr<RenderModelAndEmitBuffer> m_modelToEmit;
         bool m_modelToEmitEnabled = false;
+        
+
+        Microsoft::WRL::ComPtr<ID3D11Resource>              m_particleTexture1;
+        Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_particleTexture1SRV;
     };
 }

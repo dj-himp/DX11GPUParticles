@@ -44,7 +44,9 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector4 position;
         DirectX::SimpleMath::Vector4 scale;
         DirectX::SimpleMath::Vector4 partitioning;
-        DirectX::SimpleMath::Color color;
+        DirectX::SimpleMath::Color colorStart;
+        DirectX::SimpleMath::Color colorEnd;
+        DirectX::SimpleMath::Vector4 uvSprite;
         DirectX::SimpleMath::Matrix rotation;
 
         UINT maxSpawn;
@@ -63,8 +65,10 @@ namespace DemoParticles
     {
         DirectX::SimpleMath::Matrix rotation;
         DirectX::SimpleMath::Vector4 position;
-        DirectX::SimpleMath::Color color;
-
+        DirectX::SimpleMath::Color colorStart;
+        DirectX::SimpleMath::Color colorEnd;
+		DirectX::SimpleMath::Vector4 uvSprite;
+		
         UINT maxSpawn;
         float coneColatitude;
         float coneLongitude;
@@ -82,7 +86,9 @@ namespace DemoParticles
     struct EmitterCubeConstantBuffer
     {
         DirectX::SimpleMath::Matrix world;
-        DirectX::SimpleMath::Color color;
+        DirectX::SimpleMath::Color colorStart;
+        DirectX::SimpleMath::Color colorEnd;
+        DirectX::SimpleMath::Vector4 uvSprite;
 
         UINT maxSpawn;
         UINT particleOrientation;
@@ -98,7 +104,9 @@ namespace DemoParticles
 
     struct EmitterFromBufferConstantBuffer
     {
-        DirectX::SimpleMath::Color color;
+        DirectX::SimpleMath::Color colorStart;
+        DirectX::SimpleMath::Color colorEnd;
+        DirectX::SimpleMath::Vector4 uvSprite;
 
         UINT maxSpawn;
         UINT particleOrientation;
@@ -115,7 +123,9 @@ namespace DemoParticles
     struct EmitterMeshConstantBuffer
     {
         DirectX::SimpleMath::Matrix world;
-        DirectX::SimpleMath::Color color;
+        DirectX::SimpleMath::Color colorStart;
+        DirectX::SimpleMath::Color colorEnd;
+        DirectX::SimpleMath::Vector4 uvSprite;
 
         UINT maxSpawn;
         UINT particleOrientation;
@@ -203,7 +213,10 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector4 normal;
         DirectX::SimpleMath::Vector4 velocity;
         DirectX::SimpleMath::Color color;
-
+        DirectX::SimpleMath::Color colorStart;
+        DirectX::SimpleMath::Color colorEnd;
+		DirectX::SimpleMath::Vector4 uvSprite;
+		
         float lifeSpan;
         float age;
         float mass;
@@ -218,15 +231,14 @@ namespace DemoParticles
         float index; //index in the particle buffer
     };
 
-#define MAX_ATTRACTORS 4
+#define MAX_ATTRACTORS 10
     struct Attractor
     {
         DirectX::SimpleMath::Vector4 position;
+        bool enabled;
         float gravity;
         float mass;
         float killZoneRadius;
-
-        UINT padding[1];
     };
 
     // Used to send per-vertex data to the vertex shader.

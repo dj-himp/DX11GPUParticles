@@ -21,6 +21,7 @@
 #include "Common/RenderStatesHelper.h"
 
 #include <iomanip>
+#include <Extern/nfd/nfd.h>
 
 extern void ExitGame();
 
@@ -93,7 +94,7 @@ void Game::Initialize(HWND window, int width, int height)
 
     CreateDeviceDependentResources();
     CreateWindowSizeDependentResources();
-    load();
+    loadPrevious();
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -366,16 +367,31 @@ void Game::RenderImGui()
 
     ImGui::Begin("Particles globals");
     
-    if (ImGui::Button("Save"))
+    if (m_currentSave != "")
     {
-        save();
+        if (ImGui::Button("Save"))
+        {
+            save();
+        }
     }
+    ImGui::SameLine();
+	if (ImGui::Button("Save As"))
+	{
+		saveAs();
+	}
+    ImGui::SameLine();
+	if (ImGui::Button("Load"))
+	{
+		load();
+	}
+
+    ImGui::Text("%s", m_currentSave.filename().string().c_str());
 
     if (ImGui::CollapsingHeader("Globals"))
     {
         ImGui::Checkbox("Disable culling", &ParticlesGlobals::g_cullNone);
-        const char* items[] = { "Opaque", "NonPremultiplied", "Additive" };
-        ImGui::Combo("Blend Mode", &ParticlesGlobals::g_blendMode, items, 3);
+        const char* items[] = { "Opaque", "NonPremultiplied", "Additive", "Alpha"};
+        ImGui::Combo("Blend Mode", &ParticlesGlobals::g_blendMode, items, 4);
 
         const char* shapeItems[] = { "Point", "Line" };
         ImGui::Combo("Shape", &ParticlesGlobals::g_particleShape, shapeItems, 2);
@@ -404,31 +420,112 @@ void Game::save()
 
     m_sceneMenger->save(saveFile);
 
-    std::ofstream file("save.json");
-    file << std::setw(4) << saveFile;
-    file.close();
+	
+	std::ofstream file(m_currentSave);
+	file << std::setw(4) << saveFile;
+	file.close();
+
+    std::ofstream lastOpened("lastOpened.sav");
+    lastOpened.clear();
+    lastOpened << m_currentSave;
+    lastOpened.close();
+}
+
+void Game::saveAs()
+{
+	json saveFile;
+	saveFile["Global"]["Disable culling"] = ParticlesGlobals::g_cullNone;
+	saveFile["Global"]["Blend Mode"] = ParticlesGlobals::g_blendMode;
+	saveFile["Global"]["Shape"] = ParticlesGlobals::g_particleShape;
+
+	m_sceneMenger->save(saveFile);
+
+	nfdchar_t* savePath = NULL;
+	nfdresult_t result = NFD_SaveDialog("json", NULL, &savePath);
+	if (result == NFD_OKAY)
+	{
+		std::filesystem::path p(savePath);
+		free(savePath);
+
+		p.replace_extension("json");
+		std::ofstream file(p);
+		file << std::setw(4) << saveFile;
+		file.close();
+
+		std::ofstream lastOpened("lastOpened.sav");
+        lastOpened.clear();
+		lastOpened << p;
+		lastOpened.close();
+
+        m_currentSave = p;
+	}
+	else if (result == NFD_CANCEL)
+	{
+		puts("User pressed cancel.");
+	}
+	else
+	{
+		printf("Error: %s\n", NFD_GetError());
+	}
 }
 
 void Game::load()
 {
     json saveFile;
 
-    std::ifstream file("save.json");
-    if (!file)
-    {
-        //no save so create default
-        save();
-        file.open("save.json");
-        //return;
+	nfdchar_t* outPath = NULL;
+	nfdresult_t result = NFD_OpenDialog("json", NULL, &outPath);
+	if (result == NFD_OKAY)
+	{
+        m_currentSave = std::filesystem::path(outPath);
+
+		std::ifstream file(m_currentSave);
+        free(outPath);
+		file >> saveFile;
+		file.close();
+		
+		ParticlesGlobals::g_cullNone = saveFile["Global"]["Disable culling"];
+		ParticlesGlobals::g_blendMode = saveFile["Global"]["Blend Mode"];
+		ParticlesGlobals::g_particleShape = saveFile["Global"]["Shape"];
+
+		m_sceneMenger->load(saveFile);  
+	}
+	else if (result == NFD_CANCEL)
+	{
+
+	}
+	else
+	{
+		printf("Error: %s\n", NFD_GetError());
+	}
+}
+
+void Game::loadPrevious()
+{   
+    json saveFile;
+
+	std::ifstream lastOpened("lastOpened.sav");
+	if (lastOpened)
+	{
+        std::filesystem::path p;
+        lastOpened >> p;
+        lastOpened.close();
+
+		std::ifstream file(p);
+        if (file)
+        {
+			file >> saveFile;
+			file.close();
+
+			ParticlesGlobals::g_cullNone = saveFile["Global"]["Disable culling"];
+			ParticlesGlobals::g_blendMode = saveFile["Global"]["Blend Mode"];
+			ParticlesGlobals::g_particleShape = saveFile["Global"]["Shape"];
+
+            m_sceneMenger->load(saveFile);
+
+            m_currentSave = p;
+        }
     }
-    file >> saveFile;
-    file.close();
-
-    ParticlesGlobals::g_cullNone = saveFile["Global"]["Disable culling"];
-    ParticlesGlobals::g_blendMode = saveFile["Global"]["Blend Mode"];
-    ParticlesGlobals::g_particleShape = saveFile["Global"]["Shape"];
-
-    m_sceneMenger->load(saveFile);
 }
 
 #pragma endregion

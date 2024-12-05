@@ -6,8 +6,10 @@
 cbuffer emitterMeshConstantBuffer : register(b4)
 {
     float4x4 world;
-    float4 color;
-    
+    float4 colorStart;
+    float4 colorEnd;
+    float4 uvSprite;
+
     uint emitterMaxSpawn;
     uint particleOrientation;
     float particlesBaseSpeed;
@@ -48,6 +50,8 @@ void main(uint3 id : SV_DispatchThreadID)
 
         Particle p = (Particle)0;
 
+        p.uvSprite = uvSprite;
+
         //uint nbVertices;
         //uint stride;
         //meshVertices.GetDimensions(nbVertices, stride);
@@ -78,12 +82,13 @@ void main(uint3 id : SV_DispatchThreadID)
         p.velocity = float4(particlesBaseSpeed * meshVertices[index0].normal, 0.0);
         //p.velocity = float4(rand_xorshift_normalized(), rand_xorshift_normalized(), rand_xorshift_normalized(), 0.0);
         
-        p.lifeSpan = particlesLifeSpan * rand_xorshift_normalized();
+        p.lifeSpan = particlesLifeSpan;
         p.age = abs(p.lifeSpan); //abs() so if lifetime is infinite ( < 0.0) it's still has a life
         p.mass = particlesMass;
 
         p.orientation = particleOrientation;
-        p.color = color;
+        p.colorStart = colorStart;
+        p.colorEnd = colorEnd;
         p.sizeStart = particleSizeStart;
         p.sizeEnd = particleSizeEnd;
         
