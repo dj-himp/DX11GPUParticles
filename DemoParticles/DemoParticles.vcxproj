@@ -698,6 +698,15 @@
     <CopyFileToFolders Include="Data\Models\Glasse_Walk_Cycle.fbx">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\testBones.fbx">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\Start_Walking.fbx">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\Walking.fbx">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <None Include="Extern\assimp\.editorconfig" />
     <None Include="Extern\assimp\color4.inl" />
     <None Include="Extern\assimp\config.h.in" />

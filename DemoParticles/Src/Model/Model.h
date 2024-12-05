@@ -37,6 +37,9 @@ namespace DemoParticles
 
         std::unique_ptr<ModelAnimator>& getAnimator() { return m_animator; }
 
+        bool isAnimated() const { return m_isAnimated; }
+        void setAnimated(bool animated) { m_isAnimated = animated; }
+
     private:
         const DX::DeviceResources* m_deviceResources;
 
@@ -50,5 +53,7 @@ namespace DemoParticles
         DirectX::SimpleMath::Vector3 m_aaBoxCentre;
 
         std::unique_ptr<ModelAnimator> m_animator;
+
+        bool m_isAnimated = false;
     };
 }

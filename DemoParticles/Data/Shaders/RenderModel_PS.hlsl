@@ -11,8 +11,8 @@ struct PixelShaderInput
     float4 Position : SV_POSITION;
     float2 UVs : TEXCOORD0;
     float3 normal :TEXCOORD1;
-    float4 blendWeight : TEXCOORD2;
-    nointerpolation uint4 boneIndices : TEXCOORD3;
+    //float4 blendWeight : TEXCOORD2;
+    //nointerpolation uint4 boneIndices : TEXCOORD3;
 };
 
 struct PixelShaderOutput
@@ -30,7 +30,7 @@ PixelShaderOutput main(PixelShaderInput input)
 
     //output.Color = diffuseTexture.Sample(LinearSampler, input.UVs);    
 
-    bool found = false;
+    /*bool found = false;
     for(int i=0;i<4;++i)
     {
         if(input.boneIndices[i] == currentBoneID)
@@ -48,6 +48,6 @@ PixelShaderOutput main(PixelShaderInput input)
     }
     if(!found)
         output.Color = float4(0.0, 0.0, 1.0, 1.0);
-    
+    */
     return output;
 }

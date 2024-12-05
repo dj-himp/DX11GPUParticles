@@ -29,8 +29,8 @@ struct PixelShaderInput
     float4 Position : SV_POSITION;
     float2 UVs : TEXCOORD0;
     float3 normal :TEXCOORD1;
-    float4 blendWeight : TEXCOORD2;
-    nointerpolation uint4 boneIndices : TEXCOORD3;
+    //float4 blendWeight : TEXCOORD2;
+    //nointerpolation uint4 boneIndices : TEXCOORD3;
 };
 
 // Simple shader to do vertex processing on the GPU.
@@ -71,13 +71,13 @@ PixelShaderInput main(VertexShaderInput input)
     
     //output.Position = mul(float4(input.Position, 1.0), mul(world, viewProj));
     
-    output.normal = input.normal;
+    output.normal = mul(float4(input.normal, 1.0), skinTransform).xyz;
     output.UVs = input.texCoord;
 
 
 //TEMP
-    output.blendWeight = input.blendWeight;
-    output.boneIndices = input.boneIndices;
+    //output.blendWeight = input.blendWeight;
+    //output.boneIndices = input.boneIndices;
 //TEMP
 
     return output;

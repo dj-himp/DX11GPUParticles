@@ -39,10 +39,12 @@ namespace DemoParticles
         //m_model = m_modelLoader->load("cat.fbx");
         //m_world = Matrix::CreateScale(1.0f) * Matrix::CreateRotationX(0.0f) * Matrix::CreateRotationY(0.0f) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
 
-        m_model = m_modelLoader->load("Motion_Move.DAE");
+        //m_model = m_modelLoader->load("Motion_Move.DAE");
         //m_model = m_modelLoader->load("Hand_rigged.fbx");
-        m_world = Matrix::CreateScale(1.0f) * Matrix::CreateRotationX(DirectX::XM_PI) * Matrix::CreateRotationY(0.0f) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
+        //m_world = Matrix::CreateScale(1.0f) * Matrix::CreateRotationX(DirectX::XM_PI) * Matrix::CreateRotationY(0.0f) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
         
+        m_model = m_modelLoader->load("cat.dae");
+
         DX::ThrowIfFailed(
             CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"soldierAHighDIFF.dds", nullptr, m_diffuseTextureSRV.GetAddressOf())
         );
@@ -182,10 +184,10 @@ namespace DemoParticles
         m_modelToEmitConstantBufferData.offsetDensity = m_offsetDensity * rnd * m_scaleDensity;
         m_modelToEmitConstantBufferData.scaleDensity = m_scaleDensity;
 
-        std::vector<Matrix> transforms = m_model->getAnimator()->getTransforms(timer.GetElapsedSeconds());
+        std::vector<Matrix> transforms = m_model->getAnimator()->getTransforms(timer.GetTotalSeconds());
         for (int i = 0; i < transforms.size(); ++i)
         {
-            m_skinnedConstantBufferData.boneTransforms[i] = transforms[i];
+            m_skinnedConstantBufferData.boneTransforms[i] = transforms[i].Transpose();
         }
         
     }
@@ -265,5 +267,6 @@ namespace DemoParticles
         m_scaleDensity.y = m_scaleDensity.x;
         ImGui::DragFloat("Offset density", (float*)&m_offsetDensity.x, 0.01f, 0.01f, 10.0f);
         m_offsetDensity.y = m_offsetDensity.x;
+        m_model->getAnimator()->setAnimationIndex(0);
     }
 }

@@ -26,8 +26,10 @@ namespace DemoParticles
         //m_model = m_modelLoader->load("deer.fbx");
         //m_model = m_modelLoader->load("Motion_Move.DAE");
         //m_model = m_modelLoader->load("Hand_rigged.fbx");
-        m_model = m_modelLoader->load("magician.X");
+        //m_model = m_modelLoader->load("magician.X");
         //m_model = m_modelLoader->load("testBones.fbx");
+        //m_model = m_modelLoader->load("Walking.fbx");
+        m_model = m_modelLoader->load("cat.dae");
 
         m_modelVS = std::make_unique<VertexShader>(m_deviceResources);
         m_modelVS->load(L"RenderModel_VS.cso", m_model->getInputElements());
@@ -65,6 +67,7 @@ namespace DemoParticles
         //Z rotation is temporary as I need to know why the model is upside down
         //m_world = Matrix::CreateScale(0.01f) * Matrix::CreateRotationX(DirectX::XM_PI/2.0f) * Matrix::CreateRotationY(DirectX::XM_PI / 2.0f) * Matrix::CreateRotationZ(0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
         m_world = DirectX::SimpleMath::Matrix::Identity;
+        //m_world = Matrix::CreateScale(0.01f);
     }
 
     void RenderModel::createWindowSizeDependentResources()

@@ -16,10 +16,10 @@ namespace DemoParticles
 
     ModelAnimator::~ModelAnimator() = default;
 
-    void ModelAnimator::init(const aiScene* scene)
+    bool ModelAnimator::init(const aiScene* scene)
     {
         if (!scene->HasAnimations()) {
-            return;
+            return false;
         }
         release();
         m_skeleton = createBoneTree(scene->mRootNode, nullptr);
@@ -101,6 +101,8 @@ namespace DemoParticles
                 m_animations[i]->m_transforms.push_back(trans);
             }
         }
+
+        return true;
     }
 
 

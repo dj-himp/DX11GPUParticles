@@ -17,7 +17,7 @@ namespace DemoParticles
         ModelAnimator();
         ~ModelAnimator();
 
-        void init(const aiScene* scene);
+        bool init(const aiScene* scene);
 
         bool hasSkeleton() { return m_bones.size(); }
         std::string animationName() { return m_animations[m_currentAnimationIndex]->m_name; }

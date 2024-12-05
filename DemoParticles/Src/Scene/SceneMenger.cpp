@@ -272,7 +272,7 @@ namespace DemoParticles
         //m_fullScreenQuad->setTexture(m_rtBakePositions->getShaderResourceView().Get());
         //m_fullScreenQuad->render();
 
-        m_renderModel->render();
+        //m_renderModel->render();
     }
 
     void SceneMenger::RenderImGui(Camera* camera)
