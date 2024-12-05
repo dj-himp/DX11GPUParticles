@@ -512,17 +512,20 @@ void Game::loadPrevious()
         lastOpened.close();
 
 		std::ifstream file(p);
-		file >> saveFile;
-		file.close();
+        if (file)
+        {
+			file >> saveFile;
+			file.close();
 
-		ParticlesGlobals::g_cullNone = saveFile["Global"]["Disable culling"];
-		ParticlesGlobals::g_blendMode = saveFile["Global"]["Blend Mode"];
-		ParticlesGlobals::g_particleShape = saveFile["Global"]["Shape"];
+			ParticlesGlobals::g_cullNone = saveFile["Global"]["Disable culling"];
+			ParticlesGlobals::g_blendMode = saveFile["Global"]["Blend Mode"];
+			ParticlesGlobals::g_particleShape = saveFile["Global"]["Shape"];
 
-		m_sceneMenger->load(saveFile);
+            m_sceneMenger->load(saveFile);
 
-        m_currentSave = p;
-	}
+            m_currentSave = p;
+        }
+    }
 }
 
 #pragma endregion
