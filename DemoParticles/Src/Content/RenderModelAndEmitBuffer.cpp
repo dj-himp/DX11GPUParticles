@@ -180,7 +180,7 @@ namespace DemoParticles
 
         m_constantBufferData.world = m_world.Transpose();
 
-        float rnd = (1 - (rand() % 2)) / 2.0f;
+        float rnd = (rand() % 100) / 100.0f;
         m_modelToEmitConstantBufferData.offsetDensity = m_offsetDensity * rnd * m_scaleDensity;
         m_modelToEmitConstantBufferData.scaleDensity = m_scaleDensity;
 
