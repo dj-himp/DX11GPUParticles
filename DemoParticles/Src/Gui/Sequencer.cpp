@@ -61,7 +61,7 @@ namespace DemoParticles
         return mPts[curveIndex];
     }
 
-    ImCurveEdit::CurveType RampEdit::GetCurveType(size_t curveIndex) const
+    ImCurveEdit::CurveType RampEdit::GetCurveType(size_t /*curveIndex*/) const
     {
         return ImCurveEdit::CurveSmooth;
     }

@@ -5,6 +5,9 @@ cbuffer modelToEmitConstantBuffer : register(b1)
 {
     float2 scaleDensity;
     float2 offsetDensity;
+    bool showModel;
+
+    uint3 modelToEmitePadding;
 }
 
 struct GeometryShaderInput
@@ -53,10 +56,10 @@ void main(triangle GeometryShaderInput input[3], inout TriangleStream<PixelShade
 {
     rng_state = wang_hash(rngSeed + primID);
 
-    float3 faceNormal = normalize(cross(input[2].worldPos - input[0].worldPos, input[2].worldPos - input[1].worldPos));
+    float3 faceNormal = normalize(cross(input[2].worldPos.xyz - input[0].worldPos.xyz, input[2].worldPos.xyz - input[1].worldPos.xyz));
     
     float2 uv[3];
-    calculateUV(input[0].worldPos, input[1].worldPos, input[2].worldPos, faceNormal, uv[0], uv[1], uv[2]);
+    calculateUV(input[0].worldPos.xyz, input[1].worldPos.xyz, input[2].worldPos.xyz, faceNormal, uv[0], uv[1], uv[2]);
 
     //for(int i=0;i<3;++i)
     //so it's not backface culled (don't know why I should do that yet) PRobably the normal is calculated with wrong winding
@@ -75,17 +78,20 @@ void main(triangle GeometryShaderInput input[3], inout TriangleStream<PixelShade
     
     OutStream.RestartStrip();
     
-    for(int i=0;i<3;++i)
+    if (showModel)
     {
-        PixelShaderInput output;
-        output.worldPos = input[i].worldPos;
-        //output.Position = input[i].Position;
-        output.Position = mul(float4(input[i].worldPos.xyz, 1.0), viewProj);
-        output.uv = input[i].uv;
-        output.normal = input[i].normal;
-        output.color = input[i].color;
-        output.unfoldFlag = 0;
-        OutStream.Append(output);
+        for (int i = 0; i < 3; ++i)
+        {
+            PixelShaderInput output;
+            output.worldPos = input[i].worldPos;
+            //output.Position = input[i].Position;
+            output.Position = mul(float4(input[i].worldPos.xyz, 1.0), viewProj);
+            output.uv = input[i].uv;
+            output.normal = input[i].normal;
+            output.color = input[i].color;
+            output.unfoldFlag = 0;
+            OutStream.Append(output);
+        }
     }
 
     OutStream.RestartStrip();

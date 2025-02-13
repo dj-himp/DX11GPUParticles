@@ -24,10 +24,10 @@ namespace DemoParticles
         release();
         m_skeleton = createBoneTree(scene->mRootNode, nullptr);
 
-        for(int i=0;i<scene->mNumMeshes;++i)
+        for(unsigned int i=0;i<scene->mNumMeshes;++i)
         {
             aiMesh* mesh = scene->mMeshes[i];
-            for(int j=0;j<mesh->mNumBones;++j)
+            for(unsigned int j=0;j<mesh->mNumBones;++j)
             {
                 aiBone* bone = mesh->mBones[j];
                 
@@ -43,7 +43,7 @@ namespace DemoParticles
                 found->second->m_offset = AssimpToDX::FromMatrix(bone->mOffsetMatrix.Transpose());
                 m_bones.push_back(found->second.get());
                 //m_bonesToIndex[found->first] = m_bones.IndexOf(found);
-                m_bonesToIndex[found->first] = m_bones.size() - 1;
+                m_bonesToIndex[found->first] = (int)m_bones.size() - 1;
             }
             
 
@@ -154,7 +154,7 @@ namespace DemoParticles
         internalNode->m_originalLocalTransform = internalNode->m_localTransform;
         calculateBoneToWorldTransform(internalNode.get());
 
-        for (int i = 0; i < node->mNumChildren; i++)
+        for (unsigned int i = 0; i < node->mNumChildren; i++)
         {
             Bone* child = createBoneTree(node->mChildren[i], internalNode.get());
             if (child != nullptr)
@@ -182,7 +182,7 @@ namespace DemoParticles
 
     void ModelAnimator::extractAnimations(const aiScene* scene)
     {
-        for (int i = 0; i < scene->mNumAnimations; ++i)
+        for (unsigned int i = 0; i < scene->mNumAnimations; ++i)
         {
             m_animations.emplace_back(std::make_unique<AnimEvaluator>(scene->mAnimations[i]));
             m_animationNameToId[m_animations[i]->m_name] = i;

@@ -200,6 +200,10 @@ namespace DemoParticles
     {
         DirectX::SimpleMath::Vector2 scaleDensity;
         DirectX::SimpleMath::Vector2 offsetDensity;
+
+        bool showModel;
+
+        UINT padding[3];
     };
 
     struct SkinnedConstantBuffer

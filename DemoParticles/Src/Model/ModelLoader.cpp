@@ -30,7 +30,8 @@ namespace DemoParticles
         if(!scene)
         {
             std::string error = m_importer.GetErrorString();
-            std::cerr << "[ModelLoader] Failed to load " << fileName << " with error : " << m_importer.GetErrorString() << "\n";
+            DebugUtils::log("[ModelLoader] Failed to load " + fileName + " with error : " + std::string(m_importer.GetErrorString()));
+            //std::cerr << "[ModelLoader] Failed to load " << fileName << " with error : " << m_importer.GetErrorString() << "\n";
             assert(0);
         }
 
@@ -154,7 +155,7 @@ namespace DemoParticles
             }
 
             std::map<int, std::vector<aiVertexWeight>> vertToBoneWeight;
-            for(int boneId=0;boneId<mesh->mNumBones;++boneId)
+            for(unsigned int boneId=0;boneId<mesh->mNumBones;++boneId)
             {
                 aiBone* bone = mesh->mBones[boneId];
 
@@ -163,7 +164,7 @@ namespace DemoParticles
                 // bone weights are recorded per bone in assimp, with each bone containing a list of the vertices influenced by it
                 // we really want the reverse mapping, i.e. lookup the vertexID and get the bone id and weight
                 // We'll support up to 4 bones per vertex, so we need a list of weights for each vertex
-                for(int i=0;i<bone->mNumWeights;++i)
+                for(unsigned int i=0;i<bone->mNumWeights;++i)
                 {
                     aiVertexWeight weight = bone->mWeights[i];
                     vertToBoneWeight[/*startMeshVertexId +*/ weight.mVertexId].emplace_back(boneIndex, weight.mWeight);
@@ -322,25 +323,25 @@ namespace DemoParticles
 
 
                 //index Buffer SRV
-                D3D11_BUFFER_DESC indexBufferDesc;
-                indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-                indexBufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
-                indexBufferDesc.CPUAccessFlags = 0;
-                indexBufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-                indexBufferDesc.ByteWidth = (UINT)(sizeof(int) * indices.size());
-                indexBufferDesc.StructureByteStride = sizeof(int);
+                D3D11_BUFFER_DESC indexBufferCreateSRVDesc;
+                indexBufferCreateSRVDesc.Usage = D3D11_USAGE_DEFAULT;
+                indexBufferCreateSRVDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+                indexBufferCreateSRVDesc.CPUAccessFlags = 0;
+                indexBufferCreateSRVDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+                indexBufferCreateSRVDesc.ByteWidth = (UINT)(sizeof(int) * indices.size());
+                indexBufferCreateSRVDesc.StructureByteStride = sizeof(int);
 
-                Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
+                Microsoft::WRL::ComPtr<ID3D11Buffer> indexBufferCreateSRV;
 
                 DX::ThrowIfFailed(
-                    m_deviceResources->GetD3DDevice()->CreateBuffer(&indexBufferDesc, &indexBufferData, &indexBuffer)
+                    m_deviceResources->GetD3DDevice()->CreateBuffer(&indexBufferCreateSRVDesc, &indexBufferData, &indexBufferCreateSRV)
                 );
 
                 D3D11_SHADER_RESOURCE_VIEW_DESC indexSRVDesc;
                 indexSRVDesc.Format = DXGI_FORMAT_UNKNOWN;
                 indexSRVDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
                 indexSRVDesc.Buffer.FirstElement = 0;
-                indexSRVDesc.Buffer.NumElements = indices.size();
+                indexSRVDesc.Buffer.NumElements = (UINT)indices.size();
 
                 Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> indexSRV;
 

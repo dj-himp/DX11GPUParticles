@@ -61,13 +61,13 @@ namespace DemoParticles
 
         if (m_emissionRate > 0.0f)
         {
-            m_emissionRateAccumulation += m_emissionRate * timer.GetElapsedSeconds();
+            m_emissionRateAccumulation += m_emissionRate * (float)timer.GetElapsedSeconds();
 
             if (m_emissionRateAccumulation > 1.0f)
             {
                 float integerPart = 0.0f;
                 float fraction = modf(m_emissionRateAccumulation, &integerPart);
-                m_emitterConstantBufferData.maxSpawn = integerPart;
+                m_emitterConstantBufferData.maxSpawn = (UINT)integerPart;
                 m_emissionRateAccumulation = fraction;
             }
             else

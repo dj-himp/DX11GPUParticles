@@ -15,22 +15,22 @@ namespace DemoParticles
         m_duration = (float)anim->mDuration;
         m_name = std::string(anim->mName.C_Str());
 
-        for (int i = 0; i < anim->mNumChannels; ++i)
+        for (unsigned int i = 0; i < anim->mNumChannels; ++i)
         {
             AnimationChannel chan;
             chan.m_name = std::string(anim->mChannels[i]->mNodeName.C_Str());
 
-            for (int j = 0; j < anim->mChannels[i]->mNumPositionKeys; ++j)
+            for (unsigned int j = 0; j < anim->mChannels[i]->mNumPositionKeys; ++j)
             {
                 chan.m_positionKeys.push_back(anim->mChannels[i]->mPositionKeys[j]);
             }
 
-            for (int j = 0; j < anim->mChannels[i]->mNumRotationKeys; ++j)
+            for (unsigned int j = 0; j < anim->mChannels[i]->mNumRotationKeys; ++j)
             {
                 chan.m_rotationKeys.push_back(anim->mChannels[i]->mRotationKeys[j]);
             }
 
-            for (int j = 0; j < anim->mChannels[i]->mNumScalingKeys; ++j)
+            for (unsigned int j = 0; j < anim->mChannels[i]->mNumScalingKeys; ++j)
             {
                 chan.m_scalingKeys.push_back(anim->mChannels[i]->mScalingKeys[j]);
             }
@@ -79,12 +79,12 @@ namespace DemoParticles
 
                 aiVectorKey key = channel.m_positionKeys[frame];
                 aiVectorKey nextKey = channel.m_positionKeys[nextFrame];
-                float diffTime = nextKey.mTime - key.mTime;
+                float diffTime = (float)nextKey.mTime - (float)key.mTime;
                 if (diffTime < 0.0) {
                     diffTime += m_duration;
                 }
                 if (diffTime > 0.0) {
-                    float factor = (time - key.mTime) / diffTime;
+                    float factor = (time - (float)key.mTime) / diffTime;
                     position = key.mValue + (nextKey.mValue - key.mValue) * factor;
                 }
                 else
@@ -117,14 +117,14 @@ namespace DemoParticles
                 aiQuatKey nextKey = channel.m_rotationKeys[nextFrame];
                 key.mValue.Normalize();
                 nextKey.mValue.Normalize();
-                float diffTime = nextKey.mTime - key.mTime;
+                float diffTime = (float)nextKey.mTime - (float)key.mTime;
                 if (diffTime < 0.0)
                 {
                     diffTime += m_duration;
                 }
                 if (diffTime > 0)
                 {
-                    float factor = (time - key.mTime) / diffTime;
+                    float factor = (time - (float)key.mTime) / diffTime;
                     aiQuaternion::Interpolate(pRot, key.mValue, nextKey.mValue, factor);
                 }
                 else {
@@ -137,10 +137,10 @@ namespace DemoParticles
             aiVector3D pscale = aiVector3D(1);
             if (channel.m_scalingKeys.size() > 0)
             {
-                float frame = (time >= m_lastTime) ? std::get<2>(m_lastPositions[i]) : 0;
+                float frame = (time >= m_lastTime) ? (float)std::get<2>(m_lastPositions[i]) : 0;
                 while (frame < channel.m_scalingKeys.size() - 1)
                 {
-                    if (time < channel.m_scalingKeys[frame + 1].mTime)
+                    if (time < channel.m_scalingKeys[(int)frame + 1].mTime)
                     {
                         break;
                     }
@@ -150,7 +150,7 @@ namespace DemoParticles
                 {
                     frame = 0;
                 }
-                std::get<2>(m_lastPositions[i]) = frame;
+                std::get<2>(m_lastPositions[i]) = (int)frame;
             }
 
             // create the combined transformation matrix

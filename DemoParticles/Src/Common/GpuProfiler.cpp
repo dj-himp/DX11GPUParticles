@@ -191,7 +191,7 @@ namespace DemoParticles
                 m_totalTimeDuringAverage[t] = 0.0f;
             }
             m_frameCountDuringAverage = 0;
-            m_timeBeginAverage = timer.GetTotalSeconds();
+            m_timeBeginAverage = (float)timer.GetTotalSeconds();
         }
     }
 

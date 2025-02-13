@@ -29,11 +29,11 @@ PixelShaderOutput main(PixelShaderInput input)
 {
     PixelShaderOutput output;
     
-    /*float4 diffuseColor = diffuseTex.Sample(TextureWrapSampler, input.uv);
+    float4 diffuseColor = diffuseTex.Sample(TextureWrapSampler, input.uv);
     //float4 diffuseColor = input.color;
-    float4 ilumColor = ilumTex.Sample(TextureWrapSampler, input.uv);
-    diffuseColor += ilumColor;
-*/
+    //float4 ilumColor = ilumTex.Sample(TextureWrapSampler, input.uv);
+    //diffuseColor += ilumColor;
+
     if(input.unfoldFlag)
     {
 #ifdef DEBUG_EMIT
@@ -44,8 +44,8 @@ PixelShaderOutput main(PixelShaderInput input)
         {
             Particle p = (Particle)0;
             p.position = input.worldPos;
-            //p.color = diffuseColor;
-            p.color = float4(normalize(0.5 * input.normal + 0.5).xyz, 1.0);
+            p.color = diffuseColor;
+            //p.color = input.color;//(normalize(0.5 * input.normal + 0.5).xyz, 1.0);
             p.normal = float4(input.normal, 1.0);
             particleBuffer.Append(p);
 

@@ -18,7 +18,7 @@ namespace DemoParticles
         m_attractorParam.killZoneRadius = 0.5f;
     }
 
-    void ParticleAttractor::update(DX::StepTimer const& timer)
+    void ParticleAttractor::update(DX::StepTimer const& /*timer*/)
     {
 
     }

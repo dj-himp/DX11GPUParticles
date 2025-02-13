@@ -44,13 +44,13 @@ void main(uint3 id : SV_DispatchThreadID)
 
         p.position = emitterPosition;
         float3 position = emitterPartitioning.xyz * float3(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5);
-        position = mul(emitterScale.xyz * normalize(position), emitterRotation);
+        position = mul(float4(emitterScale.xyz * normalize(position), 1.0), emitterRotation).xyz;
         //p.position = mul(p.position, emitterRotation);
         p.position.xyz += position;
         p.position.w = 1.0;
         
         //p.velocity = particlesBaseSpeed * normalize(float4(rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, rand_xorshift_normalized() - 0.5, 0.0));
-        p.velocity = particlesBaseSpeed * normalize(float4(position - emitterPosition, 0.0));
+        p.velocity = particlesBaseSpeed * normalize(float4(position - emitterPosition.xyz, 0.0));
         
         p.lifeSpan = particlesLifeSpan;
         p.age = abs(p.lifeSpan); //abs() so if lifetime is infinite ( < 0.0) it's still has a life

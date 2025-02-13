@@ -87,7 +87,7 @@ namespace DemoParticles
         m_constantBufferData.world = m_world.Transpose();
 
         //TO DO Move it to model.h/cpp
-        std::vector<Matrix> transforms = m_model->getAnimator()->getTransforms(timer.GetTotalSeconds());
+        std::vector<Matrix> transforms = m_model->getAnimator()->getTransforms((float)timer.GetTotalSeconds());
         for (int i = 0; i < transforms.size(); ++i)
         {
             /*std::string s = "";
@@ -141,7 +141,7 @@ namespace DemoParticles
         }
     }
 
-    void RenderModel::RenderImGui(Camera* camera)
+    void RenderModel::RenderImGui(Camera* /*camera*/)
     {
         ImGui::DragInt("debug bone ID", &m_debugBoneConstantBufferData.boneID);
         static int i = 0;

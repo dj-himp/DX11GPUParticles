@@ -36,12 +36,10 @@ GeometryShaderInput main(VertexShaderInput input)
 {
     GeometryShaderInput output;
     
-    float debugScale = 1.0;//0.01;
-
-    float4x4 skinTransform = boneTransforms[input.boneIndices[0]] * input.blendWeight[0] * debugScale;
-    skinTransform += boneTransforms[input.boneIndices[1]] * input.blendWeight[1] * debugScale;
-    skinTransform += boneTransforms[input.boneIndices[2]] * input.blendWeight[2] * debugScale;
-    skinTransform += boneTransforms[input.boneIndices[3]] * input.blendWeight[3] * debugScale;
+    float4x4 skinTransform = boneTransforms[input.boneIndices[0]] * input.blendWeight[0];
+    skinTransform += boneTransforms[input.boneIndices[1]] * input.blendWeight[1];
+    skinTransform += boneTransforms[input.boneIndices[2]] * input.blendWeight[2];
+    skinTransform += boneTransforms[input.boneIndices[3]] * input.blendWeight[3];
 
     output.Position = mul(float4(input.Position, 1.0), skinTransform);
     //output.Position = float4(input.Position, 1.0);    
@@ -50,8 +48,8 @@ GeometryShaderInput main(VertexShaderInput input)
     //output.Position = mul(float4(input.Position, 1.0), mul(world, viewProj));
 
     //output.normal = mul(float4(input.normal, 1.0), world);
-    output.normal = mul(float4(input.normal, 0.0), skinTransform);
-    output.normal = mul(output.normal, world);
+    output.normal = mul(float4(input.normal, 0.0), skinTransform).xyz;
+    output.normal = mul(float4(output.normal, 0.0), world).xyz;
 
     output.uv = input.texCoord;
     //output.worldPos = mul(float4(input.Position, 1.0), world);

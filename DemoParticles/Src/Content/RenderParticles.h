@@ -71,7 +71,7 @@ namespace DemoParticles
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_normalView;
 
         int m_nbParticles;
-        int m_maxParticles = 1000 * 1024;//500 * 1024; //need to augment MAX_NUM_TG in sortLib.cpp
+        int m_maxParticles = 2000 * 1024;//500 * 1024; //need to augment MAX_NUM_TG in sortLib.cpp
 
         Microsoft::WRL::ComPtr<ID3D11Buffer>                m_particleBuffer;
         Microsoft::WRL::ComPtr<ID3D11ShaderResourceView>    m_particleSRV;

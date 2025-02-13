@@ -335,10 +335,12 @@ namespace DemoParticles
         if (timer.GetTotalSeconds() > m_updateParticlesCountBeginTime + m_updateParticlesCountDelay)
         {
             m_measureParticlesCount = true;
-            m_updateParticlesCountBeginTime = timer.GetTotalSeconds();
+            m_updateParticlesCountBeginTime = (int)timer.GetTotalSeconds();
         }
 
-        if (m_modelToEmitEnabled)
+
+        m_modelToEmit->setShowModel(m_modelToEmitEnabled);
+        //if (m_modelToEmitEnabled)
         {
             m_modelToEmit->update(timer);
         }
@@ -349,14 +351,12 @@ namespace DemoParticles
     {
 
         GpuProfiler::instance().beginTimestamp(GpuProfiler::TS_RenderToEmit);
-        if (m_modelToEmitEnabled)
-        {
-            m_deviceResources->PIXBeginEvent(L"ModelToEmit::Render");
-            
-            m_modelToEmit->render();
-            
-            m_deviceResources->PIXEndEvent();
-        }
+
+        
+        m_deviceResources->PIXBeginEvent(L"ModelToEmit::Render");
+        m_modelToEmit->render();    
+        m_deviceResources->PIXEndEvent();
+        
         GpuProfiler::instance().endTimestamp(GpuProfiler::TS_RenderToEmit);
 
         m_deviceResources->PIXBeginEvent(L"Particles");
@@ -483,10 +483,8 @@ namespace DemoParticles
         if (ImGui::CollapsingHeader("Renderers"))
         {
             ImGui::Checkbox("ModelToEmit enabled", &m_modelToEmitEnabled);
-            if (m_modelToEmitEnabled)
-            {
-                m_modelToEmit->RenderImGui(camera);
-            }
+            
+            m_modelToEmit->RenderImGui(camera);
         }
         if (ImGui::CollapsingHeader("Emitters"))
         {
@@ -822,7 +820,7 @@ namespace DemoParticles
 
 
         //simulation
-        m_simulateParticlesBufferData.nbAttractors = m_attractorList.size();
+        m_simulateParticlesBufferData.nbAttractors = (UINT)m_attractorList.size();
         std::vector<Attractor> attractors;
         for (auto&& attractor : m_attractorList)
         {

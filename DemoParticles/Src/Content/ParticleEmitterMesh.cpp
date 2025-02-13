@@ -66,13 +66,13 @@ namespace DemoParticles
 
         if (m_emissionRate > 0.0f)
         {
-            m_emissionRateAccumulation += m_emissionRate * timer.GetElapsedSeconds();
+            m_emissionRateAccumulation += m_emissionRate * (float)timer.GetElapsedSeconds();
 
             if (m_emissionRateAccumulation > 1.0f)
             {
                 float integerPart = 0.0f;
                 float fraction = modf(m_emissionRateAccumulation, &integerPart);
-                m_emitterConstantBufferData.maxSpawn = integerPart;
+                m_emitterConstantBufferData.maxSpawn = (UINT)integerPart;
                 m_emissionRateAccumulation = fraction;
             }
             else
@@ -128,7 +128,7 @@ namespace DemoParticles
             //m_emitterConstantBufferData.uvSprite = DirectX::SimpleMath::Vector4(0.0, 0.0, 1.0, 1.0);
             ImGui::Image((ImTextureID)m_particleTexture1SRV.Get(), ImVec2(64.0f, 64.0f), ImVec2(m_emitterConstantBufferData.uvSprite.x, m_emitterConstantBufferData.uvSprite.y), ImVec2(m_emitterConstantBufferData.uvSprite.x + m_emitterConstantBufferData.uvSprite.z, m_emitterConstantBufferData.uvSprite.y + m_emitterConstantBufferData.uvSprite.w));
 
-            ImGui::DragInt("mesh Part", &m_currentMeshPart, 1.0f, 0, m_model->getMeshCount() - 1);
+            ImGui::DragInt("mesh Part", &m_currentMeshPart, 1.0f, 0, (int)m_model->getMeshCount() - 1);
             //ImGui::DragInt("Max Spawn", (int*)&m_emitterConstantBufferData.maxSpawn, 1, 0, 10000000);
             ImGui::DragFloat("Emission Rate", (float*)&m_emissionRate, 1.0f, 0.0f, 10000000.0f);
             //ImGui::DragFloat3("Position", (float*)&m_emitterConstantBufferData.position, 0.01f);

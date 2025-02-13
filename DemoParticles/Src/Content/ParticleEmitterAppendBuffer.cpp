@@ -48,7 +48,7 @@ namespace DemoParticles
 
     void ParticleEmitterAppendBuffer::update(DX::StepTimer const& timer)
     {
-        m_currentDelay += timer.GetElapsedSeconds();
+        m_currentDelay += (float)timer.GetElapsedSeconds();
     }
 
     void ParticleEmitterAppendBuffer::emit()

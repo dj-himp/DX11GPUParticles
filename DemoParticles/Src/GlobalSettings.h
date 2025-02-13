@@ -14,7 +14,7 @@ namespace DemoParticles
 
         static inline float g_emitterEmitRate = 1.0f / 60.0f;
 
-        static inline int g_maxParticles = 10 * 1000 * 1024;// 1000 * 1024;
+        static inline int g_maxParticles = 20 * 1000 * 1024;// 1000 * 1024;
     };
 
 }

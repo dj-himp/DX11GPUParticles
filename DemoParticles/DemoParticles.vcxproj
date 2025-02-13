@@ -702,10 +702,7 @@
     <CopyFileToFolders Include="Data\Models\testBones.fbx">
       <FileType>Document</FileType>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="Data\Models\Start_Walking.fbx">
-      <FileType>Document</FileType>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="Data\Models\Walking.fbx">
+    <CopyFileToFolders Include="Data\Models\testBones2.fbx">
       <FileType>Document</FileType>
     </CopyFileToFolders>
     <None Include="Extern\assimp\.editorconfig" />
@@ -726,6 +723,7 @@
     <CopyFileToFolders Include="Data\Textures\soldierAHighNORM.dds" />
     <CopyFileToFolders Include="Data\Textures\soldierAHighSPEC.dds" />
     <CopyFileToFolders Include="Data\Textures\soldierAHigh_G_DIFF.dds" />
+    <ImageContentTask Include="Data\Textures\cat_texture_new.png" />
     <ImageContentTask Include="Data\Textures\Particles\smokePerso.png" />
     <ImageContentTask Include="Data\Textures\Particles\particlesSheetPerso.png" />
     <ImageContentTask Include="Data\Textures\Particles\particlesSheet.jpg" />

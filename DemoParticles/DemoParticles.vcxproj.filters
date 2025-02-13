@@ -641,6 +641,9 @@
     <ClInclude Include="Src\Model\Bone.h">
       <Filter>Src\Model</Filter>
     </ClInclude>
+    <ClInclude Include="Extern\nfd\nfd.h">
+      <Filter>Extern\nfd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -969,6 +972,12 @@
     <CopyFileToFolders Include="Data\Models\Glasse_Walk_Cycle.fbx">
       <Filter>Data\Models</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\testBones2.fbx">
+      <Filter>Data\Models</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Data\Models\testBones.fbx">
+      <Filter>Data\Models</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <ImageContentTask Include="Data\Textures\noisy-texture-256x256.png">
@@ -990,6 +999,9 @@
     </ImageContentTask>
     <ImageContentTask Include="Data\Textures\Particles\smokePerso.png">
       <Filter>Data\Textures\Particles</Filter>
+    </ImageContentTask>
+    <ImageContentTask Include="Data\Textures\cat_texture_new.png">
+      <Filter>Data\Textures</Filter>
     </ImageContentTask>
   </ItemGroup>
 </Project>

@@ -102,10 +102,10 @@ namespace DemoParticles
         {
             std::string SDFFilename(filename);
             SDFFilename += "d";
-            std::ifstream file;
-            file.open(SDFFilename, std::ios::binary);
+            std::ifstream fileSDF;
+            fileSDF.open(SDFFilename, std::ios::binary);
 
-            if (!file)
+            if (!fileSDF)
             {
                 DebugUtils::log("SDF file not found");
                 return;
@@ -113,23 +113,23 @@ namespace DemoParticles
 
             //VF_F == SDF (list of distances)
             //VF_V == Gradient (list of gradients)
-            char header[4];
+            char headerSDF[4];
             for (int i = 0; i < 4; ++i)
             {
-                file.read(&header[i], 1);
+                fileSDF.read(&headerSDF[i], 1);
             }
 
-            UINT8 size[3];
+            UINT8 sizeSDF[3];
             for (int i = 0; i < 3; ++i)
             {
-                file.read(reinterpret_cast<char*>(&size[i]), 1);
+                fileSDF.read(reinterpret_cast<char*>(&sizeSDF[i]), 1);
                 char trash;
-                file.read(&trash, 1);
+                fileSDF.read(&trash, 1);
             }
 
             for (int i = 0; i < content.forces.size(); ++i)
             {
-                file.read(reinterpret_cast<char*>(&content.forces[i].w), sizeof(float));
+                fileSDF.read(reinterpret_cast<char*>(&content.forces[i].w), sizeof(float));
             }
         }
     }

@@ -25,7 +25,7 @@ namespace DemoParticles
         m_modelToEmitConstantBufferData.offsetDensity = DirectX::SimpleMath::Vector2(0.0f, 0.0f);
         m_scaleDensity = DirectX::SimpleMath::Vector2(0.05f, 0.05f);
         m_offsetDensity = DirectX::SimpleMath::Vector2(0.0f, 0.0f);
-        srand(time(NULL));
+        srand((unsigned int)time(NULL));
     }
 
     void RenderModelAndEmitBuffer::createDeviceDependentResources()
@@ -44,9 +44,12 @@ namespace DemoParticles
         //m_world = Matrix::CreateScale(1.0f) * Matrix::CreateRotationX(DirectX::XM_PI) * Matrix::CreateRotationY(0.0f) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
         
         m_model = m_modelLoader->load("cat.dae");
+        //m_model = m_modelLoader->load("testBones2.fbx");
+        //m_world = Matrix::CreateScale(3.0f) * Matrix::CreateRotationX(DirectX::XM_PI) * Matrix::CreateRotationY(0.0f) * Matrix::CreateRotationZ(/*DirectX::XM_PI*/0.0f) * Matrix::CreateTranslation(0.0f, 0.0f, 0.0f);
 
         DX::ThrowIfFailed(
-            CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"soldierAHighDIFF.dds", nullptr, m_diffuseTextureSRV.GetAddressOf())
+            //CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"soldierAHighDIFF.dds", nullptr, m_diffuseTextureSRV.GetAddressOf())
+            CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), L"cat_texture_new.dds", nullptr, m_diffuseTextureSRV.GetAddressOf())
         );
 
         DX::ThrowIfFailed(
@@ -184,7 +187,7 @@ namespace DemoParticles
         m_modelToEmitConstantBufferData.offsetDensity = m_offsetDensity * rnd * m_scaleDensity;
         m_modelToEmitConstantBufferData.scaleDensity = m_scaleDensity;
 
-        std::vector<Matrix> transforms = m_model->getAnimator()->getTransforms(timer.GetTotalSeconds());
+        std::vector<Matrix> transforms = m_model->getAnimator()->getTransforms((float)timer.GetTotalSeconds());
         for (int i = 0; i < transforms.size(); ++i)
         {
             m_skinnedConstantBufferData.boneTransforms[i] = transforms[i].Transpose();
@@ -233,7 +236,9 @@ namespace DemoParticles
             context->GSSetConstantBuffers(1, 1, m_modelToEmitConstantBuffer.GetAddressOf());
 
             context->RSSetState(RenderStatesHelper::CullCounterClockwise().Get());
-
+            const float blendFactor[4] = { 0.f, 0.f, 0.f, 0.f };
+            context->OMSetBlendState(RenderStatesHelper::AlphaBlend().Get(), blendFactor, 0xffffffff);
+            context->OMSetDepthStencilState(RenderStatesHelper::DepthDefault().Get(), 0);
 
             context->PSSetShader(m_modelPS->getPixelShader(), nullptr, 0);
             context->PSSetSamplers(0, 1, RenderStatesHelper::LinearWrap().GetAddressOf());
@@ -261,7 +266,7 @@ namespace DemoParticles
     }
 
 
-    void RenderModelAndEmitBuffer::RenderImGui(Camera* camera)
+    void RenderModelAndEmitBuffer::RenderImGui(Camera* /*camera*/)
     {
         ImGui::DragFloat("Scale density", (float*)&m_scaleDensity.x, 0.01f, 0.01f, 10.0f);
         m_scaleDensity.y = m_scaleDensity.x;

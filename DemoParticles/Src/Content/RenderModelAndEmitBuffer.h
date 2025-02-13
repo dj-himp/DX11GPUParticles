@@ -30,6 +30,7 @@ namespace DemoParticles
         ID3D11UnorderedAccessView* getParticleUAV() { return m_particleUAV.Get(); }
         ID3D11Buffer* getIndirectArgsBuffer() { return m_indirectDispatchArgsBuffer.Get(); }
 
+        void setShowModel(bool showModel) { m_modelToEmitConstantBufferData.showModel = showModel; }
 
     private:
 
